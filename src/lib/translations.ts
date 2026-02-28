@@ -1,0 +1,48 @@
+
+export const dict = {
+  appName: "I-HAMKOR",
+  sections: {
+    dashboard: "Бошқарув панели",
+    auction: "Аукцион маркази",
+    logistics: "Логистика хаби",
+    aiSecurity: "AI Хавфсизлик",
+    finance: "Молиявий шлюз",
+    eri: "ЭРИ ва Шартномалар",
+    tenders: "Тендерлар",
+    inventory: "Омборхона",
+    analytics: "Таҳлилий ҳисоботлар",
+    crm: "Мижозлар базаси",
+    hr: "Ходимлар бошқаруви",
+    marketing: "Маркетинг",
+    legal: "Юридик бўлим",
+    tax: "Солиқлар (Soliq.uz)",
+    customs: "Божхона",
+    procurement: "Харидлар",
+    support: "Қўллаб-қувватлаш",
+    archive: "Архив",
+    settings: "Созламалар",
+    messages: "Хабарлар",
+    notifications: "Билдиришномалар",
+    reports: "Ҳисоботлар",
+    events: "Тадбирлар",
+    guide: "Йўриқнома"
+  },
+  labels: {
+    search: "Қидириш...",
+    welcome: "Хуш келибсиз!",
+    inn: "СТИР (ИНН)",
+    check: "Текшириш",
+    riskScore: "AI Хавф даражаси",
+    recommendation: "Тавсия",
+    bidPrice: "Жорий нарх",
+    bidHistory: "Савдо тарихи",
+    placeBid: "Таклиф бериш",
+    truckEta: "ЕТА (Келиш вақти)",
+    approve: "Тасдиқлаш",
+    reject: "Рад этиш",
+    preview: "Кўриб чиқиш",
+    status: "Ҳолат",
+    active: "Фаол",
+    completed: "Якунланган"
+  }
+};

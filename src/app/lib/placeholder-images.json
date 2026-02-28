@@ -1,0 +1,23 @@
+
+{
+  "placeholderImages": [
+    {
+      "id": "uzauto",
+      "description": "UzAuto Motors Logo Premium",
+      "imageUrl": "https://picsum.photos/seed/uzauto/1200/400",
+      "imageHint": "automotive manufacturing"
+    },
+    {
+      "id": "artel",
+      "description": "Artel Electronics Premium",
+      "imageUrl": "https://picsum.photos/seed/artel/1200/400",
+      "imageHint": "electronics appliances"
+    },
+    {
+      "id": "akfa",
+      "description": "Akfa Group Premium",
+      "imageUrl": "https://picsum.photos/seed/akfa/1200/400",
+      "imageHint": "construction window"
+    }
+  ]
+}
