@@ -1,4 +1,3 @@
-
 "use client";
 
 import * as React from "react";
@@ -16,7 +15,10 @@ import {
   YAxis, 
   CartesianGrid,
   Line,
-  LineChart
+  LineChart,
+  Pie,
+  PieChart,
+  Cell
 } from "recharts";
 import { 
   Plus, 
@@ -32,7 +34,10 @@ import {
   Handshake,
   Loader2,
   ShieldAlert,
-  Search
+  Search,
+  Download,
+  BarChart3,
+  CheckCircle2
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
@@ -56,6 +61,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { getLotAiDetails, LotDetailsOutput } from "@/ai/flows/lot-details-flow";
+import { generateAuctionReport, AuctionReportOutput } from "@/ai/flows/auction-report-flow";
 
 const chartData = [
   { name: "Du", value: 23 },
@@ -65,6 +71,12 @@ const chartData = [
   { name: "Ju", value: 38 },
   { name: "Sh", value: 47 },
   { name: "Ya", value: 42 },
+];
+
+const pieData = [
+  { name: "IT", value: 400, color: "#2563eb" },
+  { name: "Qurilish", value: 300, color: "#8b5cf6" },
+  { name: "Transport", value: 200, color: "#f59e0b" },
 ];
 
 const chartConfig = {
@@ -147,10 +159,15 @@ export function AuctionHub({ onNavigate }: { onNavigate?: (id: string) => void }
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const [isBidDialogOpen, setIsBidDialogOpen] = useState(false);
+  const [isReportOpen, setIsReportOpen] = useState(false);
+  
   const [selectedLotForBid, setSelectedLotForBid] = useState<Lot | null>(null);
   const [bidAmountInput, setBidAmountInput] = useState("");
   const [selectedLotDetails, setSelectedLotDetails] = useState<LotDetailsOutput | null>(null);
   const [loadingDetails, setLoadingDetails] = useState(false);
+  
+  const [reportData, setReportData] = useState<AuctionReportOutput | null>(null);
+  const [loadingReport, setLoadingReport] = useState(false);
 
   const [newLotTitle, setNewLotTitle] = useState("");
   const [newLotQuantity, setNewLotQuantity] = useState("");
@@ -229,6 +246,39 @@ export function AuctionHub({ onNavigate }: { onNavigate?: (id: string) => void }
       setIsDetailsOpen(false);
     } finally {
       setLoadingDetails(false);
+    }
+  };
+
+  const handleShowReport = async () => {
+    setLoadingReport(true);
+    setIsReportOpen(true);
+    setReportData(null);
+    try {
+      const totalValue = lots.reduce((acc, lot) => acc + lot.price, 0);
+      const totalBids = lots.reduce((acc, lot) => acc + (lot.bidsCount || 0), 0);
+      
+      const data = await generateAuctionReport({
+        totalLots: lots.length,
+        totalValue,
+        totalBids,
+        topCategory: "IT",
+        recentBids: [
+          { participant: "Texnomart Group", amount: 140773123 },
+          { participant: "Artel Electronics", amount: 139000000 },
+          { participant: "UzAuto Motors", amount: 135000000 },
+        ]
+      });
+      setReportData(data);
+    } catch (error) {
+      console.error("Report loading error:", error);
+      toast({
+        title: "Xatolik",
+        description: "Hisobotni tayyorlashda xatolik yuz berdi.",
+        variant: "destructive",
+      });
+      setIsReportOpen(false);
+    } finally {
+      setLoadingReport(false);
     }
   };
 
@@ -388,7 +438,11 @@ export function AuctionHub({ onNavigate }: { onNavigate?: (id: string) => void }
             </DialogContent>
           </Dialog>
 
-          <Button variant="outline" className="border-blue-200 text-[#2563eb] hover:bg-blue-50 rounded-xl h-11 px-6 text-[11px] font-black uppercase tracking-widest gap-2">
+          <Button 
+            onClick={handleShowReport}
+            variant="outline" 
+            className="border-blue-200 text-[#2563eb] hover:bg-blue-50 rounded-xl h-11 px-6 text-[11px] font-black uppercase tracking-widest gap-2"
+          >
             <FileText size={16} /> Hisobot
           </Button>
         </div>
@@ -685,6 +739,130 @@ export function AuctionHub({ onNavigate }: { onNavigate?: (id: string) => void }
           </div>
           <DialogFooter className="p-6 bg-slate-50 border-t">
             <Button onClick={() => setIsDetailsOpen(false)} className="bg-slate-900 text-white rounded-xl h-12 px-8 font-black uppercase text-[11px] tracking-widest w-full">Yopish</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Auction Report Dialog */}
+      <Dialog open={isReportOpen} onOpenChange={setIsReportOpen}>
+        <DialogContent className="sm:max-w-[800px] rounded-[40px] overflow-hidden p-0 border-none max-h-[90vh] flex flex-col bg-[#f8fafc]">
+          <DialogHeader className="p-10 bg-white border-b flex flex-row items-center justify-between shrink-0">
+            <div>
+              <DialogTitle className="text-[14px] font-black uppercase tracking-[0.2em] flex items-center gap-2 text-slate-900">
+                <BarChart3 className="text-[#2563eb] w-6 h-6" /> Auksion Faoliyati Hisoboti
+              </DialogTitle>
+              <DialogDescription className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">
+                Real vaqt tahlili va AI tavsiyalari
+              </DialogDescription>
+            </div>
+            <Button variant="outline" className="h-10 rounded-xl border-slate-100 text-[10px] font-black uppercase tracking-widest gap-2">
+              <Download size={14} /> PDF Yuklash
+            </Button>
+          </DialogHeader>
+          
+          <div className="p-10 space-y-10 overflow-y-auto flex-1">
+            {loadingReport ? (
+              <div className="flex flex-col items-center justify-center py-32 gap-6">
+                <div className="relative">
+                  <Loader2 className="w-16 h-16 text-[#2563eb] animate-spin" />
+                  <Sparkles className="absolute -top-2 -right-2 text-amber-400 animate-pulse" size={20} />
+                </div>
+                <p className="text-[11px] font-black text-slate-400 uppercase tracking-[0.3em] animate-pulse">Ma'lumotlar tahlil qilinmoqda...</p>
+              </div>
+            ) : reportData ? (
+              <div className="space-y-10 animate-fade-in">
+                {/* Stats Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <Card className="bg-white border-none shadow-sm p-6 rounded-[24px]">
+                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2">Jami Aylanma</p>
+                    <p className="text-2xl font-black text-[#2563eb] tracking-tighter">{formatCurrency(lots.reduce((a, b) => a + b.price, 0))}</p>
+                  </Card>
+                  <Card className="bg-white border-none shadow-sm p-6 rounded-[24px]">
+                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2">Aktiv Lotlar</p>
+                    <p className="text-2xl font-black text-slate-900 tracking-tighter">{lots.length} ta</p>
+                  </Card>
+                  <Card className="bg-white border-none shadow-sm p-6 rounded-[24px]">
+                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2">Jami Takliflar</p>
+                    <p className="text-2xl font-black text-emerald-600 tracking-tighter">{lots.reduce((a, b) => a + (b.bidsCount || 0), 0)} ta</p>
+                  </Card>
+                </div>
+
+                {/* Charts Row */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                  <Card className="bg-white border-none shadow-sm p-8 rounded-[32px]">
+                    <h4 className="text-[10px] font-black text-slate-900 uppercase tracking-widest mb-6">Savdolar ulushi (Toifalar)</h4>
+                    <div className="h-64">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <PieChart>
+                          <Pie
+                            data={pieData}
+                            cx="50%"
+                            cy="50%"
+                            innerRadius={60}
+                            outerRadius={80}
+                            paddingAngle={5}
+                            dataKey="value"
+                          >
+                            {pieData.map((entry, index) => (
+                              <Cell key={`cell-${index}`} fill={entry.color} />
+                            ))}
+                          </Pie>
+                          <ShadcnChartTooltip content={<ChartTooltipContent />} />
+                        </PieChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </Card>
+
+                  <Card className="bg-white border-none shadow-sm p-8 rounded-[32px]">
+                    <h4 className="text-[10px] font-black text-slate-900 uppercase tracking-widest mb-6">Faollik tahlili</h4>
+                    <div className="h-64">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <BarChart data={chartData}>
+                          <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="#f1f5f9" />
+                          <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 9, fontWeight: 700, fill: '#94a3b8' }} />
+                          <Bar dataKey="value" fill="#8b5cf6" radius={[4, 4, 0, 0]} barSize={24} />
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </Card>
+                </div>
+
+                {/* AI Summary Section */}
+                <section className="space-y-6">
+                  <div className="bg-blue-600 p-10 rounded-[40px] text-white shadow-xl shadow-blue-200">
+                    <div className="flex items-center gap-3 mb-6">
+                      <Sparkles size={24} className="text-blue-200" />
+                      <h4 className="text-[12px] font-black uppercase tracking-[0.2em]">AI Executive Summary</h4>
+                    </div>
+                    <p className="text-[14px] leading-relaxed font-medium text-blue-50 opacity-90">{reportData.summary}</p>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div className="space-y-4">
+                      <h4 className="text-[10px] font-black text-indigo-600 uppercase tracking-widest px-2">Bozor Kayfiyati</h4>
+                      <Card className="bg-white border-none shadow-sm p-6 rounded-[24px]">
+                        <p className="text-[13px] leading-relaxed text-slate-600 font-medium">{reportData.marketSentiment}</p>
+                      </Card>
+                    </div>
+
+                    <div className="space-y-4">
+                      <h4 className="text-[10px] font-black text-emerald-600 uppercase tracking-widest px-2">Strategik Tavsiyalar</h4>
+                      <div className="space-y-3">
+                        {reportData.recommendations.map((rec, i) => (
+                          <Card key={i} className="bg-white border-none shadow-sm p-4 rounded-[20px] flex items-start gap-3">
+                            <CheckCircle2 size={18} className="text-emerald-500 shrink-0 mt-0.5" />
+                            <p className="text-[12px] font-bold text-slate-700">{rec}</p>
+                          </Card>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </section>
+              </div>
+            ) : null}
+          </div>
+          <DialogFooter className="p-8 bg-white border-t shrink-0">
+            <Button onClick={() => setIsReportOpen(false)} className="bg-slate-900 text-white rounded-2xl h-14 px-10 font-black uppercase text-[11px] tracking-widest w-full shadow-lg">Yopish</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
