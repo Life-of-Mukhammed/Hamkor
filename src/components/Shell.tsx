@@ -7,7 +7,7 @@ import {
   LayoutGrid, Gavel, FileText, ShoppingBag, 
   Settings, Truck, Mail, Sparkles, FolderOpen, 
   TrendingUp, BookOpen, Globe, Bell, ShoppingCart,
-  Minus, Plus, X, ShoppingBasket
+  Minus, Plus, X, ShoppingBasket, FileCheck
 } from "lucide-react";
 import { translations, Language } from "@/lib/translations";
 import { cn } from "@/lib/utils";
@@ -54,6 +54,7 @@ export function Shell({
     { id: 'marketplace', label: t.sections.marketplace, icon: ShoppingBag },
     { id: 'auction', label: t.sections.auction, icon: Gavel },
     { id: 'eri', label: t.sections.eri, icon: FileText },
+    { id: 'contracts', label: t.sections.contracts, icon: FileCheck },
     { id: 'logistics', label: t.sections.logistics, icon: Truck },
     { id: 'settings', label: t.sections.settings, icon: Settings },
   ];
