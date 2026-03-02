@@ -8,7 +8,7 @@ import {
   ArrowUpRight, ArrowDownRight, 
   ShieldCheck, Lock, Clock, History, CreditCard, Wallet,
   Zap, Info, CheckCircle2, Plus, AlertTriangle, FileText,
-  CreditCard as CardIcon, Landmark, HelpCircle
+  CreditCard as CardIcon, Landmark, HelpCircle, Search
 } from "lucide-react";
 import { 
   Bar, 
@@ -35,6 +35,7 @@ import {
 } from "@/components/ui/dialog";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 
 const chartData = [
   { name: "Yan", incoming: 450, outgoing: 320 },
@@ -63,6 +64,8 @@ const INITIAL_TRANSACTIONS: Transaction[] = [
   { id: 'ESC-291', vendor: 'UzAuto Motors', amount: 120500000, status: 'Locked', date: '24.10.2025', timeLeft: '2 kun' },
   { id: 'ESC-292', vendor: 'Artel Electronics', amount: 85000000, status: 'Released', date: '23.10.2025' },
   { id: 'ESC-293', vendor: 'Akfa Group', amount: 42300000, status: 'Locked', date: '22.10.2025', timeLeft: '5 soat' },
+  { id: 'ESC-290', vendor: 'Texnomart', amount: 15600000, status: 'Released', date: '20.10.2025' },
+  { id: 'ESC-289', vendor: 'InfinBank', amount: 3000000, status: 'Released', date: '18.10.2025' },
 ];
 
 interface FinanceProps {
@@ -74,6 +77,7 @@ export function Finance({ lang = 'uz' }: FinanceProps) {
   const { toast } = useToast();
   const [transactions, setTransactions] = useState<Transaction[]>(INITIAL_TRANSACTIONS);
   const [isDepositOpen, setIsDepositOpen] = useState(false);
+  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("bank");
 
   const formatCurrency = (val: number) => 
@@ -102,7 +106,6 @@ export function Finance({ lang = 'uz' }: FinanceProps) {
 
   return (
     <div className="space-y-8 animate-fade-in text-slate-700 pb-20">
-      {/* Header section */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="flex items-center gap-4">
           <div className="w-12 h-12 bg-[#0f172a] rounded-[18px] flex items-center justify-center text-white shadow-xl shadow-slate-200">
@@ -114,9 +117,60 @@ export function Finance({ lang = 'uz' }: FinanceProps) {
           </div>
         </div>
         <div className="flex gap-3">
-          <Button variant="outline" className="h-12 px-6 rounded-2xl border-slate-100 font-black uppercase tracking-widest text-[10px] gap-2">
-            <History size={16} /> {lang === 'uz' ? 'Tarix' : 'История'}
-          </Button>
+          <Dialog open={isHistoryOpen} onOpenChange={setIsHistoryOpen}>
+            <DialogTrigger asChild>
+              <Button variant="outline" className="h-12 px-6 rounded-2xl border-slate-100 font-black uppercase tracking-widest text-[10px] gap-2">
+                <History size={16} /> {lang === 'uz' ? 'Tarix' : 'История'}
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[600px] rounded-[32px] p-0 overflow-hidden border-none max-h-[80vh] flex flex-col">
+              <DialogHeader className="p-8 bg-slate-50 border-b shrink-0">
+                <DialogTitle className="text-[14px] font-black uppercase tracking-widest flex items-center gap-2">
+                  <History className="text-blue-600" size={18} /> Amallar Tarixi
+                </DialogTitle>
+                <DialogDescription className="text-[10px] font-bold text-slate-400 uppercase">
+                  Barcha o'tkazilgan va muzlatilgan to'lovlar ro'yxati
+                </DialogDescription>
+              </DialogHeader>
+              <div className="p-8 space-y-4 overflow-y-auto flex-1 no-scrollbar">
+                <div className="relative mb-6">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-300" size={14} />
+                  <Input placeholder="ID yoki Sotuvchi bo'yicha qidirish..." className="h-10 pl-10 rounded-xl text-[11px] font-bold bg-slate-50 border-none" />
+                </div>
+                {transactions.map((tx) => (
+                  <div key={tx.id} className="flex items-center justify-between p-4 rounded-2xl bg-white border border-slate-50 hover:border-blue-100 transition-all">
+                    <div className="flex items-center gap-4">
+                      <div className={cn(
+                        "w-10 h-10 rounded-xl flex items-center justify-center",
+                        tx.status === 'Released' ? "bg-emerald-50 text-emerald-600" :
+                        tx.status === 'Locked' ? "bg-amber-50 text-amber-600" : "bg-red-50 text-red-600"
+                      )}>
+                        {tx.status === 'Released' ? <CheckCircle2 size={18} /> : 
+                         tx.status === 'Locked' ? <Lock size={18} /> : <AlertTriangle size={18} />}
+                      </div>
+                      <div>
+                        <p className="text-[11px] font-black text-slate-900 uppercase">{tx.vendor}</p>
+                        <p className="text-[9px] font-bold text-slate-400 uppercase">{tx.id} • {tx.date}</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-[12px] font-black text-slate-900">{formatCurrency(tx.amount)} UZS</p>
+                      <Badge className={cn(
+                        "text-[7px] font-black uppercase px-2 py-0.5 rounded-full border-none mt-1",
+                        tx.status === 'Released' ? "bg-emerald-50 text-emerald-600" :
+                        tx.status === 'Locked' ? "bg-amber-50 text-amber-600" : "bg-red-50 text-red-600"
+                      )}>
+                        {tx.status}
+                      </Badge>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <DialogFooter className="p-6 bg-slate-50 border-t shrink-0">
+                <Button onClick={() => setIsHistoryOpen(false)} className="w-full bg-[#0f172a] rounded-xl h-12 font-black uppercase tracking-widest text-[11px]">Yopish</Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
           
           <Dialog open={isDepositOpen} onOpenChange={setIsDepositOpen}>
             <DialogTrigger asChild>
@@ -168,7 +222,6 @@ export function Finance({ lang = 'uz' }: FinanceProps) {
         </div>
       </div>
 
-      {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <Card className="border-none shadow-sm rounded-[24px] bg-white p-6 relative overflow-hidden group">
           <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
@@ -209,7 +262,6 @@ export function Finance({ lang = 'uz' }: FinanceProps) {
         </Card>
       </div>
 
-      {/* Main Analysis and Escrow List */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         <Card className="lg:col-span-8 border-none shadow-sm rounded-[40px] bg-white p-10 flex flex-col">
           <div className="flex items-center justify-between mb-10">
@@ -248,7 +300,7 @@ export function Finance({ lang = 'uz' }: FinanceProps) {
           </div>
           
           <div className="space-y-6 flex-1 overflow-y-auto no-scrollbar pr-2">
-            {transactions.map((tx) => (
+            {transactions.filter(t => t.status !== 'Released').map((tx) => (
               <div key={tx.id} className="group p-5 rounded-[24px] bg-slate-50/50 hover:bg-white hover:shadow-xl hover:shadow-blue-50 border border-transparent hover:border-blue-100 transition-all duration-500">
                 <div className="flex justify-between items-start mb-4">
                   <div>
@@ -295,22 +347,24 @@ export function Finance({ lang = 'uz' }: FinanceProps) {
                         </Button>
                       </>
                     )}
-                    {tx.status === 'Released' && (
-                      <CheckCircle2 size={16} className="text-emerald-500" />
-                    )}
                   </div>
                 </div>
               </div>
             ))}
+            {transactions.filter(t => t.status !== 'Released').length === 0 && (
+              <div className="flex flex-col items-center justify-center py-10 text-center opacity-30">
+                <CheckCircle2 size={40} className="mb-4" />
+                <p className="text-[10px] font-black uppercase">Barcha faol amallar yakunlangan</p>
+              </div>
+            )}
           </div>
 
-          <Button variant="outline" className="mt-8 h-12 w-full border-slate-100 text-slate-400 text-[10px] font-black uppercase tracking-widest hover:text-blue-600 hover:border-blue-100 rounded-2xl">
+          <Button onClick={() => setIsHistoryOpen(true)} variant="outline" className="mt-8 h-12 w-full border-slate-100 text-slate-400 text-[10px] font-black uppercase tracking-widest hover:text-blue-600 hover:border-blue-100 rounded-2xl">
             Barcha xavfsiz bitimlar
           </Button>
         </Card>
       </div>
 
-      {/* AI and Expense breakdown */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <Card className="border-none shadow-sm rounded-[40px] bg-[#0f172a] p-10 text-white relative overflow-hidden group">
           <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
