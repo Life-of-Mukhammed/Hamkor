@@ -92,7 +92,6 @@ export function AuctionHub({ onNavigate }: AuctionHubProps) {
   const [manageLotId, setManageLotId] = useState<string | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   
-  // New Lot States
   const [newLotTitle, setNewLotTitle] = useState("");
   const [newLotPrice, setNewLotPrice] = useState("");
   const [newLotQuantity, setNewLotQuantity] = useState("");
@@ -134,14 +133,11 @@ export function AuctionHub({ onNavigate }: AuctionHubProps) {
 
     setLots([newLot, ...lots]);
     setIsDialogOpen(false);
-    
-    // Reset fields
     setNewLotTitle("");
     setNewLotPrice("");
     setNewLotQuantity("");
     setNewLotDuration("24");
-    
-    toast({ title: "Муваффақиятли", description: "Янги лот муваффақиятли қўшилди" });
+    toast({ title: "Муваффақиятли", description: "Янги лот муваффақиятli қўшилди" });
   };
 
   const handleSendBid = () => {
@@ -169,10 +165,7 @@ export function AuctionHub({ onNavigate }: AuctionHubProps) {
   };
 
   const handleApproveLot = () => {
-    toast({ 
-      title: "Лот тасдиқланди", 
-      description: "Шартнома имзолаш босқичига ўтилмоқда...",
-    });
+    toast({ title: "Лот тасдиқланди", description: "Шартнома имзолаш босқичига ўтилмоқда..." });
     setManageLotId(null);
     if (onNavigate) {
       setTimeout(() => onNavigate('eri'), 1500);
@@ -184,62 +177,61 @@ export function AuctionHub({ onNavigate }: AuctionHubProps) {
   const manageLot = lots.find(l => l.id === manageLotId);
   const manageBids = manageLotId ? (bids[manageLotId] || []) : [];
 
-  // Seller Trading Terminal
   if (activeLotId && activeLot) {
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 md:p-10 animate-fade-in">
-        <div className="bg-white w-full max-w-6xl h-full max-h-[850px] rounded-[40px] shadow-2xl overflow-hidden flex relative">
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 animate-fade-in">
+        <div className="bg-white w-full max-w-5xl h-full max-h-[750px] rounded-[32px] shadow-2xl overflow-hidden flex relative">
           <button 
             onClick={() => setActiveLotId(null)}
-            className="absolute top-6 right-6 p-2 hover:bg-slate-100 rounded-full transition-colors z-10"
+            className="absolute top-5 right-5 p-1.5 hover:bg-slate-100 rounded-full transition-colors z-10"
           >
-            <X size={24} className="text-slate-400" />
+            <X size={20} className="text-slate-400" />
           </button>
 
-          <div className="w-[40%] bg-slate-50/50 border-r border-slate-100 p-10 flex flex-col">
-            <div className="mb-10">
-              <h1 className="text-3xl font-black text-[#121926] uppercase tracking-tight mb-2">ТАКЛИФЛАР ТАРИХИ</h1>
-              <p className="text-sm font-medium text-slate-400">Барча берилган таклифlar рўйхати</p>
+          <div className="w-[38%] bg-slate-50/50 border-r border-slate-100 p-8 flex flex-col">
+            <div className="mb-8">
+              <h1 className="text-xl font-black text-[#121926] uppercase tracking-tight mb-1">ТАКЛИФЛАР ТАРИХИ</h1>
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Жорий савдолар</p>
             </div>
 
             <ScrollArea className="flex-1 -mr-4 pr-4">
-              <div className="space-y-4">
+              <div className="space-y-3">
                 {currentBids.length === 0 ? (
-                  <div className="text-center py-12 text-slate-300 italic text-sm">Ҳозирча таклифлар йўқ</div>
+                  <div className="text-center py-10 text-slate-300 italic text-xs">Таклифлар йўқ</div>
                 ) : (
                   currentBids.map((bid) => (
-                    <div key={bid.id} className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex justify-between items-center animate-fade-in">
-                      <span className="text-lg font-black text-slate-800">{formatCurrency(bid.amount)} UZS</span>
-                      <span className="text-[11px] font-bold text-slate-400 uppercase">{bid.time}</span>
+                    <div key={bid.id} className="bg-white p-4 rounded-xl shadow-sm border border-slate-100 flex justify-between items-center animate-fade-in">
+                      <span className="text-sm font-black text-slate-800">{formatCurrency(bid.amount)}</span>
+                      <span className="text-[9px] font-bold text-slate-400 uppercase">{bid.time}</span>
                     </div>
                   ))
                 )}
               </div>
             </ScrollArea>
 
-            <div className="mt-8">
-              <Button className="w-full h-16 bg-[#534df3] hover:bg-[#433ce0] text-white rounded-2xl font-black text-sm tracking-widest uppercase flex items-center justify-center gap-3 shadow-lg shadow-blue-200">
-                <Sparkles size={18} /> SI TAHLILI
+            <div className="mt-6">
+              <Button className="w-full h-12 bg-[#534df3] hover:bg-[#433ce0] text-white rounded-xl font-black text-[10px] tracking-widest uppercase flex items-center justify-center gap-2 shadow-lg shadow-blue-200">
+                <Sparkles size={14} /> SI TAHLILI
               </Button>
             </div>
           </div>
 
-          <div className="flex-1 p-10 flex flex-col items-center justify-center">
-            <div className="max-w-md w-full text-center">
-              <h2 className="text-2xl font-black text-[#121926] uppercase mb-2">ТАКЛИФ КИРИТИНГ</h2>
-              <p className="text-sm font-medium text-slate-400 mb-12">Жорий нархдан пастроқ сумма киритинг</p>
-              <div className="relative mb-10">
+          <div className="flex-1 p-8 flex flex-col items-center justify-center">
+            <div className="max-w-xs w-full text-center">
+              <h2 className="text-lg font-black text-[#121926] uppercase mb-1 tracking-tight">ТАКЛИФ КИРИТИНГ</h2>
+              <p className="text-[10px] font-bold text-slate-400 mb-8 uppercase tracking-widest">Янги нархни ёзинг</p>
+              <div className="relative mb-8">
                 <input 
                   type="text" 
                   value={bidAmount}
                   onChange={(e) => setBidAmount(e.target.value)}
                   placeholder="0.00"
-                  className="w-full h-24 bg-slate-50/80 rounded-3xl border-none text-center text-4xl font-black text-slate-800 placeholder:text-slate-200 focus:ring-4 focus:ring-blue-100 transition-all"
+                  className="w-full h-20 bg-slate-50/80 rounded-2xl border-none text-center text-3xl font-black text-slate-800 placeholder:text-slate-200 focus:ring-4 focus:ring-blue-100 transition-all"
                 />
               </div>
               <Button 
                 onClick={handleSendBid}
-                className="w-full h-24 bg-[#121926] hover:bg-black text-white rounded-3xl text-xl font-black tracking-widest uppercase shadow-2xl transition-transform active:scale-95"
+                className="w-full h-16 bg-[#121926] hover:bg-black text-white rounded-2xl text-sm font-black tracking-widest uppercase shadow-xl"
               >
                 ТАКЛИФНИ ЮБОРИШ
               </Button>
@@ -250,66 +242,62 @@ export function AuctionHub({ onNavigate }: AuctionHubProps) {
     );
   }
 
-  // Manage Lot Dialog (Buyer) - UPDATED BASED ON IMAGE
   if (manageLotId && manageLot) {
     const lowestBid = manageBids.length > 0 ? Math.min(...manageBids.map(b => b.amount)) : manageLot.price;
-
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 animate-fade-in">
-        <div className="bg-white w-full max-w-2xl rounded-[40px] shadow-2xl p-10 relative">
+        <div className="bg-white w-full max-w-xl rounded-[32px] shadow-2xl p-8 relative">
           <button 
             onClick={() => setManageLotId(null)}
-            className="absolute top-6 right-6 p-2 hover:bg-slate-100 rounded-full transition-colors"
+            className="absolute top-5 right-5 p-1.5 hover:bg-slate-100 rounded-full transition-colors"
           >
-            <X size={24} className="text-slate-400" />
+            <X size={20} className="text-slate-400" />
           </button>
 
-          <div className="text-center space-y-6">
-            <div className="w-24 h-24 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-2">
-              <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center text-white">
-                <CheckCircle2 size={32} />
+          <div className="text-center space-y-4">
+            <div className="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-2">
+              <div className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center text-white">
+                <CheckCircle2 size={24} />
               </div>
             </div>
             
-            <h2 className="text-4xl font-black text-[#121926] uppercase tracking-tight">ЛОТНИ БОШҚАРИШ</h2>
-            <p className="text-slate-500 font-bold text-lg">{manageLot.title}</p>
+            <h2 className="text-2xl font-black text-[#121926] uppercase tracking-tight">ЛОТНИ БОШҚАРИШ</h2>
+            <p className="text-slate-500 font-bold text-sm uppercase tracking-tight">{manageLot.title}</p>
             
-            <div className="grid grid-cols-2 gap-6 pt-6">
-              <div className="bg-slate-50/50 p-8 rounded-[35px] text-left border border-slate-100">
-                <p className="text-[10px] font-black text-slate-400 uppercase mb-4 tracking-widest">ЖОРИЙ ЭНГ ПАСТ ТАКЛИФ</p>
-                <p className="text-2xl font-black text-primary tracking-tight">{formatCurrency(lowestBid)} UZS</p>
+            <div className="grid grid-cols-2 gap-4 pt-4">
+              <div className="bg-slate-50/50 p-5 rounded-[24px] text-left border border-slate-100">
+                <p className="text-[9px] font-black text-slate-400 uppercase mb-2 tracking-widest">ЭНГ ПАСТ ТАКЛИФ</p>
+                <p className="text-lg font-black text-primary tracking-tight">{formatCurrency(lowestBid)}</p>
               </div>
-              <div className="bg-slate-50/50 p-8 rounded-[35px] text-left border border-slate-100">
-                <p className="text-[10px] font-black text-slate-400 uppercase mb-4 tracking-widest">ТАКЛИФЛАР СОНИ</p>
-                <p className="text-3xl font-black text-slate-800">{manageBids.length} та</p>
+              <div className="bg-slate-50/50 p-5 rounded-[24px] text-left border border-slate-100">
+                <p className="text-[9px] font-black text-slate-400 uppercase mb-2 tracking-widest">ТАКЛИФЛАР</p>
+                <p className="text-2xl font-black text-slate-800">{manageBids.length}</p>
               </div>
             </div>
 
-            <div className="pt-8 text-left">
-              <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-4">БАРЧА ТАКЛИФЛАР (TABLE)</h3>
-              <div className="border rounded-2xl overflow-hidden">
+            <div className="pt-6 text-left">
+              <h3 className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-3 px-1">ТАКЛИФЛАР РЎЙХАТИ</h3>
+              <div className="border rounded-xl overflow-hidden">
                 <Table>
                   <TableHeader className="bg-slate-50">
-                    <TableRow>
-                      <TableHead className="font-bold">Иштирокчи</TableHead>
-                      <TableHead className="font-bold text-right">Сумма (UZS)</TableHead>
-                      <TableHead className="font-bold text-center">Вақт</TableHead>
+                    <TableRow className="hover:bg-transparent">
+                      <TableHead className="font-bold text-[10px] uppercase h-10">Иштирокчи</TableHead>
+                      <TableHead className="font-bold text-right text-[10px] uppercase h-10">Сумма</TableHead>
+                      <TableHead className="font-bold text-center text-[10px] uppercase h-10">Вақт</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {manageBids.length === 0 ? (
-                      <TableRow>
-                        <TableCell colSpan={3} className="text-center py-8 text-slate-400 italic">Ҳозирча таклифлар йўқ</TableCell>
-                      </TableRow>
+                      <TableRow><TableCell colSpan={3} className="text-center py-6 text-slate-400 italic text-xs">Таклифлар йўқ</TableCell></TableRow>
                     ) : (
                       manageBids.sort((a,b) => a.amount - b.amount).map((bid) => (
-                        <TableRow key={bid.id}>
-                          <TableCell className="font-medium flex items-center gap-2">
-                            {bid.amount === lowestBid && <Trophy size={14} className="text-yellow-500" />}
+                        <TableRow key={bid.id} className="h-12">
+                          <TableCell className="text-[11px] font-bold flex items-center gap-1.5">
+                            {bid.amount === lowestBid && <Trophy size={12} className="text-yellow-500" />}
                             {bid.bidder}
                           </TableCell>
-                          <TableCell className="text-right font-black text-primary">{formatCurrency(bid.amount)}</TableCell>
-                          <TableCell className="text-center text-xs text-slate-500">{bid.time}</TableCell>
+                          <TableCell className="text-right text-[11px] font-black text-primary">{formatCurrency(bid.amount)}</TableCell>
+                          <TableCell className="text-center text-[9px] text-slate-400 font-bold">{bid.time}</TableCell>
                         </TableRow>
                       ))
                     )}
@@ -318,19 +306,19 @@ export function AuctionHub({ onNavigate }: AuctionHubProps) {
               </div>
             </div>
 
-            <div className="pt-10 flex gap-4">
+            <div className="pt-8 flex gap-3">
               <Button 
                 variant="outline"
                 onClick={() => setManageLotId(null)}
-                className="flex-1 h-20 rounded-[25px] font-black uppercase tracking-widest border-2 text-slate-800 hover:bg-slate-50"
+                className="flex-1 h-14 rounded-2xl font-black uppercase tracking-widest text-[10px]"
               >
                 БЕКОР ҚИЛИШ
               </Button>
               <Button 
                 onClick={handleApproveLot}
-                className="flex-1 h-20 bg-[#2563eb] hover:bg-[#1d4ed8] text-white rounded-[25px] font-black uppercase tracking-widest shadow-2xl shadow-blue-200"
+                className="flex-1 h-14 bg-[#2563eb] hover:bg-[#1d4ed8] text-white rounded-2xl font-black uppercase tracking-widest text-[10px] shadow-lg shadow-blue-200"
               >
-                ЛОТНИ ТАСДИҚЛАШ
+                ТАСДИҚЛАШ
               </Button>
             </div>
           </div>
@@ -340,174 +328,125 @@ export function AuctionHub({ onNavigate }: AuctionHubProps) {
   }
 
   return (
-    <div className="space-y-12 animate-fade-in">
-      <div className="flex items-center gap-6">
-        <div className="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center shadow-xl shadow-primary/30">
-          <Gavel className="text-white w-8 h-8" />
+    <div className="space-y-10 animate-fade-in">
+      <div className="flex items-center gap-4">
+        <div className="w-12 h-12 bg-primary rounded-xl flex items-center justify-center shadow-lg shadow-primary/30">
+          <Gavel className="text-white w-6 h-6" />
         </div>
         <div>
-          <h1 className="text-4xl font-black text-[#121926] tracking-tight uppercase">ОНЛАЙН АУКЦИОН</h1>
-          <p className="text-muted-foreground text-sm font-medium">Лотлар очиш ва таклифlar бериш</p>
+          <h1 className="text-2xl font-black text-[#121926] tracking-tight uppercase">ОНЛАЙН АУКЦИОН</h1>
+          <p className="text-slate-400 text-[10px] font-bold uppercase tracking-wider">Лotlar va takliflar boshqaruvi</p>
         </div>
       </div>
 
-      <div className="flex bg-slate-50 p-2 rounded-3xl w-fit border shadow-sm">
+      <div className="flex bg-slate-100/50 p-1.5 rounded-2xl w-fit border shadow-sm">
         <button
           onClick={() => setActiveTab("buyer")}
           className={cn(
-            "flex items-center gap-2 px-8 py-4 rounded-2xl text-xs font-bold transition-all duration-300 uppercase tracking-widest",
-            activeTab === "buyer" ? "bg-primary text-white shadow-lg shadow-primary/30" : "text-slate-400 hover:text-primary"
+            "flex items-center gap-2 px-6 py-3 rounded-xl text-[10px] font-black transition-all duration-300 uppercase tracking-widest",
+            activeTab === "buyer" ? "bg-primary text-white shadow-md" : "text-slate-400 hover:text-primary"
           )}
         >
-          <ShoppingCart className="w-4 h-4" />
-          ХАРИДОР ПАНЕЛИ
+          <ShoppingCart className="w-3.5 h-3.5" /> ХАРИДОР
         </button>
         <button
           onClick={() => setActiveTab("seller")}
           className={cn(
-            "flex items-center gap-2 px-8 py-4 rounded-2xl text-xs font-bold transition-all duration-300 uppercase tracking-widest",
-            activeTab === "seller" ? "bg-primary text-white shadow-lg shadow-primary/30" : "text-slate-400 hover:text-primary"
+            "flex items-center gap-2 px-6 py-3 rounded-xl text-[10px] font-black transition-all duration-300 uppercase tracking-widest",
+            activeTab === "seller" ? "bg-primary text-white shadow-md" : "text-slate-400 hover:text-primary"
           )}
         >
-          <LayoutGrid className="w-4 h-4" />
-          СОТУВЧИ ПАНЕЛИ
+          <LayoutGrid className="w-3.5 h-3.5" /> СОТУВЧИ
         </button>
       </div>
 
       {activeTab === 'buyer' && (
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
-            <Button className="bg-primary hover:bg-primary/90 text-white h-14 px-8 rounded-2xl text-md font-bold shadow-xl shadow-primary/20 flex items-center gap-3">
-              <Plus className="w-5 h-5" /> ЯНГИ ЛОТ
+            <Button className="bg-primary hover:bg-primary/90 text-white h-12 px-6 rounded-xl text-xs font-black shadow-lg shadow-primary/20 flex items-center gap-2 uppercase tracking-widest">
+              <Plus className="w-4 h-4" /> ЯНГИ ЛОТ
             </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[480px] rounded-[30px] p-8">
-            <DialogHeader>
-              <DialogTitle className="text-2xl font-black uppercase tracking-tight">ЯНГИ ЛОТ</DialogTitle>
-            </DialogHeader>
-            <div className="grid gap-6 py-4">
+          <DialogContent className="sm:max-w-[420px] rounded-[24px] p-6">
+            <DialogHeader><DialogTitle className="text-lg font-black uppercase tracking-tight">ЯНГИ ЛОТ</DialogTitle></DialogHeader>
+            <div className="grid gap-5 py-4">
+              <div className="grid gap-1.5">
+                <Label className="text-[9px] font-black uppercase text-muted-foreground tracking-widest">Lot nomi</Label>
+                <Input value={newLotTitle} onChange={(e) => setNewLotTitle(e.target.value)} className="h-10 rounded-lg font-bold bg-slate-50 border-none" />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="grid gap-1.5">
+                  <Label className="text-[9px] font-black uppercase text-muted-foreground tracking-widest">Narx</Label>
+                  <Input type="number" value={newLotPrice} onChange={(e) => setNewLotPrice(e.target.value)} className="h-10 rounded-lg font-bold bg-slate-50 border-none" />
+                </div>
+                <div className="grid gap-1.5">
+                  <Label className="text-[9px] font-black uppercase text-muted-foreground tracking-widest">Miqdor</Label>
+                  <Input value={newLotQuantity} onChange={(e) => setNewLotQuantity(e.target.value)} className="h-10 rounded-lg font-bold bg-slate-50 border-none" />
+                </div>
+              </div>
               <div className="grid gap-2">
-                <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Lot nomi</Label>
-                <Input 
-                  placeholder="Masalan: Sement xaridi"
-                  value={newLotTitle} 
-                  onChange={(e) => setNewLotTitle(e.target.value)} 
-                  className="h-12 rounded-xl font-bold bg-slate-50 border-none focus:ring-2 focus:ring-primary/20" 
-                />
-              </div>
-              
-              <div className="grid grid-cols-2 gap-4">
-                <div className="grid gap-2">
-                  <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Boshlang'ich narx</Label>
-                  <Input 
-                    type="number" 
-                    placeholder="0.00"
-                    value={newLotPrice} 
-                    onChange={(e) => setNewLotPrice(e.target.value)} 
-                    className="h-12 rounded-xl font-bold bg-slate-50 border-none" 
-                  />
-                </div>
-                <div className="grid gap-2">
-                  <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Miqdor</Label>
-                  <Input 
-                    placeholder="Masalan: 500 tn"
-                    value={newLotQuantity} 
-                    onChange={(e) => setNewLotQuantity(e.target.value)} 
-                    className="h-12 rounded-xl font-bold bg-slate-50 border-none" 
-                  />
-                </div>
-              </div>
-
-              <div className="grid gap-3">
-                <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Auksion davomiyligi (soat)</Label>
-                <RadioGroup 
-                  value={newLotDuration} 
-                  onValueChange={setNewLotDuration}
-                  className="flex gap-4"
-                >
-                  <div className="flex items-center space-x-2 bg-slate-50 px-4 py-3 rounded-xl cursor-pointer hover:bg-slate-100 transition-colors flex-1">
-                    <RadioGroupItem value="24" id="r1" />
-                    <Label htmlFor="r1" className="font-bold cursor-pointer">24 soat</Label>
+                <Label className="text-[9px] font-black uppercase text-muted-foreground tracking-widest">Davomiyligi (soat)</Label>
+                <RadioGroup value={newLotDuration} onValueChange={setNewLotDuration} className="flex gap-3">
+                  <div className="flex items-center space-x-2 bg-slate-50 px-3 py-2.5 rounded-lg flex-1 cursor-pointer">
+                    <RadioGroupItem value="24" id="r1" /><Label htmlFor="r1" className="text-[10px] font-black uppercase cursor-pointer">24</Label>
                   </div>
-                  <div className="flex items-center space-x-2 bg-slate-50 px-4 py-3 rounded-xl cursor-pointer hover:bg-slate-100 transition-colors flex-1">
-                    <RadioGroupItem value="48" id="r2" />
-                    <Label htmlFor="r2" className="font-bold cursor-pointer">48 soat</Label>
+                  <div className="flex items-center space-x-2 bg-slate-50 px-3 py-2.5 rounded-lg flex-1 cursor-pointer">
+                    <RadioGroupItem value="48" id="r2" /><Label htmlFor="r2" className="text-[10px] font-black uppercase cursor-pointer">48</Label>
                   </div>
                 </RadioGroup>
               </div>
             </div>
-            <DialogFooter className="pt-4">
-              <Button 
-                onClick={handleAddLot} 
-                className="w-full rounded-2xl h-14 px-8 font-black uppercase tracking-widest bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20"
-              >
-                E'lon qilish
-              </Button>
-            </DialogFooter>
+            <DialogFooter><Button onClick={handleAddLot} className="w-full rounded-xl h-12 font-black uppercase tracking-widest text-xs bg-primary">E'lon qilish</Button></DialogFooter>
           </DialogContent>
         </Dialog>
       )}
 
-      <div className="grid xl:grid-cols-2 gap-10">
+      <div className="grid lg:grid-cols-2 gap-8">
         {lots.map((lot) => {
           const currentLotBids = bids[lot.id] || [];
           const currentPrice = currentLotBids.length > 0 ? Math.min(...currentLotBids.map(b => b.amount)) : lot.price;
-          
           return (
-            <Card key={lot.id} className="border-none rounded-[50px] shadow-sm hover:shadow-2xl transition-all duration-500 bg-white p-2">
-              <CardContent className="p-10 space-y-8">
+            <Card key={lot.id} className="border-none rounded-[40px] shadow-sm hover:shadow-xl transition-all duration-500 bg-white">
+              <CardContent className="p-8 space-y-6">
                 <div className="flex justify-between items-center">
                   <div className="flex gap-2">
-                    <Badge variant="secondary" className="bg-slate-100 text-slate-500 font-bold text-[11px] px-4 py-1.5 rounded-full">ID: {lot.number}</Badge>
-                    {lot.quantity && (
-                      <Badge variant="outline" className="text-slate-500 font-bold text-[11px] px-4 py-1.5 rounded-full border-slate-200">
-                        {lot.quantity}
-                      </Badge>
-                    )}
+                    <Badge variant="secondary" className="bg-slate-100 text-slate-500 font-bold text-[9px] px-3 py-1 rounded-full uppercase">ID: {lot.number}</Badge>
+                    <Badge variant="outline" className="text-slate-500 font-bold text-[9px] px-3 py-1 rounded-full border-slate-200 uppercase">{lot.quantity}</Badge>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <div className="flex items-center gap-1.5 text-[11px] font-bold text-slate-400">
-                      <Clock size={12} />
-                      {lot.duration} soat
-                    </div>
-                    <Badge className="bg-red-50 text-red-500 border-none px-4 py-1.5 rounded-full flex items-center gap-2">
-                      <div className="w-4 h-4 rounded-full border-2 border-red-500 border-t-transparent animate-spin" />
-                      <span className="text-[11px] font-black font-mono">LIVE</span>
+                  <div className="flex items-center gap-2">
+                    <Clock size={10} className="text-slate-400" />
+                    <span className="text-[9px] font-black text-slate-400 uppercase">{lot.duration} SOAT</span>
+                    <Badge className="bg-red-50 text-red-500 border-none px-2.5 py-1 rounded-full text-[9px] font-black tracking-tighter uppercase flex items-center gap-1">
+                      <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" /> LIVE
                     </Badge>
                   </div>
                 </div>
 
-                <h2 className="text-4xl font-black text-[#121926] leading-tight uppercase tracking-tight">{lot.title}</h2>
+                <h2 className="text-xl font-black text-[#121926] leading-tight uppercase tracking-tight">{lot.title}</h2>
 
-                <div className="bg-slate-50 rounded-[35px] p-8 flex justify-between items-center">
+                <div className="bg-slate-50 rounded-[28px] p-6 flex justify-between items-center">
                   <div>
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">ЖОРИЙ НАРХ</p>
-                    <div className="flex items-baseline gap-2">
-                      <span className="text-5xl font-black text-primary tracking-tighter">{formatCurrency(currentPrice)}</span>
-                      <span className="text-sm font-black text-primary uppercase">UZS</span>
+                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1.5">ЖОРИЙ НАРХ</p>
+                    <div className="flex items-baseline gap-1">
+                      <span className="text-3xl font-black text-primary tracking-tighter">{formatCurrency(currentPrice)}</span>
+                      <span className="text-[10px] font-black text-primary uppercase">UZS</span>
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">БЮДЖЕТ</p>
-                    <p className="text-xl font-black text-slate-600 tracking-tight">{formatCurrency(lot.budget)} UZS</p>
+                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">БЮДЖЕТ</p>
+                    <p className="text-sm font-black text-slate-600 tracking-tight">{formatCurrency(lot.budget)}</p>
                   </div>
                 </div>
 
-                {activeTab === 'seller' ? (
-                  <Button 
-                    onClick={() => setActiveLotId(lot.id)}
-                    className="w-full h-20 bg-primary hover:bg-primary/90 text-white rounded-[25px] text-lg font-black shadow-xl shadow-primary/20 uppercase"
-                  >
-                    ТАКЛИФ БЕРИШ
-                  </Button>
-                ) : (
-                  <Button 
-                    onClick={() => setManageLotId(lot.id)}
-                    className="w-full h-20 bg-[#121926] hover:bg-black text-white rounded-[25px] text-lg font-black shadow-xl shadow-slate-200 uppercase"
-                  >
-                    ЛОТНИ БОШҚАРИШ
-                  </Button>
-                )}
+                <Button 
+                  onClick={() => activeTab === 'seller' ? setActiveLotId(lot.id) : setManageLotId(lot.id)}
+                  className={cn(
+                    "w-full h-14 rounded-2xl text-[11px] font-black shadow-lg uppercase tracking-widest",
+                    activeTab === 'seller' ? "bg-primary text-white" : "bg-[#121926] text-white"
+                  )}
+                >
+                  {activeTab === 'seller' ? "ТАКЛИФ БЕРИШ" : "ЛОТНИ БОШҚАРИШ"}
+                </Button>
               </CardContent>
             </Card>
           );

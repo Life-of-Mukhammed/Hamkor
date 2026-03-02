@@ -6,7 +6,7 @@ import { SidebarProvider, Sidebar, SidebarContent, SidebarHeader, SidebarMenu, S
 import { 
   LayoutGrid, Gavel, FileText, ShoppingBag, Briefcase, 
   Box, BarChart, Camera, Building2, BookOpen, 
-  X, Sparkles, ChevronRight, LogOut, Handshake
+  X, Sparkles, ChevronRight, Handshake
 } from "lucide-react";
 import { dict } from "@/lib/translations";
 import { cn } from "@/lib/utils";
@@ -35,54 +35,53 @@ export function Shell({ children, activeSection, onNavigate }: ShellProps) {
   return (
     <SidebarProvider>
       <Sidebar className="border-r border-slate-100 bg-white shadow-none">
-        <SidebarHeader className="p-8">
+        <SidebarHeader className="p-6">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-[#2563eb] rounded-2xl flex items-center justify-center text-white shadow-xl shadow-blue-200">
-              <Handshake size={28} />
+            <div className="w-10 h-10 bg-[#2563eb] rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-200">
+              <Handshake size={22} />
             </div>
-            <h1 className="text-2xl font-black tracking-tight text-[#2563eb]">{dict.appName}</h1>
+            <h1 className="text-xl font-black tracking-tighter text-[#2563eb]">{dict.appName}</h1>
           </div>
         </SidebarHeader>
         
-        <SidebarContent className="px-4 mt-4">
-          <SidebarMenu className="gap-2">
+        <SidebarContent className="px-3 mt-2">
+          <SidebarMenu className="gap-1">
             {menuItems.map((item) => (
               <SidebarMenuItem key={item.id}>
                 <SidebarMenuButton
                   isActive={activeSection === item.id}
                   onClick={() => onNavigate(item.id)}
                   className={cn(
-                    "w-full px-5 py-6 rounded-2xl transition-all duration-300 group",
+                    "w-full px-4 py-5 rounded-xl transition-all duration-300 group",
                     activeSection === item.id 
-                      ? "bg-[#2563eb] text-white shadow-xl shadow-blue-400/30" 
+                      ? "bg-[#2563eb] text-white shadow-lg shadow-blue-400/30" 
                       : "hover:bg-slate-50 text-slate-500 hover:text-[#2563eb]"
                   )}
                 >
-                  <item.icon className={cn("w-5 h-5", activeSection === item.id ? "text-white" : "text-slate-400 group-hover:text-[#2563eb]")} />
-                  <span className="font-bold text-sm ml-3 uppercase tracking-wide">{item.label}</span>
+                  <item.icon className={cn("w-4 h-4", activeSection === item.id ? "text-white" : "text-slate-400 group-hover:text-[#2563eb]")} />
+                  <span className="font-bold text-[10px] ml-2 uppercase tracking-wider">{item.label}</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             ))}
           </SidebarMenu>
 
-          {/* Premium Card Placeholder - Matches Image */}
-          <div className="mt-8 px-2">
-            <div className="relative bg-[#3b59f8] rounded-[30px] p-6 text-white overflow-hidden shadow-2xl shadow-blue-500/20">
-              <button className="absolute top-4 right-4 text-white/60 hover:text-white transition-colors">
-                <X size={16} />
+          <div className="mt-6 px-2">
+            <div className="relative bg-[#3b59f8] rounded-[24px] p-5 text-white overflow-hidden shadow-xl shadow-blue-500/20">
+              <button className="absolute top-3 right-3 text-white/60 hover:text-white transition-colors">
+                <X size={14} />
               </button>
-              <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center mb-6">
-                <Sparkles size={24} />
+              <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center mb-4">
+                <Sparkles size={20} />
               </div>
-              <h3 className="text-sm font-black mb-2 flex items-center gap-2 uppercase tracking-tighter">
+              <h3 className="text-[11px] font-black mb-1 uppercase tracking-tighter">
                 🚀 ПРЕМИУМГА ЎТИНГ
               </h3>
-              <p className="text-[10px] font-medium text-white/70 leading-relaxed mb-6 uppercase tracking-tight">
-                СИ (AI) инструментлари ва таҳлилни фаоллаштиринг
+              <p className="text-[9px] font-medium text-white/70 leading-tight mb-4 uppercase tracking-tight">
+                AI инструментлари ва таҳлилни фаоллаштиринг
               </p>
               <Button 
                 variant="secondary" 
-                className="w-full bg-white text-[#3b59f8] hover:bg-white/90 rounded-2xl font-black py-6 uppercase tracking-widest text-[11px]"
+                className="w-full h-10 bg-white text-[#3b59f8] hover:bg-white/90 rounded-xl font-black py-0 uppercase tracking-widest text-[10px]"
               >
                 БАТАФСИЛ
               </Button>
@@ -90,36 +89,36 @@ export function Shell({ children, activeSection, onNavigate }: ShellProps) {
           </div>
         </SidebarContent>
 
-        <SidebarFooter className="p-6 mt-auto">
-          <div className="flex items-center gap-4 p-4 rounded-3xl hover:bg-slate-50 transition-colors group cursor-pointer">
-            <div className="w-12 h-12 rounded-full bg-[#1e1e1e] flex items-center justify-center text-white text-lg font-black shadow-lg">
+        <SidebarFooter className="p-4 mt-auto">
+          <div className="flex items-center gap-3 p-3 rounded-2xl hover:bg-slate-50 transition-colors group cursor-pointer">
+            <div className="w-10 h-10 rounded-full bg-[#1e1e1e] flex items-center justify-center text-white text-sm font-black shadow-md">
               N
             </div>
             <div className="flex-1 overflow-hidden">
-              <p className="text-sm font-black text-slate-800 truncate uppercase">asdasd asdasd</p>
-              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">ADMIN</p>
+              <p className="text-[11px] font-black text-slate-800 truncate uppercase">Nodirbek A.</p>
+              <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">ADMIN</p>
             </div>
-            <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-slate-500" />
+            <ChevronRight className="w-3 h-3 text-slate-300 group-hover:text-slate-500" />
           </div>
         </SidebarFooter>
       </Sidebar>
       
       <SidebarInset className="bg-[#f8fafc] min-h-screen">
-        <header className="sticky top-0 z-30 flex h-20 items-center gap-4 bg-white/80 backdrop-blur-md px-10 border-b border-slate-100">
-          <SidebarTrigger className="hover:bg-slate-100 p-2 rounded-xl transition-colors" />
-          <div className="h-6 w-px bg-slate-100 mx-2" />
+        <header className="sticky top-0 z-30 flex h-16 items-center gap-4 bg-white/80 backdrop-blur-md px-8 border-b border-slate-100">
+          <SidebarTrigger className="hover:bg-slate-100 p-1.5 rounded-lg transition-colors" />
+          <div className="h-5 w-px bg-slate-100 mx-1" />
           <div className="flex-1">
-            <p className="text-sm font-black text-slate-400 uppercase tracking-widest">
+            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
               {menuItems.find(m => m.id === activeSection)?.label}
             </p>
           </div>
-          <div className="flex items-center gap-6">
-            <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-600 font-black text-xs">
+          <div className="flex items-center gap-4">
+            <div className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center text-slate-600 font-black text-[10px]">
               UZ
             </div>
           </div>
         </header>
-        <main className="p-10 pb-20 max-w-[1800px] mx-auto">
+        <main className="p-8 pb-20 max-w-[1600px] mx-auto">
           {children}
         </main>
       </SidebarInset>
