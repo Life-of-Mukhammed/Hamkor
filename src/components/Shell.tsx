@@ -1,3 +1,4 @@
+
 "use client";
 
 import * as React from "react";
@@ -147,7 +148,7 @@ export function Shell({
           </SidebarFooter>
         </Sidebar>
         
-        <SidebarInset className="bg-transparent min-h-[calc(100vh-80px)] md:min-h-[calc(100vh-100px)]">
+        <SidebarInset className="bg-transparent min-h-[calc(100vh-80px)] md:min-h-[calc(100vh-120px)]">
           <header className="sticky top-0 z-30 flex h-16 items-center gap-4 bg-white/80 backdrop-blur-md px-8 border-b border-slate-100">
             <SidebarTrigger className="hover:bg-slate-100 p-1.5 rounded-lg transition-colors" />
             <div className="h-5 w-px bg-slate-100 mx-1" />
