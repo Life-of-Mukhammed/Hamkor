@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ShoppingCart, LayoutGrid, Plus } from "lucide-react";
+import { ShoppingCart, LayoutGrid, Plus, Gavel, Sparkles, Clock } from "lucide-react";
 import { dict } from "@/lib/translations";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
@@ -51,10 +51,13 @@ const INITIAL_LOTS: Lot[] = [
 export function AuctionHub() {
   const [activeTab, setActiveTab] = useState<"buyer" | "seller">("buyer");
   const [lots, setLots] = useState<Lot[]>(INITIAL_LOTS);
+  const [activeLotId, setActiveLotId] = useState<string | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [newLotTitle, setNewLotTitle] = useState("");
   const [newLotPrice, setNewLotPrice] = useState("");
   const { toast } = useToast();
+
+  const [timer, setTimer] = useState("01:11:25");
 
   const formatCurrency = (val: number) => 
     new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format(val) + " UZS";
@@ -97,6 +100,135 @@ export function AuctionHub() {
       description: "Yangi lot muvaffaqiyatli qo'shildi",
     });
   };
+
+  const activeLot = lots.find(l => l.id === activeLotId);
+
+  if (activeLotId && activeLot) {
+    return (
+      <div className="space-y-6 animate-fade-in">
+        {/* Top Toggle (Always visible in this view too) */}
+        <div className="flex bg-white/50 backdrop-blur-sm p-1 rounded-2xl w-fit border shadow-sm">
+          <button
+            onClick={() => setActiveTab("buyer")}
+            className={cn(
+              "flex items-center gap-2 px-6 py-3 rounded-xl text-xs font-bold transition-all duration-300",
+              activeTab === "buyer" 
+                ? "bg-primary text-white shadow-lg shadow-primary/30" 
+                : "text-muted-foreground hover:text-primary"
+            )}
+          >
+            <ShoppingCart className="w-4 h-4" />
+            {dict.labels.buyerPanel}
+          </button>
+          <button
+            onClick={() => setActiveTab("seller")}
+            className={cn(
+              "flex items-center gap-2 px-6 py-3 rounded-xl text-xs font-bold transition-all duration-300",
+              activeTab === "seller" 
+                ? "bg-primary text-white shadow-lg shadow-primary/30" 
+                : "text-muted-foreground hover:text-primary"
+            )}
+          >
+            <LayoutGrid className="w-4 h-4" />
+            {dict.labels.sellerPanel}
+          </button>
+        </div>
+
+        {/* Terminal Header Bar */}
+        <div className="bg-white/80 backdrop-blur-md rounded-2xl border px-8 py-4 flex justify-between items-center shadow-sm">
+          <h2 className="text-xs font-black text-slate-500 tracking-widest uppercase">
+            САВДО ТЕРМИНАЛИ
+          </h2>
+          <div className="text-primary text-2xl font-black tracking-tighter">
+            {timer}
+          </div>
+        </div>
+
+        {/* Main Terminal Content Grid */}
+        <div className="grid lg:grid-cols-3 gap-6">
+          {/* Left: Lot Information (2 columns) */}
+          <Card className="lg:col-span-2 border-none rounded-[40px] shadow-sm bg-white overflow-hidden flex flex-col min-h-[500px]">
+            <CardContent className="p-10 flex flex-col h-full">
+              <div className="mb-8">
+                <Badge variant="secondary" className="bg-primary/10 text-primary font-bold text-[10px] mb-4 px-4 py-1.5 rounded-full uppercase tracking-wider">
+                  ЖОНЛИ АУКЦИОН
+                </Badge>
+                <h1 className="text-5xl font-black text-[#121926] mb-1">
+                  {activeLot.title}
+                </h1>
+                <p className="text-xl text-muted-foreground/60 font-bold tracking-wider">
+                  {activeLot.code}
+                </p>
+              </div>
+
+              {/* Empty State Box */}
+              <div className="flex-1 border-2 border-dashed border-muted rounded-[30px] flex flex-col items-center justify-center p-12 text-center bg-slate-50/30 mt-4">
+                <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center shadow-sm mb-6">
+                  <Gavel className="w-10 h-10 text-muted-foreground/30" />
+                </div>
+                <p className="text-muted-foreground font-medium italic">
+                  Ҳозирча таклифлар йўқ. Савдо бошланишини кутинг.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Right: Bidding & AI Side Panel */}
+          <div className="space-y-6">
+            {/* Bid Control Card */}
+            <Card className="border-[6px] border-yellow-400 rounded-[40px] shadow-xl bg-white overflow-hidden">
+              <CardContent className="p-10">
+                <p className="text-[10px] font-black text-amber-500 uppercase tracking-[0.2em] mb-6">
+                  ЭНГ ЯХШИ ТАКЛИФ
+                </p>
+                <div className="mb-8">
+                  <div className="text-5xl font-black text-primary tracking-tighter mb-1">
+                    {formatCurrency(activeLot.price)}
+                  </div>
+                  <p className="text-xl font-bold italic text-slate-800">
+                    Ҳозирча йўқ
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-2 mb-10">
+                  <span className="text-xs text-muted-foreground font-medium">Рейтинг:</span>
+                  <span className="text-xs font-black text-green-500">Аъло (AI тасдиқлади)</span>
+                </div>
+
+                <Button className="w-full h-20 bg-primary hover:bg-primary/90 text-white rounded-[25px] text-lg font-black shadow-2xl shadow-primary/40 mb-6 transition-all active:scale-95 uppercase">
+                  БИТИМНИ ИМЗОЛАШ
+                </Button>
+
+                <button 
+                  onClick={() => setActiveLotId(null)}
+                  className="w-full text-center text-[10px] font-black text-slate-400 hover:text-primary tracking-widest uppercase transition-colors"
+                >
+                  САВДОДАН ЧИҚИШ
+                </button>
+              </CardContent>
+            </Card>
+
+            {/* AI Analytics Card */}
+            <Card className="border-none rounded-[30px] shadow-sm bg-[#2e2a73] text-white overflow-hidden relative">
+              <CardContent className="p-8">
+                <div className="flex items-center gap-2 mb-4">
+                  <Sparkles className="w-4 h-4 text-amber-400" />
+                  <h3 className="text-xs font-black tracking-widest uppercase">СИ (AI) ТАҲЛИЛИ</h3>
+                </div>
+                <p className="text-[10px] leading-relaxed text-blue-100/70 font-medium">
+                  Тизим иштирокчиларнинг молиявий ҳолати ва аввалги савдоларини таҳлил қилиб, энг ишончли ҳамкорни тавсия қилмоқда.
+                </p>
+                
+                {/* Decorative circles */}
+                <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-white/5 rounded-full" />
+                <div className="absolute -top-10 -left-10 w-24 h-24 bg-white/5 rounded-full" />
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8 animate-fade-in">
@@ -219,6 +351,7 @@ export function AuctionHub() {
                 </div>
                 <Button 
                   size="lg"
+                  onClick={() => setActiveLotId(lot.id)}
                   className="bg-primary hover:bg-primary/90 text-white rounded-2xl px-6 font-bold h-12 shadow-lg shadow-primary/20"
                 >
                   {dict.labels.watch}
