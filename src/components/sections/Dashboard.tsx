@@ -1,6 +1,6 @@
+
 "use client";
 
-import { AdCarousel } from "@/components/dashboard/AdCarousel";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Landmark, TrendingUp, Users, Package, Bell } from "lucide-react";
 
@@ -13,9 +13,7 @@ export function Dashboard() {
   ];
 
   return (
-    <div className="space-y-8">
-      <AdCarousel />
-      
+    <div className="space-y-8 animate-fade-in">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {stats.map((stat, i) => (
           <Card key={i} className="glass border-none neo-shadow hover:scale-[1.02] transition-transform cursor-pointer">
