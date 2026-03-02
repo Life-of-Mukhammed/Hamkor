@@ -109,18 +109,6 @@ const INITIAL_LOTS: Lot[] = [
     price: 99185225,
     hasBlitz: true,
     durationSeconds: 172800, // 48:00:00
-  },
-  {
-    id: "3",
-    title: "Qishloq xo'jaligi texnikasi",
-    quantity: "10 dona",
-    category: "Transport",
-    location: "Andijon",
-    lotId: "AUC-UZ-2026-003",
-    price: 216944635,
-    hasEscrow: true,
-    hasBlitz: true,
-    durationSeconds: 3600, // 1:00:00
   }
 ];
 
@@ -151,24 +139,29 @@ const REGIONAL_LOTS: Lot[] = [
 
 export function AuctionHub() {
   const [lots, setLots] = useState<Lot[]>(INITIAL_LOTS);
+  const [regionalLots, setRegionalLots] = useState<Lot[]>(REGIONAL_LOTS);
   const [activeTab, setActiveTab] = useState("uzb");
   const { toast } = useToast();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  // Form states
   const [newLotTitle, setNewLotTitle] = useState("");
   const [newLotQuantity, setNewLotQuantity] = useState("");
   const [newLotCategory, setNewLotCategory] = useState("IT");
   const [newLotPrice, setNewLotPrice] = useState("");
   const [newLotDuration, setNewLotDuration] = useState("24");
 
-  // Global countdown timer
   const [globalTimeLeft, setGlobalTimeLeft] = useState(2677);
 
   useEffect(() => {
     const timer = setInterval(() => {
       setGlobalTimeLeft((prev) => (prev > 0 ? prev - 1 : 0));
       setLots((prevLots) => 
+        prevLots.map(lot => ({
+          ...lot,
+          durationSeconds: lot.durationSeconds > 0 ? lot.durationSeconds - 1 : 0
+        }))
+      );
+      setRegionalLots((prevLots) => 
         prevLots.map(lot => ({
           ...lot,
           durationSeconds: lot.durationSeconds > 0 ? lot.durationSeconds - 1 : 0
@@ -212,15 +205,7 @@ export function AuctionHub() {
 
     setLots([newLot, ...lots]);
     setIsDialogOpen(false);
-    
-    setNewLotTitle("");
-    setNewLotQuantity("");
-    setNewLotPrice("");
-    
-    toast({
-      title: "Muvaffaqiyatli",
-      description: "Yangi lot muvaffaqiyatli yaratildi",
-    });
+    toast({ title: "Muvaffaqiyatli", description: "Yangi lot yaratildi" });
   };
 
   const renderLotList = (displayLots: Lot[]) => (
@@ -272,7 +257,6 @@ export function AuctionHub() {
 
   return (
     <div className="space-y-6 animate-fade-in text-slate-700">
-      {/* Header Section */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-black text-slate-900 tracking-tight">Auktsion Platformasi</h1>
@@ -299,72 +283,35 @@ export function AuctionHub() {
               </DialogHeader>
               <div className="grid gap-4 py-4">
                 <div className="space-y-2">
-                  <Label htmlFor="title" className="text-[10px] font-black uppercase tracking-widest text-slate-500">Lot nomi</Label>
-                  <Input 
-                    id="title" 
-                    placeholder="Masalan: Apple MacBook Pro" 
-                    className="h-10 rounded-xl text-[11px] font-bold"
-                    value={newLotTitle}
-                    onChange={(e) => setNewLotTitle(e.target.value)}
-                  />
+                  <Label className="text-[10px] font-black uppercase tracking-widest text-slate-500">Lot nomi</Label>
+                  <Input placeholder="Apple MacBook Pro" className="rounded-xl h-10 text-[11px] font-bold" value={newLotTitle} onChange={(e) => setNewLotTitle(e.target.value)} />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="quantity" className="text-[10px] font-black uppercase tracking-widest text-slate-500">Miqdor</Label>
-                    <Input 
-                      id="quantity" 
-                      placeholder="100 dona" 
-                      className="h-10 rounded-xl text-[11px] font-bold"
-                      value={newLotQuantity}
-                      onChange={(e) => setNewLotQuantity(e.target.value)}
-                    />
+                    <Label className="text-[10px] font-black uppercase tracking-widest text-slate-500">Miqdor</Label>
+                    <Input placeholder="100 dona" className="rounded-xl h-10 text-[11px] font-bold" value={newLotQuantity} onChange={(e) => setNewLotQuantity(e.target.value)} />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="category" className="text-[10px] font-black uppercase tracking-widest text-slate-500">Toifa</Label>
+                    <Label className="text-[10px] font-black uppercase tracking-widest text-slate-500">Toifa</Label>
                     <Select value={newLotCategory} onValueChange={setNewLotCategory}>
-                      <SelectTrigger className="h-10 rounded-xl text-[11px] font-bold">
-                        <SelectValue placeholder="Toifani tanlang" />
+                      <SelectTrigger className="rounded-xl h-10 text-[11px] font-bold">
+                        <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="IT">IT</SelectItem>
                         <SelectItem value="Qurilish">Qurilish</SelectItem>
                         <SelectItem value="Transport">Transport</SelectItem>
-                        <SelectItem value="Oziq-ovqat">Oziq-ovqat</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="price" className="text-[10px] font-black uppercase tracking-widest text-slate-500">Boshlang'ich narx (so'm)</Label>
-                  <Input 
-                    id="price" 
-                    placeholder="15 000 000" 
-                    className="h-10 rounded-xl text-[11px] font-bold"
-                    value={newLotPrice}
-                    onChange={(e) => setNewLotPrice(e.target.value)}
-                  />
-                </div>
-                <div className="space-y-3">
-                  <Label className="text-[10px] font-black uppercase tracking-widest text-slate-500">Auktsion davomiyligi</Label>
-                  <RadioGroup value={newLotDuration} onValueChange={setNewLotDuration} className="flex gap-4">
-                    <div className="flex items-center space-x-2 bg-slate-50 p-3 rounded-xl flex-1 border border-slate-100">
-                      <RadioGroupItem value="24" id="r1" />
-                      <Label htmlFor="r1" className="text-[11px] font-bold cursor-pointer">24 soat</Label>
-                    </div>
-                    <div className="flex items-center space-x-2 bg-slate-50 p-3 rounded-xl flex-1 border border-slate-100">
-                      <RadioGroupItem value="48" id="r2" />
-                      <Label htmlFor="r2" className="text-[11px] font-bold cursor-pointer">48 soat</Label>
-                    </div>
-                  </RadioGroup>
+                  <Label className="text-[10px] font-black uppercase tracking-widest text-slate-500">Boshlang'ich narx</Label>
+                  <Input placeholder="15 000 000" className="rounded-xl h-10 text-[11px] font-bold" value={newLotPrice} onChange={(e) => setNewLotPrice(e.target.value)} />
                 </div>
               </div>
               <DialogFooter>
-                <Button 
-                  onClick={handleCreateLot}
-                  className="w-full bg-[#2563eb] hover:bg-blue-700 text-white rounded-xl h-11 text-[11px] font-black uppercase tracking-[0.2em]"
-                >
-                  Lotni Tasdiqlash
-                </Button>
+                <Button onClick={handleCreateLot} className="w-full bg-[#2563eb] rounded-xl h-11 font-black uppercase tracking-widest text-[11px]">Lotni Tasdiqlash</Button>
               </DialogFooter>
             </DialogContent>
           </Dialog>
@@ -375,7 +322,6 @@ export function AuctionHub() {
         </div>
       </div>
 
-      {/* Navigation Tabs */}
       <Tabs defaultValue="uzb" className="w-full" onValueChange={setActiveTab}>
         <div className="border-b border-slate-100 mb-8">
           <TabsList className="bg-transparent h-12 p-0 gap-10">
@@ -395,15 +341,10 @@ export function AuctionHub() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-          {/* Main Content Area (8 Cols for AI or 7 for list) */}
           <div className={cn(activeTab === "ai" ? "lg:col-span-12" : "lg:col-span-7", "space-y-8")}>
-            
             <TabsContent value="uzb" className="m-0">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Aktiv Lotlar (O'zbekiston)</h2>
-                <Button variant="ghost" size="sm" className="text-[10px] font-bold gap-1 text-slate-500 uppercase tracking-widest">
-                  Barchasi <ChevronDown size={12} />
-                </Button>
               </div>
               {renderLotList(lots)}
             </TabsContent>
@@ -412,7 +353,7 @@ export function AuctionHub() {
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Markaziy Osiyo Lotlari</h2>
               </div>
-              {renderLotList(REGIONAL_LOTS)}
+              {renderLotList(regionalLots)}
             </TabsContent>
 
             <TabsContent value="my" className="m-0">
@@ -453,84 +394,51 @@ export function AuctionHub() {
                       <p className="text-[10px] text-slate-400 font-bold uppercase">AI tomonidan generatsiya qilingan</p>
                     </div>
                   </div>
-                  <div className="h-64 w-full">
-                    <ChartContainer config={chartConfig} className="h-full w-full">
-                      <ResponsiveContainer width="100%" height="100%">
-                        <LineChart data={chartData}>
-                          <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="#f1f5f9" />
-                          <XAxis 
-                            dataKey="name" 
-                            axisLine={false} 
-                            tickLine={false} 
-                            tick={{ fontSize: 9, fontWeight: 700, fill: '#94a3b8' }} 
-                          />
-                          <YAxis hide />
-                          <ShadcnChartTooltip content={<ChartTooltipContent />} />
-                          <Line 
-                            type="monotone" 
-                            dataKey="value" 
-                            stroke="#6366f1" 
-                            strokeWidth={4} 
-                            dot={{ r: 4, fill: '#6366f1', strokeWidth: 2, stroke: '#fff' }} 
-                          />
-                        </LineChart>
-                      </ResponsiveContainer>
-                    </ChartContainer>
-                  </div>
+                  <ChartContainer config={chartConfig} className="h-64 w-full">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <LineChart data={chartData}>
+                        <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="#f1f5f9" />
+                        <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 9, fontWeight: 700, fill: '#94a3b8' }} />
+                        <YAxis hide />
+                        <ShadcnChartTooltip content={<ChartTooltipContent />} />
+                        <Line type="monotone" dataKey="value" stroke="#6366f1" strokeWidth={4} dot={{ r: 4, fill: '#6366f1', strokeWidth: 2, stroke: '#fff' }} />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </ChartContainer>
                 </Card>
-
                 <div className="space-y-6">
                   <Card className="border-none shadow-sm rounded-[32px] bg-indigo-600 p-8 text-white">
                     <Sparkles className="mb-4 opacity-60" size={24} />
                     <h3 className="text-sm font-black uppercase tracking-widest mb-2">AI Bashorati</h3>
-                    <p className="text-[11px] font-bold text-white/80 leading-relaxed uppercase tracking-tighter">
-                      Kelgusi hafta qurilish materiallari narxi 4.2% ga ko'tarilishi kutilmoqda. Lotlarni hozir yopish tavsiya etiladi.
-                    </p>
+                    <p className="text-[11px] font-bold text-white/80 leading-relaxed uppercase tracking-tighter">Kelgusi hafta qurilish materiallari narxi 4.2% ga ko'tarilishi kutilmoqda.</p>
                   </Card>
-                  
                   <Card className="border-none shadow-sm rounded-[32px] bg-white p-8">
                     <div className="flex items-center gap-2 mb-4 text-amber-500">
                       <AlertCircle size={16} />
                       <h3 className="text-[10px] font-black uppercase tracking-widest">Xavf Tahlili</h3>
                     </div>
-                    <p className="text-[11px] font-bold text-slate-500 uppercase tracking-tight leading-tight">
-                      Bozorda o'xshash lotlar ko'paygani sababli raqobat 15% ga oshgan.
-                    </p>
+                    <p className="text-[11px] font-bold text-slate-500 uppercase tracking-tight leading-tight">Bozorda o'xshash lotlar ko'paygani sababli raqobat 15% ga oshgan.</p>
                   </Card>
                 </div>
               </div>
             </TabsContent>
           </div>
 
-          {/* Right Column: Stats & Bids (Only visible in non-AI tabs) */}
           {activeTab !== "ai" && (
             <div className="lg:col-span-5 space-y-8">
               <Card className="border-none shadow-sm rounded-[32px] bg-white p-8">
                 <h2 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-8">Jonli Statistika</h2>
-                <div className="h-48 w-full">
-                  <ChartContainer config={chartConfig} className="h-full w-full">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <BarChart data={chartData}>
-                        <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="#f1f5f9" />
-                        <XAxis 
-                          dataKey="name" 
-                          axisLine={false} 
-                          tickLine={false} 
-                          tick={{ fontSize: 9, fontWeight: 700, fill: '#94a3b8' }} 
-                          dy={10}
-                        />
-                        <YAxis hide />
-                        <ShadcnChartTooltip content={<ChartTooltipContent />} />
-                        <Bar 
-                          dataKey="value" 
-                          fill="#2563eb" 
-                          radius={[6, 6, 0, 0]} 
-                          barSize={36}
-                        />
-                      </BarChart>
-                    </ResponsiveContainer>
-                  </ChartContainer>
-                </div>
+                <ChartContainer config={chartConfig} className="h-48 w-full">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={chartData}>
+                      <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="#f1f5f9" />
+                      <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 9, fontWeight: 700, fill: '#94a3b8' }} dy={10} />
+                      <YAxis hide />
+                      <ShadcnChartTooltip content={<ChartTooltipContent />} />
+                      <Bar dataKey="value" fill="#2563eb" radius={[6, 6, 0, 0]} barSize={36} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </ChartContainer>
               </Card>
 
               <Card className="border-none shadow-sm rounded-[32px] bg-white p-8">
@@ -568,20 +476,6 @@ export function AuctionHub() {
                           ))}
                         </TableBody>
                       </Table>
-                    </div>
-                  </div>
-
-                  <div className="pt-2">
-                    <h2 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4">Auto-Taklif Faollashtirish</h2>
-                    <div className="flex gap-2.5">
-                      <input 
-                        type="text" 
-                        placeholder="Maksimal narx (so'm)"
-                        className="flex-1 bg-slate-50 border border-slate-100 rounded-xl h-11 px-5 text-[11px] font-bold placeholder:text-slate-300 focus:ring-2 focus:ring-blue-100 focus:border-blue-200 outline-none transition-all"
-                      />
-                      <Button className="bg-[#1e1e1e] hover:bg-black text-white rounded-xl h-11 px-6 text-[9px] font-black uppercase tracking-widest">
-                        OK
-                      </Button>
                     </div>
                   </div>
                 </div>
