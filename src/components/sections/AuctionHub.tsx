@@ -61,7 +61,7 @@ interface AuctionHubProps {
 }
 
 export function AuctionHub({ onNavigate }: AuctionHubProps) {
-  const [activeTab, setActiveTab] = useState<"buyer" | "seller">("seller");
+  const [activeTab, setActiveTab] = useState<"buyer" | "seller">("buyer");
   const [lots, setLots] = useState<Lot[]>(INITIAL_LOTS);
   const [activeLotId, setActiveLotId] = useState<string | null>(null);
   const [manageLotId, setManageLotId] = useState<string | null>(null);
@@ -99,7 +99,7 @@ export function AuctionHub({ onNavigate }: AuctionHubProps) {
     setIsDialogOpen(false);
     setNewLotTitle("");
     setNewLotPrice("");
-    toast({ title: "Муваффақиятли", description: "Янги лот муваффақиятли қўшилди" });
+    toast({ title: "Муваффақиятли", description: "Янги лот муваффақиятli қўшилди" });
   };
 
   const handleSendBid = () => {
@@ -273,16 +273,6 @@ export function AuctionHub({ onNavigate }: AuctionHubProps) {
 
       <div className="flex bg-slate-50 p-2 rounded-3xl w-fit border shadow-sm">
         <button
-          onClick={() => setActiveTab("seller")}
-          className={cn(
-            "flex items-center gap-2 px-8 py-4 rounded-2xl text-xs font-bold transition-all duration-300 uppercase tracking-widest",
-            activeTab === "seller" ? "bg-primary text-white shadow-lg shadow-primary/30" : "text-slate-400 hover:text-primary"
-          )}
-        >
-          <LayoutGrid className="w-4 h-4" />
-          СОТУВЧИ ПАНЕЛИ
-        </button>
-        <button
           onClick={() => setActiveTab("buyer")}
           className={cn(
             "flex items-center gap-2 px-8 py-4 rounded-2xl text-xs font-bold transition-all duration-300 uppercase tracking-widest",
@@ -291,6 +281,16 @@ export function AuctionHub({ onNavigate }: AuctionHubProps) {
         >
           <ShoppingCart className="w-4 h-4" />
           ХАРИДОР ПАНЕЛИ
+        </button>
+        <button
+          onClick={() => setActiveTab("seller")}
+          className={cn(
+            "flex items-center gap-2 px-8 py-4 rounded-2xl text-xs font-bold transition-all duration-300 uppercase tracking-widest",
+            activeTab === "seller" ? "bg-primary text-white shadow-lg shadow-primary/30" : "text-slate-400 hover:text-primary"
+          )}
+        >
+          <LayoutGrid className="w-4 h-4" />
+          СОТУВЧИ ПАНЕЛИ
         </button>
       </div>
 
