@@ -6,20 +6,30 @@ import { AuctionHub } from "@/components/sections/AuctionHub";
 import { LogisticsHub } from "@/components/sections/LogisticsHub";
 import { AiSecurity } from "@/components/sections/AiSecurity";
 import { EriWorkflow } from "@/components/sections/EriWorkflow";
+import { Contracts } from "@/components/sections/Contracts";
 import { Hammer } from "lucide-react";
+import { ContractGenerationOutput } from "@/ai/flows/contract-generation-flow";
 
 interface SectionRendererProps {
   sectionId: string;
   onNavigate?: (id: string) => void;
+  signedContracts?: ContractGenerationOutput[];
+  onContractSigned?: (contract: ContractGenerationOutput) => void;
 }
 
-export function SectionRenderer({ sectionId, onNavigate }: SectionRendererProps) {
+export function SectionRenderer({ 
+  sectionId, 
+  onNavigate, 
+  signedContracts = [], 
+  onContractSigned 
+}: SectionRendererProps) {
   switch (sectionId) {
     case 'dashboard': return <Dashboard />;
     case 'auction': return <AuctionHub onNavigate={onNavigate} />;
     case 'logistics': return <LogisticsHub />;
     case 'aiSecurity': return <AiSecurity />;
-    case 'eri': return <EriWorkflow />;
+    case 'eri': return <EriWorkflow onContractSigned={onContractSigned} />;
+    case 'contracts': return <Contracts contracts={signedContracts} />;
     default:
       return (
         <div className="flex flex-col items-center justify-center min-h-[60vh] text-center animate-fade-in">

@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from "react";
@@ -21,7 +22,11 @@ import { dict } from "@/lib/translations";
 import { useToast } from "@/hooks/use-toast";
 import { generateContract, ContractGenerationOutput } from "@/ai/flows/contract-generation-flow";
 
-export function EriWorkflow() {
+interface EriWorkflowProps {
+  onContractSigned?: (contract: ContractGenerationOutput) => void;
+}
+
+export function EriWorkflow({ onContractSigned }: EriWorkflowProps) {
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [inn, setInn] = useState("");
@@ -57,11 +62,13 @@ export function EriWorkflow() {
   };
 
   const handleFinalSign = () => {
+    if (!contractData) return;
     setLoading(true);
     setTimeout(() => {
       setStep(3);
       setLoading(false);
-      toast({ title: "Тасдиқланди", description: "Шартнома ЭРИ билан имзоланди" });
+      onContractSigned?.(contractData);
+      toast({ title: "Тасдиқланди", description: "Шартнома ЭРИ билан имзоланди ва 'Шартномалар' бўлимига юборилди" });
     }, 1500);
   };
 
@@ -78,7 +85,6 @@ export function EriWorkflow() {
       </div>
 
       <div className="grid lg:grid-cols-12 gap-8">
-        {/* Left Side: Form or Preview */}
         <div className="lg:col-span-7 space-y-6">
           {step === 1 && (
             <Card className="border-none shadow-sm rounded-[32px] bg-white overflow-hidden p-8 animate-fade-in">
@@ -167,7 +173,6 @@ export function EriWorkflow() {
           )}
         </div>
 
-        {/* Right Side: Status and Controls */}
         <div className="lg:col-span-5 space-y-6">
           <Card className="border-none shadow-sm rounded-[32px] bg-white p-8">
             <h2 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-8">Жараён ҳолати</h2>
