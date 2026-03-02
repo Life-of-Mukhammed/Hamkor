@@ -16,7 +16,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { ShoppingCart, LayoutGrid, Plus, Gavel, Sparkles, X, CheckCircle2 } from "lucide-react";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { ShoppingCart, LayoutGrid, Plus, Gavel, Sparkles, X, CheckCircle2, Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 
@@ -27,6 +28,8 @@ interface Lot {
   code: string;
   price: number;
   budget: number;
+  quantity?: string;
+  duration?: string;
 }
 
 interface Bid {
@@ -45,6 +48,8 @@ const INITIAL_LOTS: Lot[] = [
     code: "324242",
     price: 142000000,
     budget: 150000000,
+    quantity: "500 tn",
+    duration: "24",
   },
   {
     id: "2",
@@ -53,6 +58,8 @@ const INITIAL_LOTS: Lot[] = [
     code: "87654",
     price: 52000000,
     budget: 60000000,
+    quantity: "12 komplekt",
+    duration: "48",
   }
 ];
 
@@ -66,8 +73,13 @@ export function AuctionHub({ onNavigate }: AuctionHubProps) {
   const [activeLotId, setActiveLotId] = useState<string | null>(null);
   const [manageLotId, setManageLotId] = useState<string | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  
+  // New Lot States
   const [newLotTitle, setNewLotTitle] = useState("");
   const [newLotPrice, setNewLotPrice] = useState("");
+  const [newLotQuantity, setNewLotQuantity] = useState("");
+  const [newLotDuration, setNewLotDuration] = useState("24");
+
   const [bidAmount, setBidAmount] = useState("");
   const [bids, setBids] = useState<Record<string, Bid[]>>({});
   const { toast } = useToast();
@@ -76,7 +88,7 @@ export function AuctionHub({ onNavigate }: AuctionHubProps) {
     new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format(val);
 
   const handleAddLot = () => {
-    if (!newLotTitle || !newLotPrice) {
+    if (!newLotTitle || !newLotPrice || !newLotQuantity) {
       toast({ title: "Хатолик", description: "Барча майдонларни тўлдиринг", variant: "destructive" });
       return;
     }
@@ -93,13 +105,20 @@ export function AuctionHub({ onNavigate }: AuctionHubProps) {
       code: Math.floor(100000 + Math.random() * 900000).toString(),
       price: price,
       budget: price * 1.1,
+      quantity: newLotQuantity,
+      duration: newLotDuration,
     };
 
     setLots([newLot, ...lots]);
     setIsDialogOpen(false);
+    
+    // Reset fields
     setNewLotTitle("");
     setNewLotPrice("");
-    toast({ title: "Муваффақиятли", description: "Янги лот муваффақиятli қўшилди" });
+    setNewLotQuantity("");
+    setNewLotDuration("24");
+    
+    toast({ title: "Муваффақиятли", description: "Янги лот муваффақиятли қўшилди" });
   };
 
   const handleSendBid = () => {
@@ -139,7 +158,6 @@ export function AuctionHub({ onNavigate }: AuctionHubProps) {
 
   const activeLot = lots.find(l => l.id === activeLotId);
   const currentBids = activeLotId ? (bids[activeLotId] || []) : [];
-
   const manageLot = lots.find(l => l.id === manageLotId);
 
   // Split-screen Trading Terminal (Seller)
@@ -177,7 +195,7 @@ export function AuctionHub({ onNavigate }: AuctionHubProps) {
 
             <div className="mt-8">
               <Button className="w-full h-16 bg-[#534df3] hover:bg-[#433ce0] text-white rounded-2xl font-black text-sm tracking-widest uppercase flex items-center justify-center gap-3 shadow-lg shadow-blue-200">
-                <Sparkles size={18} /> СИ ТАҲЛИЛИ
+                <Sparkles size={18} /> SI TAHLILI
               </Button>
             </div>
           </div>
@@ -267,7 +285,7 @@ export function AuctionHub({ onNavigate }: AuctionHubProps) {
         </div>
         <div>
           <h1 className="text-4xl font-black text-[#121926] tracking-tight uppercase">ОНЛАЙН АУКЦИОН</h1>
-          <p className="text-muted-foreground text-sm font-medium">Лотлар очиш ва таклифлар бериш</p>
+          <p className="text-muted-foreground text-sm font-medium">Лотлар очиш ва таклифlar бериш</p>
         </div>
       </div>
 
@@ -301,19 +319,69 @@ export function AuctionHub({ onNavigate }: AuctionHubProps) {
               <Plus className="w-5 h-5" /> ЯНГИ ЛОТ
             </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px] rounded-[30px]">
-            <DialogHeader><DialogTitle className="text-2xl font-black uppercase">ЯНГИ ЛОТ</DialogTitle></DialogHeader>
+          <DialogContent className="sm:max-w-[480px] rounded-[30px] p-8">
+            <DialogHeader>
+              <DialogTitle className="text-2xl font-black uppercase tracking-tight">ЯНГИ ЛОТ</DialogTitle>
+            </DialogHeader>
             <div className="grid gap-6 py-4">
               <div className="grid gap-2">
-                <Label className="text-xs font-bold uppercase text-muted-foreground">Lot nomi</Label>
-                <Input value={newLotTitle} onChange={(e) => setNewLotTitle(e.target.value)} className="h-12 rounded-xl font-bold" />
+                <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Lot nomi</Label>
+                <Input 
+                  placeholder="Masalan: Sement xaridi"
+                  value={newLotTitle} 
+                  onChange={(e) => setNewLotTitle(e.target.value)} 
+                  className="h-12 rounded-xl font-bold bg-slate-50 border-none focus:ring-2 focus:ring-primary/20" 
+                />
               </div>
-              <div className="grid gap-2">
-                <Label className="text-xs font-bold uppercase text-muted-foreground">Boshlang'ich narx (UZS)</Label>
-                <Input type="number" value={newLotPrice} onChange={(e) => setNewLotPrice(e.target.value)} className="h-12 rounded-xl font-bold" />
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div className="grid gap-2">
+                  <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Boshlang'ich narx</Label>
+                  <Input 
+                    type="number" 
+                    placeholder="0.00"
+                    value={newLotPrice} 
+                    onChange={(e) => setNewLotPrice(e.target.value)} 
+                    className="h-12 rounded-xl font-bold bg-slate-50 border-none" 
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Miqdor</Label>
+                  <Input 
+                    placeholder="Masalan: 500 tn"
+                    value={newLotQuantity} 
+                    onChange={(e) => setNewLotQuantity(e.target.value)} 
+                    className="h-12 rounded-xl font-bold bg-slate-50 border-none" 
+                  />
+                </div>
+              </div>
+
+              <div className="grid gap-3">
+                <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Auksion davomiyligi (soat)</Label>
+                <RadioGroup 
+                  value={newLotDuration} 
+                  onValueChange={setNewLotDuration}
+                  className="flex gap-4"
+                >
+                  <div className="flex items-center space-x-2 bg-slate-50 px-4 py-3 rounded-xl cursor-pointer hover:bg-slate-100 transition-colors flex-1">
+                    <RadioGroupItem value="24" id="r1" />
+                    <Label htmlFor="r1" className="font-bold cursor-pointer">24 soat</Label>
+                  </div>
+                  <div className="flex items-center space-x-2 bg-slate-50 px-4 py-3 rounded-xl cursor-pointer hover:bg-slate-100 transition-colors flex-1">
+                    <RadioGroupItem value="48" id="r2" />
+                    <Label htmlFor="r2" className="font-bold cursor-pointer">48 soat</Label>
+                  </div>
+                </RadioGroup>
               </div>
             </div>
-            <DialogFooter><Button onClick={handleAddLot} className="rounded-xl h-12 px-8 font-bold bg-primary uppercase">Қўшиш</Button></DialogFooter>
+            <DialogFooter className="pt-4">
+              <Button 
+                onClick={handleAddLot} 
+                className="w-full rounded-2xl h-14 px-8 font-black uppercase tracking-widest bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20"
+              >
+                E'lon qilish
+              </Button>
+            </DialogFooter>
           </DialogContent>
         </Dialog>
       )}
@@ -323,11 +391,24 @@ export function AuctionHub({ onNavigate }: AuctionHubProps) {
           <Card key={lot.id} className="border-none rounded-[50px] shadow-sm hover:shadow-2xl transition-all duration-500 bg-white p-2">
             <CardContent className="p-10 space-y-8">
               <div className="flex justify-between items-center">
-                <Badge variant="secondary" className="bg-slate-100 text-slate-500 font-bold text-[11px] px-4 py-1.5 rounded-full">ID: {lot.number}</Badge>
-                <Badge className="bg-red-50 text-red-500 border-none px-4 py-1.5 rounded-full flex items-center gap-2">
-                  <div className="w-4 h-4 rounded-full border-2 border-red-500 border-t-transparent animate-spin" />
-                  <span className="text-[11px] font-black font-mono">LIVE</span>
-                </Badge>
+                <div className="flex gap-2">
+                  <Badge variant="secondary" className="bg-slate-100 text-slate-500 font-bold text-[11px] px-4 py-1.5 rounded-full">ID: {lot.number}</Badge>
+                  {lot.quantity && (
+                    <Badge variant="outline" className="text-slate-500 font-bold text-[11px] px-4 py-1.5 rounded-full border-slate-200">
+                      {lot.quantity}
+                    </Badge>
+                  )}
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-1.5 text-[11px] font-bold text-slate-400">
+                    <Clock size={12} />
+                    {lot.duration} soat
+                  </div>
+                  <Badge className="bg-red-50 text-red-500 border-none px-4 py-1.5 rounded-full flex items-center gap-2">
+                    <div className="w-4 h-4 rounded-full border-2 border-red-500 border-t-transparent animate-spin" />
+                    <span className="text-[11px] font-black font-mono">LIVE</span>
+                  </Badge>
+                </div>
               </div>
 
               <h2 className="text-4xl font-black text-[#121926] leading-tight uppercase tracking-tight">{lot.title}</h2>
