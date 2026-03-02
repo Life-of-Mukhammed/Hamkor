@@ -49,7 +49,16 @@ export const translations = {
       warehouseBalance: "OMBOR QOLDIG'I",
       lastMonth: "o'tgan oyga nisbatan",
       save: "Saqlash",
-      logout: "Tizimdan chiqish"
+      logout: "Tizimdan chiqish",
+      escrowLocked: "PUL MUZLATILDI",
+      escrowReleased: "PUL O'TKAZILDI",
+      acceptWork: "Qabul qildim",
+      openDispute: "Disput ochish",
+      paymentMethod: "To'lov usuli",
+      bankTransfer: "Bank o'tkazmasi",
+      cardPayment: "Karta orqali (Click/Payme)",
+      invoice: "Shet-faktura",
+      disputeStats: "98% nizolar 48 soatda hal qilinadi"
     }
   },
   ru: {
@@ -99,7 +108,16 @@ export const translations = {
       warehouseBalance: "СКЛАДСКОЙ ОСТАТОК",
       lastMonth: "по сравнению с прошлым месяцем",
       save: "Сохранить",
-      logout: "Выйти из системы"
+      logout: "Выйти из системы",
+      escrowLocked: "ДЕНЬГИ ЗАМОРОЖЕНЫ",
+      escrowReleased: "ДЕНЬГИ ПЕРЕВЕДЕНЫ",
+      acceptWork: "Принять работу",
+      openDispute: "Открыть диспут",
+      paymentMethod: "Способ оплаты",
+      bankTransfer: "Банковский перевод",
+      cardPayment: "Картой (Click/Payme)",
+      invoice: "Счет-фактура",
+      disputeStats: "98% споров решаются за 48 часов"
     }
   },
   en: {
@@ -149,7 +167,16 @@ export const translations = {
       warehouseBalance: "STOCK BALANCE",
       lastMonth: "compared to last month",
       save: "Save",
-      logout: "Log out"
+      logout: "Log out",
+      escrowLocked: "FUNDS FROZEN",
+      escrowReleased: "FUNDS RELEASED",
+      acceptWork: "Accept Work",
+      openDispute: "Open Dispute",
+      paymentMethod: "Payment Method",
+      bankTransfer: "Bank Transfer",
+      cardPayment: "Card (Click/Payme)",
+      invoice: "Invoice",
+      disputeStats: "98% of disputes resolved in 48h"
     }
   }
 };
