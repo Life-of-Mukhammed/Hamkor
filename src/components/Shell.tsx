@@ -74,10 +74,13 @@ export function Shell({
     new Intl.NumberFormat('uz-UZ').format(val);
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#f8fafc]">
-      <TopAdBanner />
-      <SidebarProvider>
-        <Sidebar className="border-r border-slate-100 bg-white shadow-none">
+    <div className="flex flex-col h-screen overflow-hidden bg-[#f8fafc]">
+      <div className="shrink-0 z-50">
+        <TopAdBanner />
+      </div>
+      
+      <SidebarProvider className="flex-1 overflow-hidden">
+        <Sidebar className="border-r border-slate-100 bg-white shadow-none shrink-0 h-full">
           <SidebarHeader className="p-6 pt-8">
             <div className="flex items-center gap-3">
               <div className="w-9 h-9 bg-[#0b4db1] rounded-lg flex items-center justify-center text-white">
@@ -148,8 +151,8 @@ export function Shell({
           </SidebarFooter>
         </Sidebar>
         
-        <SidebarInset className="bg-transparent min-h-[calc(100vh-80px)] md:min-h-[calc(100vh-120px)]">
-          <header className="sticky top-0 z-30 flex h-16 items-center gap-4 bg-white/80 backdrop-blur-md px-8 border-b border-slate-100">
+        <SidebarInset className="flex flex-col min-w-0 bg-transparent h-full overflow-hidden">
+          <header className="shrink-0 flex h-16 items-center gap-4 bg-white/80 backdrop-blur-md px-8 border-b border-slate-100 z-30">
             <SidebarTrigger className="hover:bg-slate-100 p-1.5 rounded-lg transition-colors" />
             <div className="h-5 w-px bg-slate-100 mx-1" />
             <div className="flex-1">
@@ -285,14 +288,17 @@ export function Shell({
               </DropdownMenu>
             </div>
           </header>
-          <main className="p-8 pb-20 max-w-[1600px] mx-auto">
-            {React.Children.map(children, child => {
-              if (React.isValidElement(child)) {
-                return React.cloneElement(child as React.ReactElement<any>, { lang, t });
-              }
-              return child;
-            })}
-          </main>
+          
+          <div className="flex-1 overflow-y-auto">
+            <main className="p-8 pb-20 max-w-[1600px] mx-auto">
+              {React.Children.map(children, child => {
+                if (React.isValidElement(child)) {
+                  return React.cloneElement(child as React.ReactElement<any>, { lang, t });
+                }
+                return child;
+              })}
+            </main>
+          </div>
         </SidebarInset>
       </SidebarProvider>
     </div>
