@@ -5,9 +5,20 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ShoppingCart, LayoutGrid, Plus, Eye } from "lucide-react";
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogHeader, 
+  DialogTitle, 
+  DialogTrigger,
+  DialogFooter
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { ShoppingCart, LayoutGrid, Plus } from "lucide-react";
 import { dict } from "@/lib/translations";
 import { cn } from "@/lib/utils";
+import { useToast } from "@/hooks/use-toast";
 
 interface Lot {
   id: string;
@@ -39,9 +50,53 @@ const INITIAL_LOTS: Lot[] = [
 
 export function AuctionHub() {
   const [activeTab, setActiveTab] = useState<"buyer" | "seller">("buyer");
+  const [lots, setLots] = useState<Lot[]>(INITIAL_LOTS);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [newLotTitle, setNewLotTitle] = useState("");
+  const [newLotPrice, setNewLotPrice] = useState("");
+  const { toast } = useToast();
 
   const formatCurrency = (val: number) => 
     new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format(val) + " UZS";
+
+  const handleAddLot = () => {
+    if (!newLotTitle || !newLotPrice) {
+      toast({
+        title: "Xatolik",
+        description: "Barcha maydonlarni to'ldiring",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const price = parseFloat(newLotPrice);
+    if (isNaN(price)) {
+      toast({
+        title: "Xatolik",
+        description: "Narxni to'g'ri kiriting",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const newLot: Lot = {
+      id: Date.now().toString(),
+      number: `LOT-${Math.floor(1000 + Math.random() * 9000)}`,
+      title: newLotTitle.toUpperCase(),
+      code: Math.floor(100000 + Math.random() * 900000).toString(),
+      price: price,
+      bidsCount: 0,
+    };
+
+    setLots([newLot, ...lots]);
+    setIsDialogOpen(false);
+    setNewLotTitle("");
+    setNewLotPrice("");
+    toast({
+      title: "Muvaffaqiyatli",
+      description: "Yangi lot muvaffaqiyatli qo'shildi",
+    });
+  };
 
   return (
     <div className="space-y-8 animate-fade-in">
@@ -83,10 +138,63 @@ export function AuctionHub() {
             {dict.labels.lotSubtitle}
           </p>
         </div>
-        <Button className="relative z-10 bg-primary hover:bg-primary/90 text-white h-14 px-8 rounded-2xl text-md font-bold shadow-xl shadow-primary/20 flex items-center gap-3 transition-transform hover:scale-105 active:scale-95">
-          <Plus className="w-5 h-5" />
-          {dict.labels.newLot}
-        </Button>
+
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <DialogTrigger asChild>
+            <Button className="relative z-10 bg-primary hover:bg-primary/90 text-white h-14 px-8 rounded-2xl text-md font-bold shadow-xl shadow-primary/20 flex items-center gap-3 transition-transform hover:scale-105 active:scale-95">
+              <Plus className="w-5 h-5" />
+              {dict.labels.newLot}
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[425px] rounded-[30px] border-none shadow-2xl">
+            <DialogHeader>
+              <DialogTitle className="text-2xl font-black">{dict.labels.newLot}</DialogTitle>
+            </DialogHeader>
+            <div className="grid gap-6 py-4">
+              <div className="grid gap-2">
+                <Label htmlFor="name" className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                  Lot nomi
+                </Label>
+                <Input
+                  id="name"
+                  value={newLotTitle}
+                  onChange={(e) => setNewLotTitle(e.target.value)}
+                  placeholder="Masalan: Avtomobil ehtiyot qismlari"
+                  className="h-12 rounded-xl border-muted bg-muted/30 focus:bg-white transition-all"
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="price" className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                  Boshlang'ich narx (UZS)
+                </Label>
+                <Input
+                  id="price"
+                  type="number"
+                  value={newLotPrice}
+                  onChange={(e) => setNewLotPrice(e.target.value)}
+                  placeholder="1 000 000"
+                  className="h-12 rounded-xl border-muted bg-muted/30 focus:bg-white transition-all"
+                />
+              </div>
+            </div>
+            <DialogFooter className="gap-2 sm:gap-0">
+              <Button 
+                variant="ghost" 
+                onClick={() => setIsDialogOpen(false)}
+                className="rounded-xl h-12 font-bold"
+              >
+                Bekor qilish
+              </Button>
+              <Button 
+                onClick={handleAddLot}
+                className="rounded-xl h-12 px-8 font-bold bg-primary shadow-lg shadow-primary/20"
+              >
+                Qo'shish
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
         {/* Decorative elements */}
         <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-3xl -mr-32 -mt-32" />
         <div className="absolute bottom-0 left-0 w-48 h-48 bg-primary/5 rounded-full blur-2xl -ml-24 -mb-24" />
@@ -94,7 +202,7 @@ export function AuctionHub() {
 
       {/* Lots Grid */}
       <div className="grid md:grid-cols-2 gap-8">
-        {INITIAL_LOTS.map((lot) => (
+        {lots.map((lot) => (
           <Card key={lot.id} className="border-none rounded-[40px] shadow-sm hover:shadow-xl transition-all duration-300 group overflow-hidden bg-white">
             <CardContent className="p-10">
               <div className="flex justify-between items-start mb-6">
