@@ -1,4 +1,3 @@
-
 "use client";
 
 import * as React from "react";
@@ -34,9 +33,10 @@ import {
   AlertCircle,
   Cpu,
   Search,
-  ZapOff,
   Handshake,
-  LayoutGrid
+  LayoutGrid,
+  Loader2,
+  ShieldAlert
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
@@ -59,7 +59,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { getLotAiDetails, LotDetailsOutput } from "@/ai/flows/lot-details-flow";
 
 const chartData = [
   { name: "Du", value: 23 },
@@ -146,16 +146,12 @@ const INITIAL_LOTS: Lot[] = [
 
 export function AuctionHub({ onNavigate }: { onNavigate?: (id: string) => void }) {
   const [lots, setLots] = useState<Lot[]>(INITIAL_LOTS);
-  const lotsRef = useRef<Lot[]>(lots);
   const [activeTab, setActiveTab] = useState("uzb");
   const { toast } = useToast();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-
-  // Auto-bid states
-  const [autoBidLotId, setAutoBidLotId] = useState("LOT-CA-001");
-  const [autoBidMaxPrice, setAutoBidMaxPrice] = useState("600000000");
-  const [autoBidStep, setAutoBidStep] = useState("5000000");
-  const [isAutoBidActive, setIsAutoBidActive] = useState(false);
+  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+  const [selectedLotDetails, setSelectedLotDetails] = useState<LotDetailsOutput | null>(null);
+  const [loadingDetails, setLoadingDetails] = useState(false);
 
   const [newLotTitle, setNewLotTitle] = useState("");
   const [newLotQuantity, setNewLotQuantity] = useState("");
@@ -164,10 +160,6 @@ export function AuctionHub({ onNavigate }: { onNavigate?: (id: string) => void }
   const [newLotDuration, setNewLotDuration] = useState("24");
 
   const [globalTimeLeft, setGlobalTimeLeft] = useState(2677);
-
-  useEffect(() => {
-    lotsRef.current = lots;
-  }, [lots]);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -181,33 +173,6 @@ export function AuctionHub({ onNavigate }: { onNavigate?: (id: string) => void }
     }, 1000);
     return () => clearInterval(timer);
   }, []);
-
-  useEffect(() => {
-    if (!isAutoBidActive) return;
-
-    const autoBidInterval = setInterval(() => {
-      const currentLots = lotsRef.current;
-      const targetLot = currentLots.find(l => l.lotId === autoBidLotId);
-      
-      if (!targetLot) return;
-
-      const maxPriceNum = parseFloat(autoBidMaxPrice.replace(/\s/g, ''));
-      const stepNum = parseFloat(autoBidStep.replace(/\s/g, ''));
-
-      if (targetLot.price + stepNum > maxPriceNum) {
-        setIsAutoBidActive(false);
-        return;
-      }
-
-      setLots(prev => prev.map(lot => 
-        lot.lotId === autoBidLotId 
-          ? { ...lot, price: lot.price + stepNum, bidsCount: (lot.bidsCount || 0) + 1 }
-          : lot
-      ));
-    }, 3000);
-
-    return () => clearInterval(autoBidInterval);
-  }, [isAutoBidActive, autoBidLotId, autoBidMaxPrice, autoBidStep]);
 
   const handlePlaceBid = (lotId: string) => {
     const lot = lots.find(l => l.lotId === lotId);
@@ -228,27 +193,28 @@ export function AuctionHub({ onNavigate }: { onNavigate?: (id: string) => void }
     });
   };
 
-  const handleToggleAutoBid = () => {
-    if (!isAutoBidActive) {
-      if (!autoBidMaxPrice || !autoBidStep) {
-        toast({
-          title: "Xatolik",
-          description: "Maksimal narx va qadamni kiriting",
-          variant: "destructive",
-        });
-        return;
-      }
-      toast({
-        title: "Robot faollashtirildi",
-        description: `${autoBidLotId} bo'yicha avtomatik takliflar boshlandi`,
+  const handleShowDetails = async (lot: Lot) => {
+    setLoadingDetails(true);
+    setIsDetailsOpen(true);
+    setSelectedLotDetails(null);
+    try {
+      const details = await getLotAiDetails({
+        title: lot.title,
+        category: lot.category,
+        price: lot.price,
+        quantity: lot.quantity
       });
-    } else {
+      setSelectedLotDetails(details);
+    } catch (error) {
       toast({
-        title: "Robot o'chirildi",
-        description: "Avtomatik takliflar to'xtatildi",
+        title: "Xatolik",
+        description: "AI ma'lumotlarni yuklashda xatolik yuz berdi",
+        variant: "destructive",
       });
+      setIsDetailsOpen(false);
+    } finally {
+      setLoadingDetails(false);
     }
-    setIsAutoBidActive(!isAutoBidActive);
   };
 
   const formatTime = (seconds: number) => {
@@ -320,7 +286,12 @@ export function AuctionHub({ onNavigate }: { onNavigate?: (id: string) => void }
               >
                 <Zap size={12} fill="currentColor" /> Taklif
               </Button>
-              <Button variant="outline" size="sm" className="h-9 border-slate-100 hover:border-blue-200 text-slate-500 hover:text-blue-600 rounded-full text-[10px] font-black uppercase px-5 gap-2 tracking-widest transition-colors">
+              <Button 
+                onClick={() => handleShowDetails(lot)}
+                variant="outline" 
+                size="sm" 
+                className="h-9 border-slate-100 hover:border-blue-200 text-slate-500 hover:text-blue-600 rounded-full text-[10px] font-black uppercase px-5 gap-2 tracking-widest transition-colors"
+              >
                 <Info size={12} /> Batafsil
               </Button>
               <Button variant="outline" size="sm" className="h-9 border-slate-100 bg-emerald-50 hover:bg-emerald-100 text-emerald-600 rounded-full text-[10px] font-black uppercase px-5 gap-2 tracking-widest border-none">
@@ -458,7 +429,7 @@ export function AuctionHub({ onNavigate }: { onNavigate?: (id: string) => void }
                       <Button onClick={() => handlePlaceBid(lot.lotId)} size="sm" className="bg-blue-600 text-white rounded-xl text-[10px] font-black uppercase h-9 px-5 gap-2">
                         <Zap size={12} fill="currentColor" /> Taklif
                       </Button>
-                      <Button variant="outline" size="sm" className="h-9 border-slate-100 text-slate-500 rounded-xl text-[10px] font-black uppercase px-5 gap-2">
+                      <Button onClick={() => handleShowDetails(lot)} variant="outline" size="sm" className="h-9 border-slate-100 text-slate-500 rounded-xl text-[10px] font-black uppercase px-5 gap-2">
                         <Info size={12} /> Batafsil
                       </Button>
                       <Button onClick={() => onNavigate?.('eri')} variant="outline" size="sm" className="h-9 bg-violet-50 text-violet-600 rounded-xl text-[10px] font-black uppercase px-5 gap-2 border-none">
@@ -600,6 +571,60 @@ export function AuctionHub({ onNavigate }: { onNavigate?: (id: string) => void }
           )}
         </div>
       </Tabs>
+
+      {/* AI Lot Details Dialog */}
+      <Dialog open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
+        <DialogContent className="sm:max-w-[600px] rounded-[32px] overflow-hidden p-0 border-none">
+          <DialogHeader className="p-8 bg-slate-50/80 border-b">
+            <DialogTitle className="text-[14px] font-black uppercase tracking-widest flex items-center gap-2">
+              <Sparkles className="text-blue-600 w-5 h-5" /> AI Tahliliy Ma'lumot
+            </DialogTitle>
+          </DialogHeader>
+          <div className="p-8 space-y-6 max-h-[70vh] overflow-y-auto bg-white">
+            {loadingDetails ? (
+              <div className="flex flex-col items-center justify-center py-20 gap-4">
+                <Loader2 className="w-10 h-10 text-blue-600 animate-spin" />
+                <p className="text-[11px] font-black text-slate-400 uppercase tracking-widest">AI ma'lumotlarni tahlil qilmoqda...</p>
+              </div>
+            ) : selectedLotDetails ? (
+              <div className="space-y-8 animate-fade-in">
+                <section>
+                  <h4 className="text-[10px] font-black text-blue-600 uppercase tracking-[0.2em] mb-3">Tavsif</h4>
+                  <p className="text-[13px] leading-relaxed text-slate-600 font-medium">{selectedLotDetails.description}</p>
+                </section>
+                
+                <section>
+                  <h4 className="text-[10px] font-black text-indigo-600 uppercase tracking-[0.2em] mb-3">Bozor Tahlili</h4>
+                  <p className="text-[13px] leading-relaxed text-slate-600 font-medium">{selectedLotDetails.marketAnalysis}</p>
+                </section>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="p-6 bg-emerald-50 rounded-2xl border border-emerald-100">
+                    <h4 className="text-[9px] font-black text-emerald-600 uppercase tracking-widest mb-2 flex items-center gap-2">
+                      <TrendingUp size={14} /> Strategiya
+                    </h4>
+                    <p className="text-[11px] font-bold text-emerald-800">{selectedLotDetails.strategy}</p>
+                  </div>
+                  <div className={cn(
+                    "p-6 rounded-2xl border",
+                    selectedLotDetails.riskLevel === 'Low' ? "bg-blue-50 border-blue-100 text-blue-800" :
+                    selectedLotDetails.riskLevel === 'Medium' ? "bg-amber-50 border-amber-100 text-amber-800" :
+                    "bg-red-50 border-red-100 text-red-800"
+                  )}>
+                    <h4 className="text-[9px] font-black uppercase tracking-widest mb-2 flex items-center gap-2">
+                      <ShieldAlert size={14} /> Xavf Darajasi
+                    </h4>
+                    <p className="text-[11px] font-black">{selectedLotDetails.riskLevel === 'Low' ? 'Past' : selectedLotDetails.riskLevel === 'Medium' ? 'O\'rta' : 'Yuqori'}</p>
+                  </div>
+                </div>
+              </div>
+            ) : null}
+          </div>
+          <DialogFooter className="p-6 bg-slate-50 border-t">
+            <Button onClick={() => setIsDetailsOpen(false)} className="bg-slate-900 text-white rounded-xl h-12 px-8 font-black uppercase text-[11px] tracking-widest w-full">Yopish</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
