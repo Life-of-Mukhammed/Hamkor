@@ -17,7 +17,25 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { ShoppingCart, LayoutGrid, Plus, Gavel, Sparkles, X, CheckCircle2, Clock } from "lucide-react";
+import { 
+  Table, 
+  TableBody, 
+  TableCell, 
+  TableHead, 
+  TableHeader, 
+  TableRow 
+} from "@/components/ui/table";
+import { 
+  ShoppingCart, 
+  LayoutGrid, 
+  Plus, 
+  Gavel, 
+  Sparkles, 
+  X, 
+  CheckCircle2, 
+  Clock, 
+  Trophy
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 
@@ -81,11 +99,16 @@ export function AuctionHub({ onNavigate }: AuctionHubProps) {
   const [newLotDuration, setNewLotDuration] = useState("24");
 
   const [bidAmount, setBidAmount] = useState("");
-  const [bids, setBids] = useState<Record<string, Bid[]>>({});
+  const [bids, setBids] = useState<Record<string, Bid[]>>({
+    "1": [
+      { id: "b1", bidder: "Orient Group", amount: 141000000, time: "10:45", status: 'highest' },
+      { id: "b2", bidder: "Euro Building", amount: 141500000, time: "10:40", status: 'pending' },
+    ]
+  });
   const { toast } = useToast();
 
   const formatCurrency = (val: number) => 
-    new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format(val);
+    new Intl.NumberFormat('uz-UZ').format(val);
 
   const handleAddLot = () => {
     if (!newLotTitle || !newLotPrice || !newLotQuantity) {
@@ -130,7 +153,7 @@ export function AuctionHub({ onNavigate }: AuctionHubProps) {
       id: `bid-${Date.now()}-${Math.random()}`,
       bidder: "Sizning Korxonangiz",
       amount: amount,
-      time: "Hozir",
+      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       status: 'highest'
     };
 
@@ -159,8 +182,9 @@ export function AuctionHub({ onNavigate }: AuctionHubProps) {
   const activeLot = lots.find(l => l.id === activeLotId);
   const currentBids = activeLotId ? (bids[activeLotId] || []) : [];
   const manageLot = lots.find(l => l.id === manageLotId);
+  const manageBids = manageLotId ? (bids[manageLotId] || []) : [];
 
-  // Split-screen Trading Terminal (Seller)
+  // Seller Trading Terminal
   if (activeLotId && activeLot) {
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 md:p-10 animate-fade-in">
@@ -175,7 +199,7 @@ export function AuctionHub({ onNavigate }: AuctionHubProps) {
           <div className="w-[40%] bg-slate-50/50 border-r border-slate-100 p-10 flex flex-col">
             <div className="mb-10">
               <h1 className="text-3xl font-black text-[#121926] uppercase tracking-tight mb-2">ТАКЛИФЛАР ТАРИХИ</h1>
-              <p className="text-sm font-medium text-slate-400">Барча берилган таклифлар рўйхати</p>
+              <p className="text-sm font-medium text-slate-400">Барча берилган таклифlar рўйхати</p>
             </div>
 
             <ScrollArea className="flex-1 -mr-4 pr-4">
@@ -226,8 +250,10 @@ export function AuctionHub({ onNavigate }: AuctionHubProps) {
     );
   }
 
-  // Manage Lot Dialog (Buyer)
+  // Manage Lot Dialog (Buyer) - UPDATED BASED ON IMAGE
   if (manageLotId && manageLot) {
+    const lowestBid = manageBids.length > 0 ? Math.min(...manageBids.map(b => b.amount)) : manageLot.price;
+
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 animate-fade-in">
         <div className="bg-white w-full max-w-2xl rounded-[40px] shadow-2xl p-10 relative">
@@ -239,20 +265,56 @@ export function AuctionHub({ onNavigate }: AuctionHubProps) {
           </button>
 
           <div className="text-center space-y-6">
-            <div className="w-20 h-20 bg-green-50 rounded-full flex items-center justify-center mx-auto">
-              <CheckCircle2 size={40} className="text-green-500" />
-            </div>
-            <h2 className="text-3xl font-black text-[#121926] uppercase">ЛОТНИ БОШҚАРИШ</h2>
-            <p className="text-slate-500 font-medium">{manageLot.title}</p>
-            
-            <div className="grid grid-cols-2 gap-4 text-left pt-6">
-              <div className="bg-slate-50 p-6 rounded-3xl">
-                <p className="text-[10px] font-black text-slate-400 uppercase mb-2">Жорий энг паст таклиф</p>
-                <p className="text-xl font-black text-primary">{formatCurrency(bids[manageLot.id]?.[0]?.amount || manageLot.price)} UZS</p>
+            <div className="w-24 h-24 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-2">
+              <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center text-white">
+                <CheckCircle2 size={32} />
               </div>
-              <div className="bg-slate-50 p-6 rounded-3xl">
-                <p className="text-[10px] font-black text-slate-400 uppercase mb-2">Таклифлар сони</p>
-                <p className="text-xl font-black text-slate-800">{bids[manageLot.id]?.length || 0} та</p>
+            </div>
+            
+            <h2 className="text-4xl font-black text-[#121926] uppercase tracking-tight">ЛОТНИ БОШҚАРИШ</h2>
+            <p className="text-slate-500 font-bold text-lg">{manageLot.title}</p>
+            
+            <div className="grid grid-cols-2 gap-6 pt-6">
+              <div className="bg-slate-50/50 p-8 rounded-[35px] text-left border border-slate-100">
+                <p className="text-[10px] font-black text-slate-400 uppercase mb-4 tracking-widest">ЖОРИЙ ЭНГ ПАСТ ТАКЛИФ</p>
+                <p className="text-2xl font-black text-primary tracking-tight">{formatCurrency(lowestBid)} UZS</p>
+              </div>
+              <div className="bg-slate-50/50 p-8 rounded-[35px] text-left border border-slate-100">
+                <p className="text-[10px] font-black text-slate-400 uppercase mb-4 tracking-widest">ТАКЛИФЛАР СОНИ</p>
+                <p className="text-3xl font-black text-slate-800">{manageBids.length} та</p>
+              </div>
+            </div>
+
+            <div className="pt-8 text-left">
+              <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-4">БАРЧА ТАКЛИФЛАР (TABLE)</h3>
+              <div className="border rounded-2xl overflow-hidden">
+                <Table>
+                  <TableHeader className="bg-slate-50">
+                    <TableRow>
+                      <TableHead className="font-bold">Иштирокчи</TableHead>
+                      <TableHead className="font-bold text-right">Сумма (UZS)</TableHead>
+                      <TableHead className="font-bold text-center">Вақт</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {manageBids.length === 0 ? (
+                      <TableRow>
+                        <TableCell colSpan={3} className="text-center py-8 text-slate-400 italic">Ҳозирча таклифлар йўқ</TableCell>
+                      </TableRow>
+                    ) : (
+                      manageBids.sort((a,b) => a.amount - b.amount).map((bid) => (
+                        <TableRow key={bid.id}>
+                          <TableCell className="font-medium flex items-center gap-2">
+                            {bid.amount === lowestBid && <Trophy size={14} className="text-yellow-500" />}
+                            {bid.bidder}
+                          </TableCell>
+                          <TableCell className="text-right font-black text-primary">{formatCurrency(bid.amount)}</TableCell>
+                          <TableCell className="text-center text-xs text-slate-500">{bid.time}</TableCell>
+                        </TableRow>
+                      ))
+                    )}
+                  </TableBody>
+                </Table>
               </div>
             </div>
 
@@ -260,13 +322,13 @@ export function AuctionHub({ onNavigate }: AuctionHubProps) {
               <Button 
                 variant="outline"
                 onClick={() => setManageLotId(null)}
-                className="flex-1 h-16 rounded-2xl font-black uppercase tracking-widest border-2"
+                className="flex-1 h-20 rounded-[25px] font-black uppercase tracking-widest border-2 text-slate-800 hover:bg-slate-50"
               >
                 БЕКОР ҚИЛИШ
               </Button>
               <Button 
                 onClick={handleApproveLot}
-                className="flex-1 h-16 bg-primary hover:bg-primary/90 text-white rounded-2xl font-black uppercase tracking-widest shadow-xl shadow-primary/20"
+                className="flex-1 h-20 bg-[#2563eb] hover:bg-[#1d4ed8] text-white rounded-[25px] font-black uppercase tracking-widest shadow-2xl shadow-blue-200"
               >
                 ЛОТНИ ТАСДИҚЛАШ
               </Button>
@@ -387,64 +449,69 @@ export function AuctionHub({ onNavigate }: AuctionHubProps) {
       )}
 
       <div className="grid xl:grid-cols-2 gap-10">
-        {lots.map((lot) => (
-          <Card key={lot.id} className="border-none rounded-[50px] shadow-sm hover:shadow-2xl transition-all duration-500 bg-white p-2">
-            <CardContent className="p-10 space-y-8">
-              <div className="flex justify-between items-center">
-                <div className="flex gap-2">
-                  <Badge variant="secondary" className="bg-slate-100 text-slate-500 font-bold text-[11px] px-4 py-1.5 rounded-full">ID: {lot.number}</Badge>
-                  {lot.quantity && (
-                    <Badge variant="outline" className="text-slate-500 font-bold text-[11px] px-4 py-1.5 rounded-full border-slate-200">
-                      {lot.quantity}
+        {lots.map((lot) => {
+          const currentLotBids = bids[lot.id] || [];
+          const currentPrice = currentLotBids.length > 0 ? Math.min(...currentLotBids.map(b => b.amount)) : lot.price;
+          
+          return (
+            <Card key={lot.id} className="border-none rounded-[50px] shadow-sm hover:shadow-2xl transition-all duration-500 bg-white p-2">
+              <CardContent className="p-10 space-y-8">
+                <div className="flex justify-between items-center">
+                  <div className="flex gap-2">
+                    <Badge variant="secondary" className="bg-slate-100 text-slate-500 font-bold text-[11px] px-4 py-1.5 rounded-full">ID: {lot.number}</Badge>
+                    {lot.quantity && (
+                      <Badge variant="outline" className="text-slate-500 font-bold text-[11px] px-4 py-1.5 rounded-full border-slate-200">
+                        {lot.quantity}
+                      </Badge>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-1.5 text-[11px] font-bold text-slate-400">
+                      <Clock size={12} />
+                      {lot.duration} soat
+                    </div>
+                    <Badge className="bg-red-50 text-red-500 border-none px-4 py-1.5 rounded-full flex items-center gap-2">
+                      <div className="w-4 h-4 rounded-full border-2 border-red-500 border-t-transparent animate-spin" />
+                      <span className="text-[11px] font-black font-mono">LIVE</span>
                     </Badge>
-                  )}
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="flex items-center gap-1.5 text-[11px] font-bold text-slate-400">
-                    <Clock size={12} />
-                    {lot.duration} soat
-                  </div>
-                  <Badge className="bg-red-50 text-red-500 border-none px-4 py-1.5 rounded-full flex items-center gap-2">
-                    <div className="w-4 h-4 rounded-full border-2 border-red-500 border-t-transparent animate-spin" />
-                    <span className="text-[11px] font-black font-mono">LIVE</span>
-                  </Badge>
-                </div>
-              </div>
-
-              <h2 className="text-4xl font-black text-[#121926] leading-tight uppercase tracking-tight">{lot.title}</h2>
-
-              <div className="bg-slate-50 rounded-[35px] p-8 flex justify-between items-center">
-                <div>
-                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">ЖОРИЙ НАРХ</p>
-                  <div className="flex items-baseline gap-2">
-                    <span className="text-5xl font-black text-primary tracking-tighter">{formatCurrency(bids[lot.id]?.[0]?.amount || lot.price)}</span>
-                    <span className="text-sm font-black text-primary uppercase">UZS</span>
                   </div>
                 </div>
-                <div className="text-right">
-                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">БЮДЖЕТ</p>
-                  <p className="text-xl font-black text-slate-600 tracking-tight">{formatCurrency(lot.budget)} UZS</p>
-                </div>
-              </div>
 
-              {activeTab === 'seller' ? (
-                <Button 
-                  onClick={() => setActiveLotId(lot.id)}
-                  className="w-full h-20 bg-primary hover:bg-primary/90 text-white rounded-[25px] text-lg font-black shadow-xl shadow-primary/20 uppercase"
-                >
-                  ТАКЛИФ БЕРИШ
-                </Button>
-              ) : (
-                <Button 
-                  onClick={() => setManageLotId(lot.id)}
-                  className="w-full h-20 bg-[#121926] hover:bg-black text-white rounded-[25px] text-lg font-black shadow-xl shadow-slate-200 uppercase"
-                >
-                  ЛОТНИ БОШҚАРИШ
-                </Button>
-              )}
-            </CardContent>
-          </Card>
-        ))}
+                <h2 className="text-4xl font-black text-[#121926] leading-tight uppercase tracking-tight">{lot.title}</h2>
+
+                <div className="bg-slate-50 rounded-[35px] p-8 flex justify-between items-center">
+                  <div>
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">ЖОРИЙ НАРХ</p>
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-5xl font-black text-primary tracking-tighter">{formatCurrency(currentPrice)}</span>
+                      <span className="text-sm font-black text-primary uppercase">UZS</span>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">БЮДЖЕТ</p>
+                    <p className="text-xl font-black text-slate-600 tracking-tight">{formatCurrency(lot.budget)} UZS</p>
+                  </div>
+                </div>
+
+                {activeTab === 'seller' ? (
+                  <Button 
+                    onClick={() => setActiveLotId(lot.id)}
+                    className="w-full h-20 bg-primary hover:bg-primary/90 text-white rounded-[25px] text-lg font-black shadow-xl shadow-primary/20 uppercase"
+                  >
+                    ТАКЛИФ БЕРИШ
+                  </Button>
+                ) : (
+                  <Button 
+                    onClick={() => setManageLotId(lot.id)}
+                    className="w-full h-20 bg-[#121926] hover:bg-black text-white rounded-[25px] text-lg font-black shadow-xl shadow-slate-200 uppercase"
+                  >
+                    ЛОТНИ БОШҚАРИШ
+                  </Button>
+                )}
+              </CardContent>
+            </Card>
+          );
+        })}
       </div>
     </div>
   );
