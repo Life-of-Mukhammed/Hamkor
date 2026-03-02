@@ -31,7 +31,10 @@ import {
   ChevronDown,
   Clock,
   TrendingUp,
-  AlertCircle
+  AlertCircle,
+  Cpu,
+  Search,
+  CheckCircle2
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
@@ -97,7 +100,7 @@ const INITIAL_LOTS: Lot[] = [
     price: 135773123,
     hasEscrow: true,
     hasBlitz: true,
-    durationSeconds: 2677, // 44:37
+    durationSeconds: 2677, 
   },
   {
     id: "2",
@@ -108,38 +111,12 @@ const INITIAL_LOTS: Lot[] = [
     lotId: "AUC-UZ-2026-002",
     price: 99185225,
     hasBlitz: true,
-    durationSeconds: 172800, // 48:00:00
-  }
-];
-
-const REGIONAL_LOTS: Lot[] = [
-  {
-    id: "r1",
-    title: "Qozog'iston ko'miri",
-    quantity: "1000 tonna",
-    category: "Energetika",
-    location: "Olmaota",
-    lotId: "AUC-KZ-2026-101",
-    price: 540000000,
-    hasEscrow: true,
-    durationSeconds: 86400,
-  },
-  {
-    id: "r2",
-    title: "Qirg'iziston asali",
-    quantity: "2 tonna",
-    category: "Oziq-ovqat",
-    location: "Bishkek",
-    lotId: "AUC-KG-2026-202",
-    price: 12000000,
-    hasBlitz: true,
-    durationSeconds: 120,
+    durationSeconds: 172800, 
   }
 ];
 
 export function AuctionHub() {
   const [lots, setLots] = useState<Lot[]>(INITIAL_LOTS);
-  const [regionalLots, setRegionalLots] = useState<Lot[]>(REGIONAL_LOTS);
   const [activeTab, setActiveTab] = useState("uzb");
   const { toast } = useToast();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -156,12 +133,6 @@ export function AuctionHub() {
     const timer = setInterval(() => {
       setGlobalTimeLeft((prev) => (prev > 0 ? prev - 1 : 0));
       setLots((prevLots) => 
-        prevLots.map(lot => ({
-          ...lot,
-          durationSeconds: lot.durationSeconds > 0 ? lot.durationSeconds - 1 : 0
-        }))
-      );
-      setRegionalLots((prevLots) => 
         prevLots.map(lot => ({
           ...lot,
           durationSeconds: lot.durationSeconds > 0 ? lot.durationSeconds - 1 : 0
@@ -309,6 +280,19 @@ export function AuctionHub() {
                   <Label className="text-[10px] font-black uppercase tracking-widest text-slate-500">Boshlang'ich narx</Label>
                   <Input placeholder="15 000 000" className="rounded-xl h-10 text-[11px] font-bold" value={newLotPrice} onChange={(e) => setNewLotPrice(e.target.value)} />
                 </div>
+                <div className="space-y-2">
+                  <Label className="text-[10px] font-black uppercase tracking-widest text-slate-500">Auktsion davomiyligi (soat)</Label>
+                  <RadioGroup defaultValue="24" onValueChange={setNewLotDuration} className="flex gap-4">
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="24" id="r1" />
+                      <Label htmlFor="r1" className="text-[11px] font-bold">24 soat</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="48" id="r2" />
+                      <Label htmlFor="r2" className="text-[11px] font-bold">48 soat</Label>
+                    </div>
+                  </RadioGroup>
+                </div>
               </div>
               <DialogFooter>
                 <Button onClick={handleCreateLot} className="w-full bg-[#2563eb] rounded-xl h-11 font-black uppercase tracking-widest text-[11px]">Lotni Tasdiqlash</Button>
@@ -341,7 +325,7 @@ export function AuctionHub() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-          <div className={cn(activeTab === "ai" ? "lg:col-span-12" : "lg:col-span-7", "space-y-8")}>
+          <div className={cn(activeTab === "ai" || activeTab === "central" ? "lg:col-span-12" : "lg:col-span-7", "space-y-8")}>
             <TabsContent value="uzb" className="m-0">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Aktiv Lotlar (O'zbekiston)</h2>
@@ -349,11 +333,176 @@ export function AuctionHub() {
               {renderLotList(lots)}
             </TabsContent>
 
-            <TabsContent value="central" className="m-0">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Markaziy Osiyo Lotlari</h2>
+            <TabsContent value="central" className="m-0 space-y-8">
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <Card className="lg:col-span-4 border-none shadow-sm rounded-[24px] bg-white p-6 relative overflow-hidden group">
+                  <div className="flex justify-between items-start mb-4">
+                    <h3 className="text-[12px] font-black uppercase tracking-widest text-slate-900">LOT-CA-001</h3>
+                    <Badge className="bg-red-50 text-red-500 border-none text-[8px] font-black uppercase px-2 py-0.5 flex items-center gap-1">
+                      <div className="w-1 h-1 rounded-full bg-red-500 animate-pulse" /> LIVE
+                    </Badge>
+                  </div>
+                  <p className="text-[10px] font-bold text-slate-400 uppercase mb-4">Elektronika — 500 dona TV</p>
+                  <div className="mb-4">
+                    <p className="text-3xl font-black text-blue-600 tracking-tighter">547 000 000 so'm</p>
+                    <p className="text-[10px] font-black text-green-500 uppercase flex items-center gap-1 mt-1">
+                      <TrendingUp size={12} /> 15 ta taklif
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-4 mb-6">
+                    <div className="flex items-center gap-1.5 text-red-500 text-[10px] font-black uppercase">
+                      <Clock size={12} /> 0:55 qoldi
+                    </div>
+                  </div>
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    <Button size="sm" className="bg-blue-600 text-white rounded-xl text-[9px] font-black uppercase h-8 px-4 gap-1.5">
+                      <Zap size={10} fill="currentColor" /> Taklif
+                    </Button>
+                    <Button size="sm" className="bg-emerald-500 text-white rounded-xl text-[9px] font-black uppercase h-8 px-4 gap-1.5">
+                      <Zap size={10} /> Blitz
+                    </Button>
+                    <Button size="sm" className="bg-indigo-500 text-white rounded-xl text-[9px] font-black uppercase h-8 px-4 gap-1.5">
+                      <FileText size={10} /> ERI
+                    </Button>
+                  </div>
+                  <p className="text-[9px] font-bold text-slate-300 uppercase">Takliflar: 120 ta</p>
+                </Card>
+
+                <Card className="lg:col-span-4 border-none shadow-sm rounded-[24px] bg-white p-6 relative overflow-hidden group">
+                  <div className="flex justify-between items-start mb-4">
+                    <h3 className="text-[12px] font-black uppercase tracking-widest text-slate-900">LOT-CA-002</h3>
+                    <Badge className="bg-red-50 text-red-500 border-none text-[8px] font-black uppercase px-2 py-0.5 flex items-center gap-1">
+                      <div className="w-1 h-1 rounded-full bg-red-500 animate-pulse" /> LIVE
+                    </Badge>
+                  </div>
+                  <p className="text-[10px] font-bold text-slate-400 uppercase mb-4">Transport — 3 ta yuk mashinasi</p>
+                  <div className="mb-4">
+                    <p className="text-3xl font-black text-blue-600 tracking-tighter">779 000 000 so'm</p>
+                    <p className="text-[10px] font-black text-green-500 uppercase flex items-center gap-1 mt-1">
+                      <TrendingUp size={12} /> 8 ta taklif
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-4 mb-6">
+                    <div className="flex items-center gap-1.5 text-red-500 text-[10px] font-black uppercase">
+                      <Clock size={12} /> 7:22 qoldi
+                    </div>
+                  </div>
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    <Button size="sm" className="bg-blue-600 text-white rounded-xl text-[9px] font-black uppercase h-8 px-4 gap-1.5">
+                      <Zap size={10} fill="currentColor" /> Taklif
+                    </Button>
+                    <Button size="sm" className="bg-emerald-500 text-white rounded-xl text-[9px] font-black uppercase h-8 px-4 gap-1.5">
+                      <Zap size={10} /> Blitz
+                    </Button>
+                    <Button size="sm" className="bg-blue-50 text-blue-600 rounded-xl text-[9px] font-black uppercase h-8 px-4 gap-1.5 border border-blue-100">
+                      <CheckCircle2 size={10} /> Tasdiqlash
+                    </Button>
+                  </div>
+                  <p className="text-[9px] font-bold text-slate-300 uppercase">Takliflar: 8 ta</p>
+                </Card>
+
+                <div className="lg:col-span-4 space-y-4">
+                  <Card className="border-none shadow-sm rounded-[24px] bg-white p-6">
+                    <h3 className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-6">ROBOT TAKLIF (AUTO-BID)</h3>
+                    <div className="space-y-4">
+                      <div className="space-y-2">
+                        <Label className="text-[9px] font-black uppercase text-slate-500">LOT raqami</Label>
+                        <Select defaultValue="LOT-CA-001">
+                          <SelectTrigger className="rounded-xl h-10 text-[11px] font-bold">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="LOT-CA-001">LOT-CA-001</SelectItem>
+                            <SelectItem value="LOT-CA-002">LOT-CA-002</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label className="text-[9px] font-black uppercase text-slate-500">Maksimal narx (so'm)</Label>
+                        <Input placeholder="350000000" className="rounded-xl h-10 text-[11px] font-bold" />
+                      </div>
+                      <div className="space-y-2">
+                        <Label className="text-[9px] font-black uppercase text-slate-500">Oshirish qadami</Label>
+                        <Input placeholder="5000000" className="rounded-xl h-10 text-[11px] font-bold" />
+                      </div>
+                      <Button className="w-full bg-[#8b5cf6] hover:bg-violet-700 text-white rounded-xl h-11 font-black uppercase tracking-widest text-[10px] gap-2">
+                        <Cpu size={14} /> Robot yoqish
+                      </Button>
+                    </div>
+                  </Card>
+
+                  <Card className="border-none shadow-sm rounded-[24px] bg-white p-6">
+                    <h3 className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-4">STIR TEKSHIRISH</h3>
+                    <div className="flex gap-2">
+                      <Input placeholder="INN kiriting" className="rounded-xl h-10 text-[11px] font-bold flex-1" />
+                      <Button className="bg-blue-600 text-white rounded-xl h-10 w-12 p-0 flex items-center justify-center">
+                        <Search size={18} />
+                      </Button>
+                    </div>
+                  </Card>
+                </div>
               </div>
-              {renderLotList(regionalLots)}
+
+              <Card className="border-none shadow-sm rounded-[32px] bg-white p-8">
+                <div className="flex items-center justify-between mb-8">
+                  <h2 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">BARCHA LOTLAR</h2>
+                  <div className="flex gap-4">
+                    <Select defaultValue="real-estate">
+                      <SelectTrigger className="w-[180px] rounded-xl h-10 text-[10px] font-black uppercase">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="real-estate">Ko'chmas mulk</SelectItem>
+                        <SelectItem value="transport">Transport</SelectItem>
+                        <SelectItem value="xizmatlar">Xizmatlar</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <Button onClick={() => setIsDialogOpen(true)} className="bg-[#2563eb] text-white rounded-xl h-10 px-6 text-[10px] font-black uppercase tracking-widest gap-2 shadow-lg shadow-blue-100">
+                      <Plus size={14} /> Yangi lot
+                    </Button>
+                  </div>
+                </div>
+
+                <Table>
+                  <TableHeader className="bg-slate-50/50">
+                    <TableRow className="hover:bg-transparent border-none">
+                      <TableHead className="text-[9px] font-black uppercase h-10">Lot</TableHead>
+                      <TableHead className="text-[9px] font-black uppercase h-10">Kategoriya</TableHead>
+                      <TableHead className="text-[9px] font-black uppercase h-10">Boshlang'ich</TableHead>
+                      <TableHead className="text-[9px] font-black uppercase h-10">Joriy narx</TableHead>
+                      <TableHead className="text-[9px] font-black uppercase h-10">Takliflar</TableHead>
+                      <TableHead className="text-[9px] font-black uppercase h-10">Holat</TableHead>
+                      <TableHead className="text-right text-[9px] font-black uppercase h-10">Amal</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {[
+                      { id: "LOT-003", cat: "Ko'chmas mulk", init: "800,000,000", current: "920,000,000", bids: 23, status: "LIVE", statusColor: "text-red-500", action: "Kirish" },
+                      { id: "LOT-004", cat: "Xizmatlar", init: "50,000,000", current: "67,500,000", bids: 11, status: "Yaqinda", statusColor: "text-amber-500", action: "Obuna" },
+                      { id: "LOT-005", cat: "Tovarlar", init: "120,000,000", current: "134,000,000", bids: 7, status: "LIVE", statusColor: "text-red-500", action: "Taklif" },
+                    ].map((item, idx) => (
+                      <TableRow key={idx} className="border-slate-50 hover:bg-slate-50/50 transition-colors">
+                        <TableCell className="text-[11px] font-black text-slate-700">{item.id}</TableCell>
+                        <TableCell className="text-[11px] font-bold text-slate-500">{item.cat}</TableCell>
+                        <TableCell className="text-[11px] font-bold text-slate-400">{item.init}</TableCell>
+                        <TableCell className="text-[11px] font-black text-slate-900">{item.current}</TableCell>
+                        <TableCell className="text-[11px] font-bold text-slate-500">{item.bids}</TableCell>
+                        <TableCell>
+                          <div className={cn("flex items-center gap-1.5 text-[9px] font-black uppercase", item.statusColor)}>
+                            <div className={cn("w-1 h-1 rounded-full bg-current", item.status === "LIVE" && "animate-pulse")} />
+                            {item.status}
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <Button size="sm" className="bg-blue-600 text-white rounded-lg h-7 px-4 text-[9px] font-black uppercase shadow-md shadow-blue-100">
+                            {item.action}
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </Card>
             </TabsContent>
 
             <TabsContent value="my" className="m-0">
@@ -424,7 +573,7 @@ export function AuctionHub() {
             </TabsContent>
           </div>
 
-          {activeTab !== "ai" && (
+          {(activeTab === "uzb" || activeTab === "my") && (
             <div className="lg:col-span-5 space-y-8">
               <Card className="border-none shadow-sm rounded-[32px] bg-white p-8">
                 <h2 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-8">Jonli Statistika</h2>
@@ -487,3 +636,4 @@ export function AuctionHub() {
     </div>
   );
 }
+
