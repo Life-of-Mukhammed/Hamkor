@@ -2,104 +2,110 @@
 "use client";
 
 import { useState } from "react";
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
 import { 
   Search, 
   Filter, 
   ShoppingBag, 
-  TrendingUp, 
-  ShieldCheck, 
-  Package, 
-  Truck,
-  ArrowRight
+  Sparkles, 
+  Star,
+  ShoppingCart,
+  ChevronDown
 } from "lucide-react";
-import Image from "next/image";
-import { dict } from "@/lib/translations";
 import { cn } from "@/lib/utils";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const CATEGORIES = [
   { id: 'all', label: 'Barchasi' },
+  { id: 'construction', label: 'Qurilish materiallari' },
+  { id: 'metal', label: 'Metall va prokat' },
   { id: 'electronics', label: 'Elektronika' },
-  { id: 'construction', label: 'Qurilish' },
-  { id: 'industrial', label: 'Sanoat' },
   { id: 'agriculture', label: 'Qishloq xo\'jaligi' },
+  { id: 'machinery', label: 'Maxsus texnika' },
 ];
 
 const PRODUCTS = [
   {
     id: 1,
-    title: "Sanoat Quyosh Panellari 550W",
-    company: "GreenEnergy Solutions",
-    category: "industrial",
-    price: 1250000,
-    unit: "dona",
-    moq: "50 dona",
-    stock: "850 dona",
-    image: "https://picsum.photos/seed/solar/600/400",
-    hint: "solar panels"
+    title: "Portland Sement M500",
+    company: "Bekabod Sement",
+    category: "Qurilish materiallari",
+    categoryKey: "construction",
+    price: 45000,
+    unit: "qop",
+    stock: 2000,
+    rating: 4.8,
+    displayText: "Sement"
   },
   {
     id: 2,
-    title: "Beton Aralashtirgich - JS750",
-    company: "UzStroy Mash",
-    category: "construction",
-    price: 45000000,
-    unit: "komplekt",
-    moq: "1 komplekt",
-    stock: "12 dona",
-    image: "https://picsum.photos/seed/concrete/600/400",
-    hint: "construction machinery"
+    title: "Amd AMD Ryzen 9 Server",
+    company: "Tech Systems",
+    category: "Elektronika",
+    categoryKey: "electronics",
+    price: 12500000,
+    unit: "dona",
+    stock: 15,
+    rating: 4.9,
+    displayText: "Server"
   },
   {
     id: 3,
-    title: "Dell PowerEdge R750 Server",
-    company: "IT-Support LLC",
-    category: "electronics",
-    price: 82000000,
+    title: "Aluminiy Profil 6m",
+    company: "Akfa Impex",
+    category: "Metall va prokat",
+    categoryKey: "metal",
+    price: 85000,
     unit: "dona",
-    moq: "1 dona",
-    stock: "5 dona",
-    image: "https://picsum.photos/seed/server/600/400",
-    hint: "server rack"
+    stock: 500,
+    rating: 4.5,
+    displayText: "Profil"
   },
   {
     id: 4,
-    title: "G'alla kombayni - Case IH",
-    company: "AgroTeh Servis",
-    category: "agriculture",
-    price: 1200000000,
+    title: "Traktor MTZ-82",
+    company: "Agrotex",
+    category: "Maxsus texnika",
+    categoryKey: "machinery",
+    price: 145000000,
     unit: "dona",
-    moq: "1 dona",
-    stock: "3 dona",
-    image: "https://picsum.photos/seed/tractor/600/400",
-    hint: "agricultural tractor"
+    stock: 2,
+    rating: 4.7,
+    displayText: "Traktor"
   },
   {
     id: 5,
-    title: "Chelik Armatura A500C",
-    company: "Metal-Prom-Uz",
-    category: "construction",
-    price: 8900000,
+    title: "Oq qum (Tozalangan)",
+    company: "TashQum QazibOlish",
+    category: "Qurilish materiallari",
+    categoryKey: "construction",
+    price: 60000,
     unit: "tonna",
-    moq: "10 tonna",
-    stock: "500 tonna",
-    image: "https://picsum.photos/seed/steel/600/400",
-    hint: "steel rebars"
+    stock: 50,
+    rating: 4.2,
+    displayText: "Qum"
   },
   {
     id: 6,
-    title: "Sanoat Konditsioneri 100kW",
-    company: "Artel Industrial",
-    category: "industrial",
-    price: 32000000,
-    unit: "dona",
-    moq: "2 dona",
-    stock: "25 dona",
-    image: "https://picsum.photos/seed/hvac/600/400",
-    hint: "industrial air conditioner"
+    title: "Armatura 16mm A500C",
+    company: "Metall Invest",
+    category: "Metall va prokat",
+    categoryKey: "metal",
+    price: 8900000,
+    unit: "tonna",
+    stock: 120,
+    rating: 4.6,
+    displayText: "Armatura"
   }
 ];
 
@@ -108,7 +114,7 @@ export function Marketplace() {
   const [searchTerm, setSearchTerm] = useState("");
 
   const filteredProducts = PRODUCTS.filter(p => 
-    (activeCategory === 'all' || p.category === activeCategory) &&
+    (activeCategory === 'all' || p.categoryKey === activeCategory) &&
     (p.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
      p.company.toLowerCase().includes(searchTerm.toLowerCase()))
   );
@@ -117,139 +123,166 @@ export function Marketplace() {
     new Intl.NumberFormat('uz-UZ').format(val);
 
   return (
-    <div className="space-y-8 animate-fade-in text-slate-700 pb-20">
-      {/* Header Section */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+    <div className="space-y-6 animate-fade-in text-slate-700 pb-20">
+      {/* Page Title */}
+      <h1 className="text-2xl font-black text-slate-900 tracking-tight">B2B Marketplace</h1>
+
+      {/* AI Recommendation Banner */}
+      <div className="bg-[#f0f4ff] border border-blue-100 rounded-xl p-4 flex items-start gap-4 shadow-sm">
+        <div className="bg-white p-2 rounded-lg shadow-sm text-blue-600">
+          <Sparkles size={20} />
+        </div>
         <div>
-          <h1 className="text-3xl font-black text-slate-900 tracking-tight uppercase">B2B МАРКЕТПЛЕЙС</h1>
-          <p className="text-[11px] font-bold text-slate-400 uppercase tracking-[0.2em] mt-2 flex items-center gap-2">
-            <ShieldCheck size={14} className="text-blue-600" /> 
-            Ishonchli yetkazib beruvchilar va ulgurji narxlar
+          <h4 className="text-[11px] font-black text-blue-600 uppercase tracking-widest mb-1">AI Tavsiyalari</h4>
+          <p className="text-[12px] text-slate-500 font-medium">
+            Siz o'tgan safar armatura xarid qildingiz, ehtimol sizga sement va beton kerak bo'lishi mumkin. Quyidagi ro'yxat siz uchun moslashtirilgan.
           </p>
         </div>
-        <div className="flex items-center gap-4 bg-white p-2 rounded-2xl shadow-sm border border-slate-100">
-          <div className="flex items-center gap-2 px-4 border-r border-slate-100">
-            <TrendingUp size={16} className="text-emerald-500" />
-            <span className="text-[10px] font-black uppercase tracking-widest">+12% Bozor o'sishi</span>
-          </div>
-          <div className="flex items-center gap-2 px-4">
-            <Package size={16} className="text-blue-500" />
-            <span className="text-[10px] font-black uppercase tracking-widest">12,400+ Mahsulotlar</span>
-          </div>
-        </div>
       </div>
 
-      {/* Search and Filters */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        <div className="lg:col-span-8">
-          <div className="relative group">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors" size={20} />
-            <Input 
-              placeholder="Mahsulot nomi yoki kompaniya bo'yicha qidirish..." 
-              className="h-14 pl-12 rounded-2xl border-none bg-white shadow-sm text-sm font-bold placeholder:text-slate-300 focus-visible:ring-2 focus-visible:ring-blue-100"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </div>
-        </div>
-        <div className="lg:col-span-4 flex gap-3">
-          <Button variant="outline" className="h-14 flex-1 rounded-2xl bg-white border-none shadow-sm font-black uppercase tracking-widest text-[10px] gap-2">
-            <Filter size={16} /> Filtrlar
-          </Button>
-          <Button className="h-14 w-14 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-200">
-            <ShoppingBag size={20} />
-          </Button>
-        </div>
-      </div>
-
-      {/* Categories Bar */}
-      <div className="flex items-center gap-3 overflow-x-auto pb-4 no-scrollbar">
-        {CATEGORIES.map((cat) => (
-          <button
-            key={cat.id}
-            onClick={() => setActiveCategory(cat.id)}
-            className={cn(
-              "px-6 py-3 rounded-full text-[10px] font-black uppercase tracking-widest whitespace-nowrap transition-all duration-300",
-              activeCategory === cat.id 
-                ? "bg-blue-600 text-white shadow-lg shadow-blue-200" 
-                : "bg-white text-slate-400 hover:bg-slate-50 border border-slate-100"
-            )}
-          >
-            {cat.label}
-          </button>
-        ))}
-      </div>
-
-      {/* Products Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {filteredProducts.map((product) => (
-          <Card key={product.id} className="border-none shadow-sm hover:shadow-xl transition-all duration-500 rounded-[32px] bg-white overflow-hidden group">
-            <div className="relative h-56 w-full overflow-hidden">
-              <Image 
-                src={product.image} 
-                alt={product.title} 
-                fill 
-                className="object-cover group-hover:scale-110 transition-transform duration-700"
-                data-ai-hint={product.hint}
-              />
-              <div className="absolute top-4 left-4">
-                <Badge className="bg-white/90 backdrop-blur-md text-blue-600 border-none text-[9px] font-black uppercase px-3 py-1">
-                  {product.category}
-                </Badge>
-              </div>
-              <div className="absolute top-4 right-4">
-                <div className="w-10 h-10 bg-white/90 backdrop-blur-md rounded-xl flex items-center justify-center text-slate-900 shadow-sm cursor-pointer hover:bg-blue-600 hover:text-white transition-colors">
-                  <TrendingUp size={18} />
-                </div>
-              </div>
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mt-8">
+        {/* Sidebar Filters */}
+        <div className="lg:col-span-3 space-y-6">
+          <Card className="border-none shadow-sm rounded-2xl bg-white p-6">
+            <div className="flex items-center gap-2 mb-6">
+              <Filter size={16} className="text-slate-400" />
+              <h3 className="text-sm font-black uppercase tracking-widest text-slate-900">Filtrlar</h3>
             </div>
-            <CardContent className="p-8">
-              <div className="mb-4">
-                <p className="text-[9px] font-black text-blue-600 uppercase tracking-widest mb-1">{product.company}</p>
-                <h3 className="text-[14px] font-black text-slate-900 tracking-tight leading-tight line-clamp-2">{product.title}</h3>
-              </div>
-              
-              <div className="grid grid-cols-2 gap-4 mb-6">
-                <div className="p-3 bg-slate-50 rounded-2xl border border-slate-100">
-                  <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">MOQ</p>
-                  <p className="text-[11px] font-black text-slate-700 uppercase">{product.moq}</p>
-                </div>
-                <div className="p-3 bg-emerald-50 rounded-2xl border border-emerald-100">
-                  <p className="text-[8px] font-black text-emerald-600 uppercase tracking-widest mb-1">Omborda</p>
-                  <p className="text-[11px] font-black text-emerald-700 uppercase">{product.stock}</p>
+
+            <div className="space-y-6">
+              {/* Categories */}
+              <div>
+                <h4 className="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-4">Kategoriyalar</h4>
+                <div className="space-y-3">
+                  {CATEGORIES.map((cat) => (
+                    <div key={cat.id} className="flex items-center space-x-2">
+                      <Checkbox 
+                        id={cat.id} 
+                        checked={activeCategory === cat.id}
+                        onCheckedChange={() => setActiveCategory(cat.id)}
+                        className="rounded border-slate-200"
+                      />
+                      <label 
+                        htmlFor={cat.id} 
+                        className="text-[12px] font-bold text-slate-600 cursor-pointer select-none"
+                      >
+                        {cat.label}
+                      </label>
+                    </div>
+                  ))}
                 </div>
               </div>
 
-              <div className="flex items-end justify-between">
-                <div>
-                  <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">Narxi (1 {product.unit})</p>
-                  <p className="text-xl font-black text-slate-900 tracking-tighter">
-                    {formatCurrency(product.price)} <span className="text-[10px] text-slate-400">so'm</span>
-                  </p>
-                </div>
-                <div className="flex items-center gap-1.5 text-blue-600 text-[10px] font-black uppercase tracking-widest">
-                  <Truck size={14} /> 24-48s
+              {/* Price Range */}
+              <div>
+                <h4 className="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-4">Narx oralig'i (UZS)</h4>
+                <div className="flex items-center gap-2">
+                  <Input placeholder="Dan" className="h-10 text-[12px] font-bold rounded-xl border-slate-100 bg-slate-50" />
+                  <Input placeholder="Gacha" className="h-10 text-[12px] font-bold rounded-xl border-slate-100 bg-slate-50" />
                 </div>
               </div>
-            </CardContent>
-            <CardFooter className="p-8 pt-0">
-              <Button className="w-full bg-slate-900 hover:bg-blue-600 text-white rounded-2xl h-14 font-black uppercase tracking-widest text-[11px] gap-2 transition-all duration-300">
-                Buyurtma Berish <ArrowRight size={16} />
+
+              {/* Delivery Options */}
+              <div>
+                <h4 className="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-4">Yetkazib berish</h4>
+                <div className="space-y-3">
+                  <div className="flex items-center space-x-2">
+                    <Checkbox id="stock" className="rounded border-slate-200" />
+                    <label htmlFor="stock" className="text-[12px] font-bold text-slate-600 cursor-pointer">Omborda tayyor (In Stock)</label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Checkbox id="verified" className="rounded border-slate-200" />
+                    <label htmlFor="verified" className="text-[12px] font-bold text-slate-600 cursor-pointer">Faqat tekshirilgan sotuvchilar</label>
+                  </div>
+                </div>
+              </div>
+
+              <Button className="w-full bg-[#0b4db1] hover:bg-blue-700 text-white rounded-xl h-11 font-black uppercase tracking-widest text-[11px] mt-4">
+                Filtrni qo'llash
               </Button>
-            </CardFooter>
+            </div>
           </Card>
-        ))}
-      </div>
-
-      {filteredProducts.length === 0 && (
-        <div className="flex flex-col items-center justify-center py-20 text-center">
-          <div className="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mb-6">
-            <ShoppingBag className="text-slate-300" size={40} />
-          </div>
-          <h3 className="text-lg font-black text-slate-400 uppercase tracking-widest">Mahsulot topilmadi</h3>
-          <p className="text-[11px] font-bold text-slate-400 uppercase mt-2">Qidiruv so'rovini o'zgartirib ko'ring yoki boshqa toifani tanlang.</p>
         </div>
-      )}
+
+        {/* Main Content Area */}
+        <div className="lg:col-span-9 space-y-6">
+          {/* Search and Sort Header */}
+          <div className="flex gap-4">
+            <div className="relative flex-1 group">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-blue-600 transition-colors" size={18} />
+              <Input 
+                placeholder="Mahsulot nomi, brend yoki sotuvchi bo'yicha qidiruv" 
+                className="h-12 pl-12 rounded-xl border-slate-100 bg-white shadow-sm text-[13px] font-bold placeholder:text-slate-300 focus-visible:ring-2 focus-visible:ring-blue-50"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
+            <Select defaultValue="mashhur">
+              <SelectTrigger className="w-[200px] h-12 rounded-xl border-slate-100 bg-white shadow-sm text-[12px] font-black uppercase tracking-widest px-4">
+                <SelectValue placeholder="Mashhur" />
+              </SelectTrigger>
+              <SelectContent className="rounded-xl border-slate-100">
+                <SelectItem value="mashhur">Mashhur</SelectItem>
+                <SelectItem value="arzon">Arzonlari oldin</SelectItem>
+                <SelectItem value="qimmat">Qimmatlari oldin</SelectItem>
+                <SelectItem value="yangi">Yangi qo'shilganlar</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Products Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            {filteredProducts.map((product) => (
+              <Card key={product.id} className="border-none shadow-sm hover:shadow-xl transition-all duration-500 rounded-3xl bg-white overflow-hidden group">
+                {/* Minimalistic Image Area */}
+                <div className="relative h-48 w-full bg-[#e9ecf2] flex items-center justify-center p-6">
+                  <span className="text-5xl font-black text-slate-400/30 uppercase tracking-tighter select-none">
+                    {product.displayText}
+                  </span>
+                </div>
+                
+                <CardContent className="p-6">
+                  <div className="flex justify-between items-start mb-4">
+                    <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest">{product.category}</p>
+                    <div className="flex items-center gap-1 text-amber-400 font-black text-[11px]">
+                      <Star size={12} fill="currentColor" /> {product.rating}
+                    </div>
+                  </div>
+                  
+                  <h3 className="text-[14px] font-black text-slate-900 tracking-tight leading-tight mb-2 group-hover:text-[#0b4db1] transition-colors line-clamp-1">
+                    {product.title}
+                  </h3>
+                  
+                  <p className="text-[11px] font-bold text-slate-400 mb-4 uppercase tracking-tighter">
+                    {product.company} • {product.stock} mavjud
+                  </p>
+
+                  <div className="flex items-end justify-between mt-auto">
+                    <div>
+                      <p className="text-xl font-black text-[#0b4db1] tracking-tighter">
+                        {formatCurrency(product.price)} <span className="text-[11px] text-slate-400 font-bold uppercase tracking-widest ml-1">/ {product.unit}</span>
+                      </p>
+                    </div>
+                  </div>
+
+                  <Button className="w-full bg-[#0b4db1] hover:bg-blue-700 text-white rounded-xl h-11 font-black uppercase tracking-widest text-[11px] gap-2 mt-6 shadow-md shadow-blue-100">
+                    <ShoppingCart size={16} /> Savatga qo'shish
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          {filteredProducts.length === 0 && (
+            <div className="flex flex-col items-center justify-center py-20 text-center">
+              <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-6">
+                <ShoppingBag className="text-slate-200" size={40} />
+              </div>
+              <h3 className="text-lg font-black text-slate-300 uppercase tracking-widest">Mahsulot topilmadi</h3>
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
