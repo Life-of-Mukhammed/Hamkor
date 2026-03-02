@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from "react";
@@ -6,7 +5,7 @@ import { assessAiRiskScore, AiRiskScoreAssessmentOutput } from "@/ai/flows/ai-ri
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Shield, Search, AlertTriangle, CheckCircle } from "lucide-react";
+import { Shield, Search, TriangleAlert, CircleCheck } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
 import { dict } from "@/lib/translations";
@@ -89,7 +88,7 @@ export function AiSecurity() {
           <Card className="glass border-none neo-shadow">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                {result.blacklistMatch ? <AlertTriangle className="text-red-500" /> : <CheckCircle className="text-green-500" />}
+                {result.blacklistMatch ? <TriangleAlert className="text-red-500" /> : <CircleCheck className="text-green-500" />}
                 {result.blacklistMatch ? "Қора рўйхатда мавжуд" : "Тоза статус"}
               </CardTitle>
             </CardHeader>

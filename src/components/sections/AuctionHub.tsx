@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect } from "react";
@@ -20,19 +19,24 @@ export function AuctionHub() {
     }, 1000);
     
     const priceUpdate = setInterval(() => {
-      const increment = Math.floor(Math.random() * 500000) + 100000;
-      setPrice((prev) => prev + increment);
-      setHistory((prev) => [
-        { id: Date.now(), amount: price + increment, time: new Date().toLocaleTimeString() },
-        ...prev.slice(0, 4),
-      ]);
+      setPrice((prev) => {
+        const increment = Math.floor(Math.random() * 500000) + 100000;
+        const newPrice = prev + increment;
+        
+        setHistory((prevHistory) => [
+          { id: Date.now(), amount: newPrice, time: new Date().toLocaleTimeString() },
+          ...prevHistory.slice(0, 4),
+        ]);
+        
+        return newPrice;
+      });
     }, 3000);
 
     return () => {
       clearInterval(timer);
       clearInterval(priceUpdate);
     };
-  }, [price]);
+  }, []);
 
   const formatCurrency = (val: number) => 
     new Intl.NumberFormat('uz-UZ', { style: 'currency', currency: 'UZS', maximumFractionDigits: 0 }).format(val);

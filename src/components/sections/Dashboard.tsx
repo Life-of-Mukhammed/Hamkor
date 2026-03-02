@@ -1,9 +1,8 @@
-
 "use client";
 
 import { AdCarousel } from "@/components/dashboard/AdCarousel";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Landmark, TrendingUp, Users, Package } from "lucide-react";
+import { Landmark, TrendingUp, Users, Package, Bell } from "lucide-react";
 
 export function Dashboard() {
   const stats = [
@@ -40,7 +39,6 @@ export function Dashboard() {
             <CardTitle>Бозор динамикаси (Live)</CardTitle>
           </CardHeader>
           <CardContent className="h-full flex items-center justify-center text-muted-foreground">
-            {/* Chart would go here */}
             <div className="flex flex-col items-center">
               <TrendingUp size={48} className="opacity-10 mb-4" />
               <p className="text-sm font-medium">Таҳлилий графиклар юкланмоқда...</p>

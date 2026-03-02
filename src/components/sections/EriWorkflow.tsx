@@ -1,10 +1,9 @@
-
 "use client";
 
 import { useState } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { FileText, CheckCircle2, XCircle, Eye, ShieldCheck, Download } from "lucide-react";
+import { FileText, CircleCheck, CircleX, Eye, ShieldCheck, Download } from "lucide-react";
 import { dict } from "@/lib/translations";
 import { useToast } from "@/hooks/use-toast";
 
@@ -79,7 +78,7 @@ export function EriWorkflow() {
                 <div key={i} className="flex gap-4">
                   <div className="flex flex-col items-center">
                     {s.status === 'completed' ? (
-                      <CheckCircle2 className="text-green-500" />
+                      <CircleCheck className="text-green-500" />
                     ) : (
                       <div className="w-6 h-6 rounded-full border-2 border-muted" />
                     )}

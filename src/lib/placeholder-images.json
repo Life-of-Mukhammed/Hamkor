@@ -1,3 +1,22 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "uzauto",
+      "description": "UzAuto Motors Logo Premium",
+      "imageUrl": "https://images.unsplash.com/photo-1689942007858-7b12bf5864bd?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8YXV0b21vdGl2ZSUyMG1hbnVmYWN0dXJpbmd8ZW58MHx8fHwxNzcyNDgxNzc2fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "automotive manufacturing"
+    },
+    {
+      "id": "artel",
+      "description": "Artel Electronics Premium",
+      "imageUrl": "https://images.unsplash.com/photo-1675263943038-286c7fd18eaa?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxlbGVjdHJvbmljcyUyMGFwcGxpYW5jZXN8ZW58MHx8fHwxNzcyNDgxNzc2fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "electronics appliances"
+    },
+    {
+      "id": "akfa",
+      "description": "Akfa Group Premium",
+      "imageUrl": "https://images.unsplash.com/photo-1673978484096-d0a2e6c8ba2f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxjb25zdHJ1Y3Rpb24lMjB3aW5kb3d8ZW58MHx8fHwxNzcyNDgxNzc2fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "construction window"
+    }
+  ]
 }
