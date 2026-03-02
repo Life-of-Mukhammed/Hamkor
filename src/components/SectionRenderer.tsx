@@ -8,6 +8,9 @@ import { AiSecurity } from "@/components/sections/AiSecurity";
 import { EriWorkflow } from "@/components/sections/EriWorkflow";
 import { Contracts } from "@/components/sections/Contracts";
 import { Marketplace } from "@/components/sections/Marketplace";
+import { Offers } from "@/components/sections/Offers";
+import { Inventory } from "@/components/sections/Inventory";
+import { Finance } from "@/components/sections/Finance";
 import { Hammer } from "lucide-react";
 import { ContractGenerationOutput } from "@/ai/flows/contract-generation-flow";
 
@@ -32,6 +35,9 @@ export function SectionRenderer({
     case 'aiSecurity': return <AiSecurity />;
     case 'eri': return <EriWorkflow onContractSigned={onContractSigned} />;
     case 'contracts': return <Contracts contracts={signedContracts} />;
+    case 'offers': return <Offers />;
+    case 'inventory': return <Inventory />;
+    case 'finance': return <Finance />;
     default:
       return (
         <div className="flex flex-col items-center justify-center min-h-[60vh] text-center animate-fade-in">
