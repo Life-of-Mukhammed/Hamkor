@@ -147,7 +147,7 @@ const INITIAL_LOTS: Lot[] = [
 export function AuctionHub() {
   const [lots, setLots] = useState<Lot[]>(INITIAL_LOTS);
   const lotsRef = useRef<Lot[]>(lots);
-  const [activeTab, setActiveTab] = useState("uzb");
+  const [activeTab, setActiveTab] = useState("central");
   const { toast } = useToast();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -183,7 +183,7 @@ export function AuctionHub() {
     return () => clearInterval(timer);
   }, []);
 
-  // Robot Auto-Bid Simulation Logic - Fixed to avoid side effects during render
+  // Robot Auto-Bid Simulation Logic
   useEffect(() => {
     if (!isAutoBidActive) return;
 
@@ -197,7 +197,6 @@ export function AuctionHub() {
       const stepNum = parseFloat(autoBidStep.replace(/\s/g, ''));
 
       if (targetLot.price + stepNum > maxPriceNum) {
-        // Stop robot if max price reached - Side effects are outside the updater
         setIsAutoBidActive(false);
         toast({
           title: "Robot to'xtadi",
@@ -206,7 +205,6 @@ export function AuctionHub() {
         return;
       }
 
-      // Update state if price is within limits
       setLots(prev => prev.map(lot => 
         lot.lotId === autoBidLotId 
           ? { ...lot, price: lot.price + stepNum, bidsCount: (lot.bidsCount || 0) + 1 }
@@ -238,6 +236,26 @@ export function AuctionHub() {
       });
     }
     setIsAutoBidActive(!isAutoBidActive);
+  };
+
+  const handlePlaceBid = (lotId: string) => {
+    const lot = lots.find(l => l.lotId === lotId);
+    if (!lot) return;
+
+    // Har bir taklif narxni 5,000,000 so'mga oshiradi
+    const increment = 5000000;
+    const newPrice = lot.price + increment;
+
+    setLots(prev => prev.map(l => 
+      l.lotId === lotId 
+        ? { ...l, price: newPrice, bidsCount: (l.bidsCount || 0) + 1 }
+        : l
+    ));
+
+    toast({
+      title: "Taklif qabul qilindi",
+      description: `${lotId} uchun yangi narx: ${formatCurrency(newPrice)} so'm`,
+    });
   };
 
   const formatTime = (seconds: number) => {
@@ -302,8 +320,12 @@ export function AuctionHub() {
             </div>
 
             <div className="flex flex-wrap gap-2.5">
-              <Button size="sm" className="h-8 bg-[#2563eb] hover:bg-blue-700 text-white rounded-full text-[9px] font-black uppercase px-5 gap-2 tracking-widest">
-                <Zap size={10} fill="currentColor" /> Kuzatish
+              <Button 
+                onClick={() => handlePlaceBid(lot.lotId)}
+                size="sm" 
+                className="h-8 bg-[#2563eb] hover:bg-blue-700 text-white rounded-full text-[9px] font-black uppercase px-5 gap-2 tracking-widest"
+              >
+                <Zap size={10} fill="currentColor" /> Taklif
               </Button>
               <Button variant="outline" size="sm" className="h-8 border-slate-100 hover:border-blue-200 text-slate-500 hover:text-blue-600 rounded-full text-[9px] font-black uppercase px-4 gap-2 tracking-widest transition-colors">
                 <Info size={10} /> Batafsil
@@ -405,14 +427,14 @@ export function AuctionHub() {
         </div>
       </div>
 
-      <Tabs defaultValue="uzb" className="w-full" onValueChange={setActiveTab}>
+      <Tabs defaultValue="central" className="w-full" onValueChange={setActiveTab}>
         <div className="border-b border-slate-100 mb-8">
           <TabsList className="bg-transparent h-12 p-0 gap-10">
-            <TabsTrigger value="uzb" className="data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-blue-600 rounded-none h-full px-0 text-[10px] font-black uppercase tracking-widest gap-2 text-slate-400 data-[state=active]:text-blue-600">
-              <Flag size={14} /> O'zbekiston
-            </TabsTrigger>
             <TabsTrigger value="central" className="data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-blue-600 rounded-none h-full px-0 text-[10px] font-black uppercase tracking-widest gap-2 text-slate-400 data-[state=active]:text-blue-600">
               <Globe size={14} /> Markaziy Osiyo
+            </TabsTrigger>
+            <TabsTrigger value="uzb" className="data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-blue-600 rounded-none h-full px-0 text-[10px] font-black uppercase tracking-widest gap-2 text-slate-400 data-[state=active]:text-blue-600">
+              <Flag size={14} /> O'zbekiston
             </TabsTrigger>
             <TabsTrigger value="my" className="data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-blue-600 rounded-none h-full px-0 text-[10px] font-black uppercase tracking-widest gap-2 text-slate-400 data-[state=active]:text-blue-600">
               <User size={14} /> Mening Takliflarim
@@ -455,7 +477,10 @@ export function AuctionHub() {
                       </div>
                     </div>
                     <div className="flex flex-wrap gap-2 mb-4">
-                      <Button size="sm" className="bg-blue-600 text-white rounded-xl text-[9px] font-black uppercase h-8 px-4 gap-1.5">
+                      <Button 
+                        onClick={() => handlePlaceBid(lot.lotId)}
+                        size="sm" className="bg-blue-600 text-white rounded-xl text-[9px] font-black uppercase h-8 px-4 gap-1.5"
+                      >
                         <Zap size={10} fill="currentColor" /> Taklif
                       </Button>
                       <Button size="sm" className="bg-emerald-500 text-white rounded-xl text-[9px] font-black uppercase h-8 px-4 gap-1.5">
@@ -580,7 +605,10 @@ export function AuctionHub() {
                           </div>
                         </TableCell>
                         <TableCell className="text-right">
-                          <Button size="sm" className="bg-blue-600 text-white rounded-lg h-7 px-4 text-[9px] font-black uppercase shadow-md shadow-blue-100">
+                          <Button 
+                            onClick={() => handlePlaceBid(item.lotId)}
+                            size="sm" className="bg-blue-600 text-white rounded-lg h-7 px-4 text-[9px] font-black uppercase shadow-md shadow-blue-100"
+                          >
                             Taklif
                           </Button>
                         </TableCell>
