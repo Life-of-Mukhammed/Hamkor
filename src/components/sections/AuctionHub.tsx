@@ -34,7 +34,9 @@ import {
   AlertCircle,
   Cpu,
   Search,
-  CheckCircle2
+  CheckCircle2,
+  Settings2,
+  ZapOff
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
@@ -87,9 +89,34 @@ interface Lot {
   hasEscrow?: boolean;
   hasBlitz?: boolean;
   durationSeconds: number;
+  bidsCount?: number;
 }
 
 const INITIAL_LOTS: Lot[] = [
+  {
+    id: "ca1",
+    title: "Elektronika — 500 dona TV",
+    quantity: "500 dona",
+    category: "IT",
+    location: "Olmaota",
+    lotId: "LOT-CA-001",
+    price: 547000000,
+    hasBlitz: true,
+    durationSeconds: 3300,
+    bidsCount: 15,
+  },
+  {
+    id: "ca2",
+    title: "Transport — 3 ta yuk mashinasi",
+    quantity: "3 ta",
+    category: "Transport",
+    location: "Bishkek",
+    lotId: "LOT-CA-002",
+    price: 779000000,
+    hasBlitz: true,
+    durationSeconds: 26520,
+    bidsCount: 8,
+  },
   {
     id: "1",
     title: "IT uskunalar to'plami",
@@ -101,6 +128,7 @@ const INITIAL_LOTS: Lot[] = [
     hasEscrow: true,
     hasBlitz: true,
     durationSeconds: 2677, 
+    bidsCount: 120,
   },
   {
     id: "2",
@@ -112,6 +140,7 @@ const INITIAL_LOTS: Lot[] = [
     price: 99185225,
     hasBlitz: true,
     durationSeconds: 172800, 
+    bidsCount: 45,
   }
 ];
 
@@ -120,6 +149,12 @@ export function AuctionHub() {
   const [activeTab, setActiveTab] = useState("uzb");
   const { toast } = useToast();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  // Auto-bid states
+  const [autoBidLotId, setAutoBidLotId] = useState("LOT-CA-001");
+  const [autoBidMaxPrice, setAutoBidMaxPrice] = useState("600000000");
+  const [autoBidStep, setAutoBidStep] = useState("5000000");
+  const [isAutoBidActive, setIsAutoBidActive] = useState(false);
 
   const [newLotTitle, setNewLotTitle] = useState("");
   const [newLotQuantity, setNewLotQuantity] = useState("");
@@ -141,6 +176,69 @@ export function AuctionHub() {
     }, 1000);
     return () => clearInterval(timer);
   }, []);
+
+  // Robot Auto-Bid Simulation Logic
+  useEffect(() => {
+    let autoBidInterval: NodeJS.Timeout;
+
+    if (isAutoBidActive) {
+      autoBidInterval = setInterval(() => {
+        setLots((currentLots) => {
+          return currentLots.map((lot) => {
+            if (lot.lotId === autoBidLotId) {
+              const maxPriceNum = parseFloat(autoBidMaxPrice.replace(/\s/g, ''));
+              const stepNum = parseFloat(autoBidStep.replace(/\s/g, ''));
+              
+              if (lot.price + stepNum <= maxPriceNum) {
+                return {
+                  ...lot,
+                  price: lot.price + stepNum,
+                  bidsCount: (lot.bidsCount || 0) + 1
+                };
+              } else {
+                // Stop robot if max price reached
+                setIsAutoBidActive(false);
+                toast({
+                  title: "Robot to'xtadi",
+                  description: `${lot.lotId} uchun maksimal narxga yetildi!`,
+                  variant: "default",
+                });
+                return lot;
+              }
+            }
+            return lot;
+          });
+        });
+      }, 3000); // Bid every 3 seconds for demo purposes
+    }
+
+    return () => {
+      if (autoBidInterval) clearInterval(autoBidInterval);
+    };
+  }, [isAutoBidActive, autoBidLotId, autoBidMaxPrice, autoBidStep, toast]);
+
+  const handleToggleAutoBid = () => {
+    if (!isAutoBidActive) {
+      if (!autoBidMaxPrice || !autoBidStep) {
+        toast({
+          title: "Xatolik",
+          description: "Maksimal narx va qadamni kiriting",
+          variant: "destructive",
+        });
+        return;
+      }
+      toast({
+        title: "Robot faollashtirildi",
+        description: `${autoBidLotId} bo'yicha avtomatik takliflar boshlandi`,
+      });
+    } else {
+      toast({
+        title: "Robot o'chirildi",
+        description: "Avtomatik takliflar to'xtatildi",
+      });
+    }
+    setIsAutoBidActive(!isAutoBidActive);
+  };
 
   const formatTime = (seconds: number) => {
     const h = Math.floor(seconds / 3600);
@@ -172,6 +270,7 @@ export function AuctionHub() {
       price: parseFloat(newLotPrice.replace(/\s/g, '')),
       durationSeconds: parseInt(newLotDuration) * 3600,
       hasBlitz: true,
+      bidsCount: 0,
     };
 
     setLots([newLot, ...lots]);
@@ -330,103 +429,99 @@ export function AuctionHub() {
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Aktiv Lotlar (O'zbekiston)</h2>
               </div>
-              {renderLotList(lots)}
+              {renderLotList(lots.filter(l => l.lotId.startsWith("AUC")))}
             </TabsContent>
 
             <TabsContent value="central" className="m-0 space-y-8">
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                <Card className="lg:col-span-4 border-none shadow-sm rounded-[24px] bg-white p-6 relative overflow-hidden group">
-                  <div className="flex justify-between items-start mb-4">
-                    <h3 className="text-[12px] font-black uppercase tracking-widest text-slate-900">LOT-CA-001</h3>
-                    <Badge className="bg-red-50 text-red-500 border-none text-[8px] font-black uppercase px-2 py-0.5 flex items-center gap-1">
-                      <div className="w-1 h-1 rounded-full bg-red-500 animate-pulse" /> LIVE
-                    </Badge>
-                  </div>
-                  <p className="text-[10px] font-bold text-slate-400 uppercase mb-4">Elektronika — 500 dona TV</p>
-                  <div className="mb-4">
-                    <p className="text-3xl font-black text-blue-600 tracking-tighter">547 000 000 so'm</p>
-                    <p className="text-[10px] font-black text-green-500 uppercase flex items-center gap-1 mt-1">
-                      <TrendingUp size={12} /> 15 ta taklif
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-4 mb-6">
-                    <div className="flex items-center gap-1.5 text-red-500 text-[10px] font-black uppercase">
-                      <Clock size={12} /> 0:55 qoldi
+                {lots.filter(l => l.lotId.startsWith("LOT-CA")).map(lot => (
+                  <Card key={lot.id} className="lg:col-span-4 border-none shadow-sm rounded-[24px] bg-white p-6 relative overflow-hidden group">
+                    <div className="flex justify-between items-start mb-4">
+                      <h3 className="text-[12px] font-black uppercase tracking-widest text-slate-900">{lot.lotId}</h3>
+                      <Badge className="bg-red-50 text-red-500 border-none text-[8px] font-black uppercase px-2 py-0.5 flex items-center gap-1">
+                        <div className="w-1 h-1 rounded-full bg-red-500 animate-pulse" /> LIVE
+                      </Badge>
                     </div>
-                  </div>
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    <Button size="sm" className="bg-blue-600 text-white rounded-xl text-[9px] font-black uppercase h-8 px-4 gap-1.5">
-                      <Zap size={10} fill="currentColor" /> Taklif
-                    </Button>
-                    <Button size="sm" className="bg-emerald-500 text-white rounded-xl text-[9px] font-black uppercase h-8 px-4 gap-1.5">
-                      <Zap size={10} /> Blitz
-                    </Button>
-                    <Button size="sm" className="bg-indigo-500 text-white rounded-xl text-[9px] font-black uppercase h-8 px-4 gap-1.5">
-                      <FileText size={10} /> ERI
-                    </Button>
-                  </div>
-                  <p className="text-[9px] font-bold text-slate-300 uppercase">Takliflar: 120 ta</p>
-                </Card>
-
-                <Card className="lg:col-span-4 border-none shadow-sm rounded-[24px] bg-white p-6 relative overflow-hidden group">
-                  <div className="flex justify-between items-start mb-4">
-                    <h3 className="text-[12px] font-black uppercase tracking-widest text-slate-900">LOT-CA-002</h3>
-                    <Badge className="bg-red-50 text-red-500 border-none text-[8px] font-black uppercase px-2 py-0.5 flex items-center gap-1">
-                      <div className="w-1 h-1 rounded-full bg-red-500 animate-pulse" /> LIVE
-                    </Badge>
-                  </div>
-                  <p className="text-[10px] font-bold text-slate-400 uppercase mb-4">Transport — 3 ta yuk mashinasi</p>
-                  <div className="mb-4">
-                    <p className="text-3xl font-black text-blue-600 tracking-tighter">779 000 000 so'm</p>
-                    <p className="text-[10px] font-black text-green-500 uppercase flex items-center gap-1 mt-1">
-                      <TrendingUp size={12} /> 8 ta taklif
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-4 mb-6">
-                    <div className="flex items-center gap-1.5 text-red-500 text-[10px] font-black uppercase">
-                      <Clock size={12} /> 7:22 qoldi
+                    <p className="text-[10px] font-bold text-slate-400 uppercase mb-4">{lot.title}</p>
+                    <div className="mb-4">
+                      <p className="text-3xl font-black text-blue-600 tracking-tighter">{formatCurrency(lot.price)} so'm</p>
+                      <p className="text-[10px] font-black text-green-500 uppercase flex items-center gap-1 mt-1">
+                        <TrendingUp size={12} /> {lot.bidsCount} ta taklif
+                      </p>
                     </div>
-                  </div>
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    <Button size="sm" className="bg-blue-600 text-white rounded-xl text-[9px] font-black uppercase h-8 px-4 gap-1.5">
-                      <Zap size={10} fill="currentColor" /> Taklif
-                    </Button>
-                    <Button size="sm" className="bg-emerald-500 text-white rounded-xl text-[9px] font-black uppercase h-8 px-4 gap-1.5">
-                      <Zap size={10} /> Blitz
-                    </Button>
-                    <Button size="sm" className="bg-blue-50 text-blue-600 rounded-xl text-[9px] font-black uppercase h-8 px-4 gap-1.5 border border-blue-100">
-                      <CheckCircle2 size={10} /> Tasdiqlash
-                    </Button>
-                  </div>
-                  <p className="text-[9px] font-bold text-slate-300 uppercase">Takliflar: 8 ta</p>
-                </Card>
+                    <div className="flex items-center gap-4 mb-6">
+                      <div className="flex items-center gap-1.5 text-red-500 text-[10px] font-black uppercase">
+                        <Clock size={12} /> {formatTime(lot.durationSeconds)}
+                      </div>
+                    </div>
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      <Button size="sm" className="bg-blue-600 text-white rounded-xl text-[9px] font-black uppercase h-8 px-4 gap-1.5">
+                        <Zap size={10} fill="currentColor" /> Taklif
+                      </Button>
+                      <Button size="sm" className="bg-emerald-500 text-white rounded-xl text-[9px] font-black uppercase h-8 px-4 gap-1.5">
+                        <Zap size={10} /> Blitz
+                      </Button>
+                      <Button size="sm" className="bg-indigo-500 text-white rounded-xl text-[9px] font-black uppercase h-8 px-4 gap-1.5">
+                        <FileText size={10} /> ERI
+                      </Button>
+                    </div>
+                    {isAutoBidActive && autoBidLotId === lot.lotId && (
+                      <div className="absolute top-2 right-2 flex items-center gap-1 bg-violet-600 text-white px-2 py-0.5 rounded-md text-[8px] font-black animate-pulse">
+                        <Cpu size={8} /> ROBOT FAOL
+                      </div>
+                    )}
+                  </Card>
+                ))}
 
                 <div className="lg:col-span-4 space-y-4">
-                  <Card className="border-none shadow-sm rounded-[24px] bg-white p-6">
-                    <h3 className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-6">ROBOT TAKLIF (AUTO-BID)</h3>
-                    <div className="space-y-4">
+                  <Card className="border-none shadow-sm rounded-[32px] bg-white p-8 border border-slate-50">
+                    <div className="flex items-center justify-between mb-8">
+                      <h3 className="text-[10px] font-black uppercase tracking-widest text-slate-400">ROBOT TAKLIF (AUTO-BID)</h3>
+                      {isAutoBidActive && <div className="w-2 h-2 rounded-full bg-violet-500 animate-ping" />}
+                    </div>
+                    <div className="space-y-6">
                       <div className="space-y-2">
-                        <Label className="text-[9px] font-black uppercase text-slate-500">LOT raqami</Label>
-                        <Select defaultValue="LOT-CA-001">
-                          <SelectTrigger className="rounded-xl h-10 text-[11px] font-bold">
+                        <Label className="text-[9px] font-black uppercase text-slate-500 tracking-wider">Lot raqami</Label>
+                        <Select value={autoBidLotId} onValueChange={setAutoBidLotId}>
+                          <SelectTrigger className="rounded-[18px] h-12 text-[12px] font-black bg-slate-50 border-none">
                             <SelectValue />
                           </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="LOT-CA-001">LOT-CA-001</SelectItem>
-                            <SelectItem value="LOT-CA-002">LOT-CA-002</SelectItem>
+                          <SelectContent className="rounded-xl border-none shadow-xl">
+                            {lots.map(l => (
+                              <SelectItem key={l.id} value={l.lotId} className="text-[11px] font-bold">{l.lotId} — {l.title.substring(0, 20)}...</SelectItem>
+                            ))}
                           </SelectContent>
                         </Select>
                       </div>
                       <div className="space-y-2">
-                        <Label className="text-[9px] font-black uppercase text-slate-500">Maksimal narx (so'm)</Label>
-                        <Input placeholder="350000000" className="rounded-xl h-10 text-[11px] font-bold" />
+                        <Label className="text-[9px] font-black uppercase text-slate-500 tracking-wider">Maksimal narx (so'm)</Label>
+                        <Input 
+                          placeholder="350000000" 
+                          className="rounded-[18px] h-14 text-[14px] font-black bg-slate-50 border-none px-6 focus-visible:ring-violet-200" 
+                          value={autoBidMaxPrice}
+                          onChange={(e) => setAutoBidMaxPrice(e.target.value)}
+                        />
                       </div>
                       <div className="space-y-2">
-                        <Label className="text-[9px] font-black uppercase text-slate-500">Oshirish qadami</Label>
-                        <Input placeholder="5000000" className="rounded-xl h-10 text-[11px] font-bold" />
+                        <Label className="text-[9px] font-black uppercase text-slate-500 tracking-wider">Oshirish qadami</Label>
+                        <Input 
+                          placeholder="5000000" 
+                          className="rounded-[18px] h-14 text-[14px] font-black bg-slate-50 border-none px-6 focus-visible:ring-violet-200" 
+                          value={autoBidStep}
+                          onChange={(e) => setAutoBidStep(e.target.value)}
+                        />
                       </div>
-                      <Button className="w-full bg-[#8b5cf6] hover:bg-violet-700 text-white rounded-xl h-11 font-black uppercase tracking-widest text-[10px] gap-2">
-                        <Cpu size={14} /> Robot yoqish
+                      <Button 
+                        onClick={handleToggleAutoBid}
+                        className={cn(
+                          "w-full rounded-[20px] h-14 font-black uppercase tracking-[0.2em] text-[11px] gap-3 transition-all duration-300 shadow-lg",
+                          isAutoBidActive 
+                            ? "bg-slate-800 hover:bg-slate-900 text-white shadow-slate-200" 
+                            : "bg-[#8b5cf6] hover:bg-[#7c3aed] text-white shadow-violet-200"
+                        )}
+                      >
+                        {isAutoBidActive ? <ZapOff size={16} /> : <Cpu size={16} />}
+                        {isAutoBidActive ? "Robotni o'chirish" : "Robot yoqish"}
                       </Button>
                     </div>
                   </Card>
@@ -443,23 +538,20 @@ export function AuctionHub() {
                 </div>
               </div>
 
-              <Card className="border-none shadow-sm rounded-[32px] bg-white p-8">
+              <Card className="border-none shadow-sm rounded-[32px] bg-white p-8 mt-8">
                 <div className="flex items-center justify-between mb-8">
                   <h2 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">BARCHA LOTLAR</h2>
                   <div className="flex gap-4">
-                    <Select defaultValue="real-estate">
+                    <Select defaultValue="all">
                       <SelectTrigger className="w-[180px] rounded-xl h-10 text-[10px] font-black uppercase">
-                        <SelectValue />
+                        <SelectValue placeholder="Barchasi" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="real-estate">Ko'chmas mulk</SelectItem>
+                        <SelectItem value="all">Barchasi</SelectItem>
+                        <SelectItem value="it">IT</SelectItem>
                         <SelectItem value="transport">Transport</SelectItem>
-                        <SelectItem value="xizmatlar">Xizmatlar</SelectItem>
                       </SelectContent>
                     </Select>
-                    <Button onClick={() => setIsDialogOpen(true)} className="bg-[#2563eb] text-white rounded-xl h-10 px-6 text-[10px] font-black uppercase tracking-widest gap-2 shadow-lg shadow-blue-100">
-                      <Plus size={14} /> Yangi lot
-                    </Button>
                   </div>
                 </div>
 
@@ -468,7 +560,6 @@ export function AuctionHub() {
                     <TableRow className="hover:bg-transparent border-none">
                       <TableHead className="text-[9px] font-black uppercase h-10">Lot</TableHead>
                       <TableHead className="text-[9px] font-black uppercase h-10">Kategoriya</TableHead>
-                      <TableHead className="text-[9px] font-black uppercase h-10">Boshlang'ich</TableHead>
                       <TableHead className="text-[9px] font-black uppercase h-10">Joriy narx</TableHead>
                       <TableHead className="text-[9px] font-black uppercase h-10">Takliflar</TableHead>
                       <TableHead className="text-[9px] font-black uppercase h-10">Holat</TableHead>
@@ -476,26 +567,21 @@ export function AuctionHub() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {[
-                      { id: "LOT-003", cat: "Ko'chmas mulk", init: "800,000,000", current: "920,000,000", bids: 23, status: "LIVE", statusColor: "text-red-500", action: "Kirish" },
-                      { id: "LOT-004", cat: "Xizmatlar", init: "50,000,000", current: "67,500,000", bids: 11, status: "Yaqinda", statusColor: "text-amber-500", action: "Obuna" },
-                      { id: "LOT-005", cat: "Tovarlar", init: "120,000,000", current: "134,000,000", bids: 7, status: "LIVE", statusColor: "text-red-500", action: "Taklif" },
-                    ].map((item, idx) => (
+                    {lots.map((item, idx) => (
                       <TableRow key={idx} className="border-slate-50 hover:bg-slate-50/50 transition-colors">
-                        <TableCell className="text-[11px] font-black text-slate-700">{item.id}</TableCell>
-                        <TableCell className="text-[11px] font-bold text-slate-500">{item.cat}</TableCell>
-                        <TableCell className="text-[11px] font-bold text-slate-400">{item.init}</TableCell>
-                        <TableCell className="text-[11px] font-black text-slate-900">{item.current}</TableCell>
-                        <TableCell className="text-[11px] font-bold text-slate-500">{item.bids}</TableCell>
+                        <TableCell className="text-[11px] font-black text-slate-700">{item.lotId}</TableCell>
+                        <TableCell className="text-[11px] font-bold text-slate-500">{item.category}</TableCell>
+                        <TableCell className="text-[11px] font-black text-slate-900">{formatCurrency(item.price)}</TableCell>
+                        <TableCell className="text-[11px] font-bold text-slate-500">{item.bidsCount}</TableCell>
                         <TableCell>
-                          <div className={cn("flex items-center gap-1.5 text-[9px] font-black uppercase", item.statusColor)}>
-                            <div className={cn("w-1 h-1 rounded-full bg-current", item.status === "LIVE" && "animate-pulse")} />
-                            {item.status}
+                          <div className={cn("flex items-center gap-1.5 text-[9px] font-black uppercase", item.durationSeconds > 0 ? "text-red-500" : "text-slate-400")}>
+                            <div className={cn("w-1 h-1 rounded-full bg-current", item.durationSeconds > 0 && "animate-pulse")} />
+                            {item.durationSeconds > 0 ? "LIVE" : "YAKUNLANDI"}
                           </div>
                         </TableCell>
                         <TableCell className="text-right">
                           <Button size="sm" className="bg-blue-600 text-white rounded-lg h-7 px-4 text-[9px] font-black uppercase shadow-md shadow-blue-100">
-                            {item.action}
+                            Taklif
                           </Button>
                         </TableCell>
                       </TableRow>
@@ -520,12 +606,14 @@ export function AuctionHub() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    <TableRow className="border-slate-50">
-                      <TableCell className="text-[11px] font-bold">IT uskunalar to'plami</TableCell>
-                      <TableCell className="text-[11px] font-black text-blue-600">128 500 000 so'm</TableCell>
-                      <TableCell><Badge className="bg-green-50 text-green-600 border-none text-[8px] uppercase">Aktiv</Badge></TableCell>
-                      <TableCell className="text-right"><Button size="sm" variant="ghost" className="text-[9px] uppercase font-black">Yangilash</Button></TableCell>
-                    </TableRow>
+                    {lots.slice(0, 2).map(lot => (
+                      <TableRow key={lot.id} className="border-slate-50">
+                        <TableCell className="text-[11px] font-bold">{lot.title}</TableCell>
+                        <TableCell className="text-[11px] font-black text-blue-600">{formatCurrency(lot.price)} so'm</TableCell>
+                        <TableCell><Badge className="bg-green-50 text-green-600 border-none text-[8px] uppercase">Aktiv</Badge></TableCell>
+                        <TableCell className="text-right"><Button size="sm" variant="ghost" className="text-[9px] uppercase font-black">Yangilash</Button></TableCell>
+                      </TableRow>
+                    ))}
                   </TableBody>
                 </Table>
               </Card>
@@ -636,4 +724,3 @@ export function AuctionHub() {
     </div>
   );
 }
-
