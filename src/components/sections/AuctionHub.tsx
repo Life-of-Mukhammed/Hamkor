@@ -15,7 +15,6 @@ import {
   XAxis, 
   YAxis, 
   CartesianGrid,
-  Tooltip as ChartTooltip,
   Line,
   LineChart
 } from "recharts";
@@ -84,7 +83,7 @@ interface Lot {
   quantity: string;
   hasEscrow?: boolean;
   hasBlitz?: boolean;
-  duration?: string;
+  durationSeconds: number;
 }
 
 const INITIAL_LOTS: Lot[] = [
@@ -98,6 +97,7 @@ const INITIAL_LOTS: Lot[] = [
     price: 135773123,
     hasEscrow: true,
     hasBlitz: true,
+    durationSeconds: 2677, // 44:37
   },
   {
     id: "2",
@@ -108,6 +108,7 @@ const INITIAL_LOTS: Lot[] = [
     lotId: "AUC-UZ-2026-002",
     price: 99185225,
     hasBlitz: true,
+    durationSeconds: 172800, // 48:00:00
   },
   {
     id: "3",
@@ -119,6 +120,7 @@ const INITIAL_LOTS: Lot[] = [
     price: 216944635,
     hasEscrow: true,
     hasBlitz: true,
+    durationSeconds: 3600, // 1:00:00
   }
 ];
 
@@ -132,6 +134,7 @@ const REGIONAL_LOTS: Lot[] = [
     lotId: "AUC-KZ-2026-101",
     price: 540000000,
     hasEscrow: true,
+    durationSeconds: 86400,
   },
   {
     id: "r2",
@@ -142,6 +145,7 @@ const REGIONAL_LOTS: Lot[] = [
     lotId: "AUC-KG-2026-202",
     price: 12000000,
     hasBlitz: true,
+    durationSeconds: 120,
   }
 ];
 
@@ -157,6 +161,29 @@ export function AuctionHub() {
   const [newLotCategory, setNewLotCategory] = useState("IT");
   const [newLotPrice, setNewLotPrice] = useState("");
   const [newLotDuration, setNewLotDuration] = useState("24");
+
+  // Global countdown timer
+  const [globalTimeLeft, setGlobalTimeLeft] = useState(2677);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setGlobalTimeLeft((prev) => (prev > 0 ? prev - 1 : 0));
+      setLots((prevLots) => 
+        prevLots.map(lot => ({
+          ...lot,
+          durationSeconds: lot.durationSeconds > 0 ? lot.durationSeconds - 1 : 0
+        }))
+      );
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const formatTime = (seconds: number) => {
+    const h = Math.floor(seconds / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    const s = seconds % 60;
+    return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+  };
 
   const formatCurrency = (val: number) => 
     new Intl.NumberFormat('uz-UZ').format(val);
@@ -179,7 +206,7 @@ export function AuctionHub() {
       location: "Toshkent",
       lotId: `AUC-UZ-2026-${String(lots.length + 1).padStart(3, '0')}`,
       price: parseFloat(newLotPrice.replace(/\s/g, '')),
-      duration: newLotDuration,
+      durationSeconds: parseInt(newLotDuration) * 3600,
       hasBlitz: true,
     };
 
@@ -209,7 +236,7 @@ export function AuctionHub() {
                     {lot.category} • {lot.location} • {lot.lotId} 
                   </p>
                   <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-red-50 text-red-500 text-[8px] font-black uppercase">
-                    <Clock size={10} /> {lot.duration ? `${lot.duration}:00:00` : "00:44:37"}
+                    <Clock size={10} /> {formatTime(lot.durationSeconds)}
                   </div>
                 </div>
               </div>
@@ -511,7 +538,7 @@ export function AuctionHub() {
                   <div>
                     <h2 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3">Vaqt Hisoblagich</h2>
                     <div className="flex items-end gap-2">
-                      <p className="text-4xl font-black text-slate-900 tracking-tighter">00:44:37</p>
+                      <p className="text-4xl font-black text-slate-900 tracking-tighter">{formatTime(globalTimeLeft)}</p>
                       <p className="text-[10px] font-black text-red-500 uppercase tracking-widest mb-1">Lot yakuniga</p>
                     </div>
                   </div>
