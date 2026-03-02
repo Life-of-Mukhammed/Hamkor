@@ -14,32 +14,37 @@ import { Finance } from "@/components/sections/Finance";
 import { Settings } from "@/components/sections/Settings";
 import { Hammer } from "lucide-react";
 import { ContractGenerationOutput } from "@/ai/flows/contract-generation-flow";
+import { Language } from "@/lib/translations";
 
 interface SectionRendererProps {
   sectionId: string;
   onNavigate?: (id: string) => void;
   signedContracts?: ContractGenerationOutput[];
   onContractSigned?: (contract: ContractGenerationOutput) => void;
+  lang?: Language;
+  t?: any;
 }
 
 export function SectionRenderer({ 
   sectionId, 
   onNavigate, 
   signedContracts = [], 
-  onContractSigned 
+  onContractSigned,
+  lang = 'uz',
+  t
 }: SectionRendererProps) {
   switch (sectionId) {
-    case 'dashboard': return <Dashboard />;
-    case 'marketplace': return <Marketplace />;
+    case 'dashboard': return <Dashboard lang={lang} />;
+    case 'marketplace': return <Marketplace t={t} />;
     case 'auction': return <AuctionHub onNavigate={onNavigate} />;
-    case 'logistics': return <LogisticsHub />;
-    case 'aiSecurity': return <AiSecurity />;
-    case 'eri': return <EriWorkflow onContractSigned={onContractSigned} />;
+    case 'logistics': return <LogisticsHub lang={lang} />;
+    case 'aiSecurity': return <AiSecurity t={t} />;
+    case 'eri': return <EriWorkflow onContractSigned={onContractSigned} t={t} />;
     case 'contracts': return <Contracts contracts={signedContracts} />;
     case 'offers': return <Offers />;
     case 'inventory': return <Inventory />;
     case 'finance': return <Finance />;
-    case 'settings': return <Settings />;
+    case 'settings': return <Settings lang={lang} />;
     default:
       return (
         <div className="flex flex-col items-center justify-center min-h-[60vh] text-center animate-fade-in">

@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from "react";
@@ -8,13 +9,15 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Shield, Search, TriangleAlert, CircleCheck } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
-import { dict } from "@/lib/translations";
+import { dict as defaultDict } from "@/lib/translations";
 
-export function AiSecurity() {
+export function AiSecurity({ t }: { t?: any }) {
   const [inn, setInn] = useState("");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<AiRiskScoreAssessmentOutput | null>(null);
   const { toast } = useToast();
+  
+  const dict = t || defaultDict;
 
   const handleCheck = async () => {
     if (inn.length < 9) {

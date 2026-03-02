@@ -1,17 +1,22 @@
 
 "use client";
 
-import { useState, useEffect } from "react";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Truck, Navigation, MapPin, Clock, ShieldCheck, Zap } from "lucide-react";
-import { dict } from "@/lib/translations";
+import { useState } from "react";
+import { Card } from "@/components/ui/card";
+import { Navigation, MapPin, Clock, ShieldCheck, Zap } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { translations, Language } from "@/lib/translations";
 
-export function LogisticsHub() {
-  const [trucks, setTrucks] = useState([
-    { id: 1, name: "Toshkent - Samarqand (UZ-01-A123)", status: "Harakatda", eta: "45 min", load: "85%", temp: "+4°C" },
-    { id: 2, name: "Andijon - Namangan (UZ-05-B456)", status: "Harakatda", eta: "1 soat 12 min", load: "100%", temp: "Normal" },
-    { id: 3, name: "Buxoro - Xiva (UZ-80-C789)", status: "To'xtagan", eta: "2 soat 30 min", load: "40%", temp: "Normal" },
+interface LogisticsHubProps {
+  lang?: Language;
+}
+
+export function LogisticsHub({ lang = 'uz' }: LogisticsHubProps) {
+  const t = translations[lang];
+  const [trucks] = useState([
+    { id: 1, name: "Toshkent - Samarqand (UZ-01-A123)", status: lang === 'uz' ? "Harakatda" : lang === 'ru' ? "В движении" : "In Transit", eta: "45 min", load: "85%" },
+    { id: 2, name: "Andijon - Namangan (UZ-05-B456)", status: lang === 'uz' ? "Harakatda" : lang === 'ru' ? "В движении" : "In Transit", eta: "1h 12m", load: "100%" },
+    { id: 3, name: "Buxoro - Xiva (UZ-80-C789)", status: lang === 'uz' ? "To'xtagan" : lang === 'ru' ? "Остановлен" : "Stopped", eta: "2h 30m", load: "40%" },
   ]);
 
   return (
@@ -22,20 +27,18 @@ export function LogisticsHub() {
             <Navigation size={22} />
           </div>
           <div>
-            <h1 className="text-2xl font-black text-slate-900 tracking-tight uppercase">{dict.sections.logistics}</h1>
-            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Real vaqt rejimida GPS monitoring va marshrutlar nazorati</p>
+            <h1 className="text-2xl font-black text-slate-900 tracking-tight uppercase">{t.sections.logistics}</h1>
           </div>
         </div>
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-50 text-emerald-600 text-[10px] font-black uppercase tracking-widest border border-emerald-100">
             <ShieldCheck size={14} />
-            Barcha datchiklar faol
+            {lang === 'uz' ? "Barcha datchiklar faol" : lang === 'ru' ? "Все датчики активны" : "All sensors active"}
           </div>
         </div>
       </div>
 
       <div className="grid lg:grid-cols-12 gap-6">
-        {/* Google Map Section */}
         <Card className="lg:col-span-8 h-[650px] border-none shadow-sm rounded-[40px] bg-white overflow-hidden relative group">
           <div className="absolute inset-0 z-0">
             <iframe
@@ -49,38 +52,25 @@ export function LogisticsHub() {
               className="grayscale-[0.2] contrast-[1.1] opacity-90 transition-all duration-700 group-hover:grayscale-0"
             ></iframe>
           </div>
-          
-          {/* Map Overlay Controls */}
-          <div className="absolute top-6 left-6 z-10 flex flex-col gap-2">
-            <div className="bg-white/90 backdrop-blur-md p-4 rounded-3xl border border-white/50 shadow-xl max-w-[200px]">
-              <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2">Platforma Holati</p>
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                <span className="text-[11px] font-black text-slate-900 uppercase">Tizim Onlayn</span>
-              </div>
-            </div>
-          </div>
-
           <div className="absolute bottom-6 right-6 z-10">
             <div className="bg-[#0b4db1] text-white p-6 rounded-[32px] shadow-2xl shadow-blue-900/20 max-w-[240px]">
               <div className="flex items-center gap-3 mb-4">
                 <Zap size={20} className="text-blue-300" />
-                <p className="text-[10px] font-black uppercase tracking-widest">Tezkor Ma'lumot</p>
+                <p className="text-[10px] font-black uppercase tracking-widest">INFO</p>
               </div>
               <p className="text-[12px] font-bold leading-relaxed opacity-90 uppercase tracking-tighter">
-                Bugun jami 1,240 tonna yuk muvaffaqiyatli yetkazildi.
+                {lang === 'uz' ? "Bugun jami 1,240 tonna yuk yetkazildi." : lang === 'ru' ? "Сегодня доставлено 1,240 тонн груза." : "Total 1,240 tons delivered today."}
               </p>
             </div>
           </div>
         </Card>
 
-        {/* Sidebar Info Section */}
         <div className="lg:col-span-4 space-y-6">
           <Card className="border-none shadow-sm rounded-[40px] bg-white p-8 flex flex-col h-full">
             <div className="flex justify-between items-center mb-8">
-              <h3 className="text-sm font-black text-slate-900 uppercase tracking-tight">Faol Reyslar</h3>
+              <h3 className="text-sm font-black text-slate-900 uppercase tracking-tight">{lang === 'uz' ? "FAOL REYSLAR" : lang === 'ru' ? "АКТИВНЫЕ РЕЙСЫ" : "ACTIVE ROUTES"}</h3>
               <Badge className="bg-blue-50 text-blue-600 border-none text-[8px] font-black uppercase px-2 py-0.5">
-                {trucks.length} TA
+                {trucks.length}
               </Badge>
             </div>
 
@@ -90,19 +80,12 @@ export function LogisticsHub() {
                   key={t.id} 
                   className="p-5 rounded-[24px] border border-slate-50 bg-slate-50/50 hover:bg-white hover:shadow-xl hover:border-blue-100 transition-all duration-300 cursor-pointer group"
                 >
-                  <div className="flex justify-between items-start mb-3">
-                    <div className="space-y-1">
-                      <p className="text-[11px] font-black text-slate-900 uppercase group-hover:text-blue-600 transition-colors">
-                        {t.name}
-                      </p>
-                      <div className="flex items-center gap-1.5 text-emerald-600 text-[9px] font-black uppercase tracking-widest">
-                        <div className="w-1 h-1 rounded-full bg-emerald-500" />
-                        {t.status}
-                      </div>
-                    </div>
+                  <p className="text-[11px] font-black text-slate-900 uppercase group-hover:text-blue-600 transition-colors mb-2">{t.name}</p>
+                  <div className="flex items-center gap-1.5 text-emerald-600 text-[9px] font-black uppercase tracking-widest mb-4">
+                    <div className="w-1 h-1 rounded-full bg-emerald-500" />
+                    {t.status}
                   </div>
-                  
-                  <div className="grid grid-cols-2 gap-4 mt-4 pt-4 border-t border-slate-100">
+                  <div className="grid grid-cols-2 gap-4 pt-4 border-t border-slate-100">
                     <div className="flex items-center gap-2">
                       <Clock size={14} className="text-slate-300" />
                       <div className="space-y-0.5">
@@ -113,23 +96,13 @@ export function LogisticsHub() {
                     <div className="flex items-center gap-2">
                       <MapPin size={14} className="text-slate-300" />
                       <div className="space-y-0.5">
-                        <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest">YUKLANISH</p>
+                        <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest">LOAD</p>
                         <p className="text-[10px] font-black text-slate-700">{t.load}</p>
                       </div>
                     </div>
                   </div>
                 </div>
               ))}
-            </div>
-
-            <div className="mt-8 pt-6 border-t border-slate-50">
-              <div className="p-6 bg-slate-900 rounded-[32px] text-white">
-                <p className="text-[9px] font-black text-white/40 uppercase tracking-widest mb-1">Jami Masofa (Bugun)</p>
-                <p className="text-2xl font-black tracking-tighter">12,450 <span className="text-[10px] text-white/50">KM</span></p>
-                <div className="mt-4 h-1 w-full bg-white/10 rounded-full overflow-hidden">
-                  <div className="h-full bg-blue-500 w-3/4" />
-                </div>
-              </div>
             </div>
           </Card>
         </div>
