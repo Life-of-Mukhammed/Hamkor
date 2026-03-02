@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect } from "react";
@@ -10,7 +11,7 @@ const INITIAL_PRICE = 150000000;
 
 export function AuctionHub() {
   const [price, setPrice] = useState(INITIAL_PRICE);
-  const [history, setHistory] = useState<{ id: number; amount: number; time: string }[]>([]);
+  const [history, setHistory] = useState<{ id: string; amount: number; time: string }[]>([]);
   const [timeLeft, setTimeLeft] = useState(3600);
 
   useEffect(() => {
@@ -24,7 +25,11 @@ export function AuctionHub() {
         const newPrice = prev + increment;
         
         setHistory((prevHistory) => [
-          { id: Date.now(), amount: newPrice, time: new Date().toLocaleTimeString() },
+          { 
+            id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`, 
+            amount: newPrice, 
+            time: new Date().toLocaleTimeString() 
+          },
           ...prevHistory.slice(0, 4),
         ]);
         
@@ -100,7 +105,7 @@ export function AuctionHub() {
                     <p className="text-xs text-muted-foreground">{bid.time}</p>
                     <p className="font-medium">{formatCurrency(bid.amount)}</p>
                   </div>
-                  <span className="text-[10px] bg-muted px-2 py-1 rounded">Иштирокчи #{bid.id.toString().slice(-4)}</span>
+                  <span className="text-[10px] bg-muted px-2 py-1 rounded">Иштирокчи #{bid.id.split('-')[1]?.slice(0, 4) || '7782'}</span>
                 </div>
               ))}
             </div>
