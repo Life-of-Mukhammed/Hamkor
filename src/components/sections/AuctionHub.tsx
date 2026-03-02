@@ -1,3 +1,4 @@
+
 "use client";
 
 import * as React from "react";
@@ -41,7 +42,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
-import { ChartContainer, ChartTooltipContent, ChartTooltip as ShadcnChartTooltip } from "@/components/ui/chart";
+import { ChartContainer, ChartTooltipContent, ChartTooltip as ShadcnChartTooltip, type ChartConfig } from "@/components/ui/chart";
 import {
   Dialog,
   DialogContent,
@@ -79,12 +80,37 @@ const pieData = [
   { name: "Transport", value: 200, color: "#f59e0b" },
 ];
 
-const chartConfig = {
+const mainChartConfig = {
   value: {
     label: "Savdolar",
     color: "hsl(var(--primary))",
   },
-};
+} satisfies ChartConfig;
+
+const reportPieConfig = {
+  value: {
+    label: "Qiymat",
+  },
+  IT: {
+    label: "IT",
+    color: "#2563eb",
+  },
+  Qurilish: {
+    label: "Qurilish",
+    color: "#8b5cf6",
+  },
+  Transport: {
+    label: "Transport",
+    color: "#f59e0b",
+  },
+} satisfies ChartConfig;
+
+const reportBarConfig = {
+  value: {
+    label: "Faollik",
+    color: "#8b5cf6",
+  },
+} satisfies ChartConfig;
 
 interface Lot {
   id: string;
@@ -557,7 +583,7 @@ export function AuctionHub({ onNavigate }: { onNavigate?: (id: string) => void }
                       <p className="text-[10px] text-slate-400 font-bold uppercase">AI tomonidan generatsiya qilingan</p>
                     </div>
                   </div>
-                  <ChartContainer config={chartConfig} className="h-64 w-full">
+                  <ChartContainer config={mainChartConfig} className="h-64 w-full">
                     <ResponsiveContainer width="100%" height="100%">
                       <LineChart data={chartData}>
                         <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="#f1f5f9" />
@@ -584,7 +610,7 @@ export function AuctionHub({ onNavigate }: { onNavigate?: (id: string) => void }
             <div className="lg:col-span-5 space-y-8">
               <Card className="border-none shadow-sm rounded-[32px] bg-white p-8">
                 <h2 className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] mb-8">Jonli Statistika</h2>
-                <ChartContainer config={chartConfig} className="h-48 w-full">
+                <ChartContainer config={mainChartConfig} className="h-48 w-full">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={chartData}>
                       <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="#f1f5f9" />
@@ -773,10 +799,12 @@ export function AuctionHub({ onNavigate }: { onNavigate?: (id: string) => void }
               <div className="space-y-10 animate-fade-in">
                 {/* Stats Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <Card className="bg-white border-none shadow-sm p-6 rounded-[24px]">
-                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2">Jami Aylanma</p>
-                    <p className="text-2xl font-black text-[#2563eb] tracking-tighter">{formatCurrency(lots.reduce((a, b) => a + b.price, 0))}</p>
-                  </Card>
+                  <ChartContainer config={mainChartConfig} className="bg-white border-none shadow-sm p-6 rounded-[24px]">
+                    <div className="flex flex-col gap-1">
+                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2">Jami Aylanma</p>
+                      <p className="text-2xl font-black text-[#2563eb] tracking-tighter">{formatCurrency(lots.reduce((a, b) => a + b.price, 0))}</p>
+                    </div>
+                  </ChartContainer>
                   <Card className="bg-white border-none shadow-sm p-6 rounded-[24px]">
                     <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2">Aktiv Lotlar</p>
                     <p className="text-2xl font-black text-slate-900 tracking-tighter">{lots.length} ta</p>
@@ -792,37 +820,42 @@ export function AuctionHub({ onNavigate }: { onNavigate?: (id: string) => void }
                   <Card className="bg-white border-none shadow-sm p-8 rounded-[32px]">
                     <h4 className="text-[10px] font-black text-slate-900 uppercase tracking-widest mb-6">Savdolar ulushi (Toifalar)</h4>
                     <div className="h-64">
-                      <ResponsiveContainer width="100%" height="100%">
-                        <PieChart>
-                          <Pie
-                            data={pieData}
-                            cx="50%"
-                            cy="50%"
-                            innerRadius={60}
-                            outerRadius={80}
-                            paddingAngle={5}
-                            dataKey="value"
-                          >
-                            {pieData.map((entry, index) => (
-                              <Cell key={`cell-${index}`} fill={entry.color} />
-                            ))}
-                          </Pie>
-                          <ShadcnChartTooltip content={<ChartTooltipContent />} />
-                        </PieChart>
-                      </ResponsiveContainer>
+                      <ChartContainer config={reportPieConfig} className="h-full w-full">
+                        <ResponsiveContainer width="100%" height="100%">
+                          <PieChart>
+                            <Pie
+                              data={pieData}
+                              cx="50%"
+                              cy="50%"
+                              innerRadius={60}
+                              outerRadius={80}
+                              paddingAngle={5}
+                              dataKey="value"
+                            >
+                              {pieData.map((entry, index) => (
+                                <Cell key={`cell-${index}`} fill={entry.color} />
+                              ))}
+                            </Pie>
+                            <ShadcnChartTooltip content={<ChartTooltipContent />} />
+                          </PieChart>
+                        </ResponsiveContainer>
+                      </ChartContainer>
                     </div>
                   </Card>
 
                   <Card className="bg-white border-none shadow-sm p-8 rounded-[32px]">
                     <h4 className="text-[10px] font-black text-slate-900 uppercase tracking-widest mb-6">Faollik tahlili</h4>
                     <div className="h-64">
-                      <ResponsiveContainer width="100%" height="100%">
-                        <BarChart data={chartData}>
-                          <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="#f1f5f9" />
-                          <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 9, fontWeight: 700, fill: '#94a3b8' }} />
-                          <Bar dataKey="value" fill="#8b5cf6" radius={[4, 4, 0, 0]} barSize={24} />
-                        </BarChart>
-                      </ResponsiveContainer>
+                      <ChartContainer config={reportBarConfig} className="h-full w-full">
+                        <ResponsiveContainer width="100%" height="100%">
+                          <BarChart data={chartData}>
+                            <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="#f1f5f9" />
+                            <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 9, fontWeight: 700, fill: '#94a3b8' }} />
+                            <ShadcnChartTooltip content={<ChartTooltipContent />} />
+                            <Bar dataKey="value" fill="#8b5cf6" radius={[4, 4, 0, 0]} barSize={24} />
+                          </BarChart>
+                        </ResponsiveContainer>
+                      </ChartContainer>
                     </div>
                   </Card>
                 </div>
