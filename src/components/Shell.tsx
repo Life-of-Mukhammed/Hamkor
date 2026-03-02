@@ -1,4 +1,3 @@
-
 "use client";
 
 import * as React from "react";
@@ -98,16 +97,19 @@ export function Shell({
                     isActive={activeSection === item.id}
                     onClick={() => onNavigate(item.id)}
                     className={cn(
-                      "w-full px-4 py-6 rounded-lg transition-all duration-200 group relative",
+                      "w-full px-4 py-6 rounded-lg transition-all duration-200 group relative border border-transparent",
                       activeSection === item.id 
-                        ? "bg-[#0b4db1] text-white hover:bg-[#0b4db1] hover:text-white shadow-lg" 
-                        : "text-slate-600 hover:bg-slate-50"
+                        ? "bg-[#0b4db1] text-white hover:bg-[#0b4db1] hover:text-white shadow-xl shadow-blue-100 border-[#0b4db1]" 
+                        : "text-slate-600 hover:bg-slate-50 hover:text-[#0b4db1]"
                     )}
                   >
                     <div className="flex items-center gap-3">
-                      <item.icon className={cn("w-5 h-5", activeSection === item.id ? "text-white" : "text-slate-500 group-hover:text-slate-800")} />
+                      <item.icon className={cn("w-5 h-5", activeSection === item.id ? "text-white" : "text-slate-500 group-hover:text-[#0b4db1]")} />
                       <span className="font-semibold text-[13px]">{item.label}</span>
                     </div>
+                    {activeSection === item.id && (
+                      <div className="absolute right-2 w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+                    )}
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
