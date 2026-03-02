@@ -1,3 +1,4 @@
+
 "use client";
 
 import * as React from "react";
@@ -30,7 +31,8 @@ import {
   TrendingUp,
   Handshake,
   Loader2,
-  ShieldAlert
+  ShieldAlert,
+  Search
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
@@ -144,6 +146,9 @@ export function AuctionHub({ onNavigate }: { onNavigate?: (id: string) => void }
   const { toast } = useToast();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+  const [isBidDialogOpen, setIsBidDialogOpen] = useState(false);
+  const [selectedLotForBid, setSelectedLotForBid] = useState<Lot | null>(null);
+  const [bidAmountInput, setBidAmountInput] = useState("");
   const [selectedLotDetails, setSelectedLotDetails] = useState<LotDetailsOutput | null>(null);
   const [loadingDetails, setLoadingDetails] = useState(false);
 
@@ -168,23 +173,38 @@ export function AuctionHub({ onNavigate }: { onNavigate?: (id: string) => void }
     return () => clearInterval(timer);
   }, []);
 
-  const handlePlaceBid = (lotId: string) => {
-    const lot = lots.find(l => l.lotId === lotId);
-    if (!lot) return;
+  const handlePlaceBidClick = (lot: Lot) => {
+    setSelectedLotForBid(lot);
+    setBidAmountInput((lot.price + 1000000).toString());
+    setIsBidDialogOpen(true);
+  };
 
-    const increment = 1000000;
-    const newPrice = lot.price + increment;
+  const handleConfirmBid = () => {
+    if (!selectedLotForBid) return;
+
+    const amount = parseFloat(bidAmountInput.replace(/\s/g, ""));
+    if (isNaN(amount) || amount <= selectedLotForBid.price) {
+      toast({
+        title: "Xatolik",
+        description: "Taklif summasi joriy narxdan yuqori bo'lishi kerak",
+        variant: "destructive",
+      });
+      return;
+    }
 
     setLots(prev => prev.map(l => 
-      l.lotId === lotId 
-        ? { ...l, price: newPrice, bidsCount: (l.bidsCount || 0) + 1 }
+      l.id === selectedLotForBid.id 
+        ? { ...l, price: amount, bidsCount: (l.bidsCount || 0) + 1 }
         : l
     ));
 
     toast({
       title: "Taklif qabul qilindi",
-      description: `${lotId} uchun yangi narx: ${formatCurrency(newPrice)} so'm`,
+      description: `${selectedLotForBid.lotId} uchun yangi narx: ${formatCurrency(amount)} so'm`,
     });
+
+    setIsBidDialogOpen(false);
+    setSelectedLotForBid(null);
   };
 
   const handleShowDetails = async (lot: Lot) => {
@@ -275,9 +295,9 @@ export function AuctionHub({ onNavigate }: { onNavigate?: (id: string) => void }
 
             <div className="flex flex-wrap gap-2.5">
               <Button 
-                onClick={() => handlePlaceBid(lot.lotId)}
+                onClick={() => handlePlaceBidClick(lot)}
                 size="sm" 
-                className="h-9 bg-[#2563eb] hover:bg-blue-700 text-white rounded-full text-[10px] font-black uppercase px-6 gap-2 tracking-widest"
+                className="h-9 bg-[#2563eb] hover:bg-blue-700 text-white rounded-full text-[10px] font-black uppercase px-6 gap-2 tracking-widest shadow-lg shadow-blue-100"
               >
                 <Zap size={12} fill="currentColor" /> Taklif
               </Button>
@@ -421,7 +441,7 @@ export function AuctionHub({ onNavigate }: { onNavigate?: (id: string) => void }
                       </div>
                     </div>
                     <div className="flex flex-wrap gap-2.5">
-                      <Button onClick={() => handlePlaceBid(lot.lotId)} size="sm" className="bg-blue-600 text-white rounded-xl text-[10px] font-black uppercase h-9 px-5 gap-2">
+                      <Button onClick={() => handlePlaceBidClick(lot)} size="sm" className="bg-blue-600 text-white rounded-xl text-[10px] font-black uppercase h-9 px-5 gap-2 shadow-md">
                         <Zap size={12} fill="currentColor" /> Taklif
                       </Button>
                       <Button onClick={() => handleShowDetails(lot)} variant="outline" size="sm" className="h-9 border-slate-100 text-slate-500 rounded-xl text-[10px] font-black uppercase px-5 gap-2">
@@ -458,7 +478,7 @@ export function AuctionHub({ onNavigate }: { onNavigate?: (id: string) => void }
                         <TableCell><Badge className="bg-green-50 text-green-600 border-none text-[8px] uppercase">Aktiv</Badge></TableCell>
                         <TableCell className="text-right">
                           <Button 
-                            onClick={() => handlePlaceBid(lot.lotId)}
+                            onClick={() => handlePlaceBidClick(lot)}
                             size="sm" variant="ghost" className="text-[9px] uppercase font-black"
                           >
                             Yangilash
@@ -566,6 +586,50 @@ export function AuctionHub({ onNavigate }: { onNavigate?: (id: string) => void }
           )}
         </div>
       </Tabs>
+
+      {/* Place Bid Dialog */}
+      <Dialog open={isBidDialogOpen} onOpenChange={setIsBidDialogOpen}>
+        <DialogContent className="sm:max-w-[425px] rounded-[32px]">
+          <DialogHeader>
+            <DialogTitle className="text-[14px] font-black uppercase tracking-widest flex items-center gap-2">
+              <Zap className="text-blue-600 w-5 h-5" /> Taklif Berish
+            </DialogTitle>
+            <DialogDescription className="text-[11px] font-bold text-slate-400 uppercase">
+              {selectedLotForBid?.title} uchun yangi narxni belgilang.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-6 space-y-4">
+            <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100 flex justify-between items-center">
+              <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Joriy Narx:</span>
+              <span className="text-[16px] font-black text-slate-900">{formatCurrency(selectedLotForBid?.price || 0)} so'm</span>
+            </div>
+            <div className="space-y-2">
+              <Label className="text-[10px] font-black uppercase tracking-widest text-slate-500">Sizning Taklifingiz</Label>
+              <div className="relative">
+                <Input 
+                  type="text"
+                  placeholder="Summani kiriting..." 
+                  className="rounded-xl h-14 text-[14px] font-black pl-4" 
+                  value={bidAmountInput} 
+                  onChange={(e) => setBidAmountInput(e.target.value)} 
+                />
+                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-black text-slate-400 uppercase">UZS</span>
+              </div>
+              <p className="text-[9px] font-bold text-blue-600 uppercase tracking-tighter">
+                Minimal qadam: +1,000,000 so'm tavsiya etiladi
+              </p>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button 
+              onClick={handleConfirmBid} 
+              className="w-full bg-[#2563eb] rounded-xl h-14 font-black uppercase tracking-widest text-[12px] shadow-lg shadow-blue-200"
+            >
+              Taklifni Tasdiqlash
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* AI Lot Details Dialog */}
       <Dialog open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
