@@ -20,9 +20,9 @@ const menuItems = [
   { id: 'offers', label: dict.sections.offers, icon: Briefcase },
   { id: 'inventory', label: dict.sections.inventory, icon: Box },
   { id: 'finance', label: dict.sections.finance, icon: BarChart },
-  { id: 'documents', label: dict.sections.documents, icon: Camera },
-  { id: 'investments', label: dict.sections.investments, icon: Building2 },
-  { id: 'guide', label: dict.sections.guide, icon: BookOpen },
+  { id: 'documents', label: dict.sections.documents, icon: Camera, isPremium: true },
+  { id: 'investments', label: dict.sections.investments, icon: Building2, isPremium: true },
+  { id: 'guide', label: dict.sections.guide, icon: BookOpen, isPremium: true },
 ];
 
 interface ShellProps {
@@ -34,7 +34,7 @@ interface ShellProps {
 export function Shell({ children, activeSection, onNavigate }: ShellProps) {
   return (
     <SidebarProvider>
-      <Sidebar className="border-r border-slate-100 bg-white shadow-none">
+      <Sidebar className="border-r border-slate-100 bg-[#f4f7fa] shadow-none">
         <SidebarHeader className="p-6">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-[#2563eb] rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-200">
@@ -52,36 +52,44 @@ export function Shell({ children, activeSection, onNavigate }: ShellProps) {
                   isActive={activeSection === item.id}
                   onClick={() => onNavigate(item.id)}
                   className={cn(
-                    "w-full px-4 py-5 rounded-xl transition-all duration-300 group",
+                    "w-full px-4 py-5 rounded-xl transition-all duration-300 group relative",
                     activeSection === item.id 
-                      ? "bg-[#2563eb] text-white shadow-lg shadow-blue-400/30" 
-                      : "hover:bg-slate-50 text-slate-500 hover:text-[#2563eb]"
+                      ? "bg-white text-[#2563eb] shadow-md border border-slate-100" 
+                      : "hover:bg-slate-100/50 text-slate-500 hover:text-slate-900"
                   )}
                 >
-                  <item.icon className={cn("w-4 h-4", activeSection === item.id ? "text-white" : "text-slate-400 group-hover:text-[#2563eb]")} />
-                  <span className="font-bold text-[10px] ml-2 uppercase tracking-wider">{item.label}</span>
+                  <div className="flex items-center gap-2 flex-1">
+                    {item.isPremium && (
+                      <Sparkles className="w-3 h-3 text-amber-500 absolute -left-1 top-2 opacity-80" />
+                    )}
+                    <item.icon className={cn("w-4 h-4", activeSection === item.id ? "text-[#2563eb]" : "text-slate-400 group-hover:text-slate-600")} />
+                    <span className="font-bold text-[10px] uppercase tracking-wider">{item.label}</span>
+                  </div>
+                  {activeSection === item.id && (
+                    <div className="w-1 h-4 bg-[#2563eb] rounded-full absolute right-3" />
+                  )}
                 </SidebarMenuButton>
               </SidebarMenuItem>
             ))}
           </SidebarMenu>
 
           <div className="mt-6 px-2">
-            <div className="relative bg-[#3b59f8] rounded-[24px] p-5 text-white overflow-hidden shadow-xl shadow-blue-500/20">
-              <button className="absolute top-3 right-3 text-white/60 hover:text-white transition-colors">
+            <div className="relative bg-[#0f172a] rounded-[24px] p-5 text-white overflow-hidden shadow-xl shadow-slate-900/20">
+              <button className="absolute top-3 right-3 text-white/40 hover:text-white transition-colors">
                 <X size={14} />
               </button>
-              <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center mb-4">
-                <Sparkles size={20} />
+              <div className="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center mb-4">
+                <Sparkles size={20} className="text-amber-400" />
               </div>
               <h3 className="text-[11px] font-black mb-1 uppercase tracking-tighter">
                 🚀 ПРЕМИУМГА ЎТИНГ
               </h3>
-              <p className="text-[9px] font-medium text-white/70 leading-tight mb-4 uppercase tracking-tight">
+              <p className="text-[9px] font-medium text-white/50 leading-tight mb-4 uppercase tracking-tight">
                 AI инструментлари ва таҳлилни фаоллаштиринг
               </p>
               <Button 
                 variant="secondary" 
-                className="w-full h-10 bg-white text-[#3b59f8] hover:bg-white/90 rounded-xl font-black py-0 uppercase tracking-widest text-[10px]"
+                className="w-full h-10 bg-white text-[#0f172a] hover:bg-white/90 rounded-xl font-black py-0 uppercase tracking-widest text-[10px]"
               >
                 БАТАФСИЛ
               </Button>
@@ -90,7 +98,7 @@ export function Shell({ children, activeSection, onNavigate }: ShellProps) {
         </SidebarContent>
 
         <SidebarFooter className="p-4 mt-auto">
-          <div className="flex items-center gap-3 p-3 rounded-2xl hover:bg-slate-50 transition-colors group cursor-pointer">
+          <div className="flex items-center gap-3 p-3 rounded-2xl hover:bg-white transition-all group cursor-pointer border border-transparent hover:border-slate-100 hover:shadow-sm">
             <div className="w-10 h-10 rounded-full bg-[#1e1e1e] flex items-center justify-center text-white text-sm font-black shadow-md">
               N
             </div>
