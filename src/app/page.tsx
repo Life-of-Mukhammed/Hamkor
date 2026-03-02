@@ -10,7 +10,7 @@ export default function Home() {
 
   return (
     <Shell activeSection={activeSection} onNavigate={setActiveSection}>
-      <SectionRenderer sectionId={activeSection} />
+      <SectionRenderer sectionId={activeSection} onNavigate={setActiveSection} />
     </Shell>
   );
 }

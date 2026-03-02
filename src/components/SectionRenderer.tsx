@@ -6,17 +6,17 @@ import { AuctionHub } from "@/components/sections/AuctionHub";
 import { LogisticsHub } from "@/components/sections/LogisticsHub";
 import { AiSecurity } from "@/components/sections/AiSecurity";
 import { EriWorkflow } from "@/components/sections/EriWorkflow";
-import { Card, CardContent } from "@/components/ui/card";
 import { Hammer } from "lucide-react";
 
 interface SectionRendererProps {
   sectionId: string;
+  onNavigate?: (id: string) => void;
 }
 
-export function SectionRenderer({ sectionId }: SectionRendererProps) {
+export function SectionRenderer({ sectionId, onNavigate }: SectionRendererProps) {
   switch (sectionId) {
     case 'dashboard': return <Dashboard />;
-    case 'auction': return <AuctionHub />;
+    case 'auction': return <AuctionHub onNavigate={onNavigate} />;
     case 'logistics': return <LogisticsHub />;
     case 'aiSecurity': return <AiSecurity />;
     case 'eri': return <EriWorkflow />;
