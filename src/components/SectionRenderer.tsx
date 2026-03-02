@@ -11,6 +11,7 @@ import { Marketplace } from "@/components/sections/Marketplace";
 import { Offers } from "@/components/sections/Offers";
 import { Inventory } from "@/components/sections/Inventory";
 import { Finance } from "@/components/sections/Finance";
+import { Settings } from "@/components/sections/Settings";
 import { Hammer } from "lucide-react";
 import { ContractGenerationOutput } from "@/ai/flows/contract-generation-flow";
 
@@ -38,6 +39,7 @@ export function SectionRenderer({
     case 'offers': return <Offers />;
     case 'inventory': return <Inventory />;
     case 'finance': return <Finance />;
+    case 'settings': return <Settings />;
     default:
       return (
         <div className="flex flex-col items-center justify-center min-h-[60vh] text-center animate-fade-in">
