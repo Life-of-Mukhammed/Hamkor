@@ -6,7 +6,7 @@ import { SidebarProvider, Sidebar, SidebarContent, SidebarHeader, SidebarMenu, S
 import { 
   LayoutGrid, Gavel, FileText, ShoppingBag, 
   Settings, Truck, Mail, Sparkles, FolderOpen, 
-  TrendingUp, BookOpen, Globe
+  TrendingUp, BookOpen, Globe, Bell, ShoppingCart
 } from "lucide-react";
 import { translations, Language } from "@/lib/translations";
 import { cn } from "@/lib/utils";
@@ -125,7 +125,18 @@ export function Shell({ children, activeSection, onNavigate }: ShellProps) {
               {[...menuItems, ...premiumMenuItems].find(m => m.id === activeSection)?.label || "BOSH SAHIFA"}
             </p>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
+            <Button variant="ghost" size="icon" className="relative h-10 w-10 rounded-xl hover:bg-slate-50 text-slate-400">
+              <Bell size={18} />
+              <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white" />
+            </Button>
+            <Button variant="ghost" size="icon" className="relative h-10 w-10 rounded-xl hover:bg-slate-50 text-slate-400">
+              <ShoppingCart size={18} />
+              <span className="absolute top-1.5 right-1.5 min-w-[14px] h-3.5 bg-[#0b4db1] text-white text-[8px] font-bold rounded-full flex items-center justify-center px-1 border border-white">
+                3
+              </span>
+            </Button>
+            <div className="h-4 w-px bg-slate-100 mx-2" />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="h-9 px-3 gap-2 rounded-xl hover:bg-slate-50 font-black text-[11px] text-slate-600">
@@ -142,8 +153,6 @@ export function Shell({ children, activeSection, onNavigate }: ShellProps) {
           </div>
         </header>
         <main className="p-8 pb-20 max-w-[1600px] mx-auto">
-          {/* We pass the translation object to children by cloning if needed, 
-              but for simplicity in this MVP we assume components handle their own lang if needed or we use a context */}
           {React.Children.map(children, child => {
             if (React.isValidElement(child)) {
               return React.cloneElement(child as React.ReactElement<any>, { lang, t });
