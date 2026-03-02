@@ -23,6 +23,8 @@ interface SectionRendererProps {
   onContractSigned?: (contract: ContractGenerationOutput) => void;
   lang?: Language;
   t?: any;
+  cart?: any[];
+  onAddToCart?: (product: any) => void;
 }
 
 export function SectionRenderer({ 
@@ -31,11 +33,13 @@ export function SectionRenderer({
   signedContracts = [], 
   onContractSigned,
   lang = 'uz',
-  t
+  t,
+  cart = [],
+  onAddToCart
 }: SectionRendererProps) {
   switch (sectionId) {
     case 'dashboard': return <Dashboard lang={lang} />;
-    case 'marketplace': return <Marketplace t={t} />;
+    case 'marketplace': return <Marketplace onAddToCart={onAddToCart} />;
     case 'auction': return <AuctionHub onNavigate={onNavigate} />;
     case 'logistics': return <LogisticsHub lang={lang} />;
     case 'aiSecurity': return <AiSecurity t={t} />;

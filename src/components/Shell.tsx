@@ -6,7 +6,8 @@ import { SidebarProvider, Sidebar, SidebarContent, SidebarHeader, SidebarMenu, S
 import { 
   LayoutGrid, Gavel, FileText, ShoppingBag, 
   Settings, Truck, Mail, Sparkles, FolderOpen, 
-  TrendingUp, BookOpen, Globe, Bell, ShoppingCart
+  TrendingUp, BookOpen, Globe, Bell, ShoppingCart,
+  Minus, Plus, X, ShoppingBasket
 } from "lucide-react";
 import { translations, Language } from "@/lib/translations";
 import { cn } from "@/lib/utils";
@@ -15,16 +16,36 @@ import {
   DropdownMenu, 
   DropdownMenuContent, 
   DropdownMenuItem, 
-  DropdownMenuTrigger 
+  DropdownMenuTrigger,
+  DropdownMenuLabel,
+  DropdownMenuSeparator
 } from "@/components/ui/dropdown-menu";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+  SheetFooter,
+} from "@/components/ui/sheet";
 
 interface ShellProps {
   children: React.ReactNode;
   activeSection: string;
   onNavigate: (id: string) => void;
+  cart?: any[];
+  onRemoveFromCart?: (id: number) => void;
+  onUpdateQuantity?: (id: number, delta: number) => void;
 }
 
-export function Shell({ children, activeSection, onNavigate }: ShellProps) {
+export function Shell({ 
+  children, 
+  activeSection, 
+  onNavigate,
+  cart = [],
+  onRemoveFromCart,
+  onUpdateQuantity
+}: ShellProps) {
   const [lang, setLang] = React.useState<Language>('uz');
   const t = translations[lang];
 
@@ -42,6 +63,12 @@ export function Shell({ children, activeSection, onNavigate }: ShellProps) {
     { id: 'invest', label: t.sections.invest, icon: TrendingUp },
     { id: 'guide', label: t.sections.guide, icon: BookOpen },
   ];
+
+  const cartTotal = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+  const cartCount = cart.reduce((acc, item) => acc + item.quantity, 0);
+
+  const formatCurrency = (val: number) => 
+    new Intl.NumberFormat('uz-UZ').format(val);
 
   return (
     <SidebarProvider>
@@ -126,16 +153,117 @@ export function Shell({ children, activeSection, onNavigate }: ShellProps) {
             </p>
           </div>
           <div className="flex items-center gap-2">
-            <Button variant="ghost" size="icon" className="relative h-10 w-10 rounded-xl hover:bg-slate-50 text-slate-400">
-              <Bell size={18} />
-              <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white" />
-            </Button>
-            <Button variant="ghost" size="icon" className="relative h-10 w-10 rounded-xl hover:bg-slate-50 text-slate-400">
-              <ShoppingCart size={18} />
-              <span className="absolute top-1.5 right-1.5 min-w-[14px] h-3.5 bg-[#0b4db1] text-white text-[8px] font-bold rounded-full flex items-center justify-center px-1 border border-white">
-                3
-              </span>
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon" className="relative h-10 w-10 rounded-xl hover:bg-slate-50 text-slate-400">
+                  <Bell size={18} />
+                  <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-80 rounded-2xl p-4 shadow-2xl border-slate-100">
+                <DropdownMenuLabel className="text-[11px] font-black uppercase tracking-widest text-slate-400 mb-2">So'nggi bildirishnomalar</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <div className="space-y-4 mt-2">
+                  <div className="flex gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600 shrink-0">
+                      <ShoppingBasket size={14} />
+                    </div>
+                    <div>
+                      <p className="text-[11px] font-bold text-slate-700">UzAuto Motors yangi tender e'lon qildi</p>
+                      <p className="text-[9px] text-slate-400">5 daqiqa oldin</p>
+                    </div>
+                  </div>
+                  <div className="flex gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600 shrink-0">
+                      <FileText size={14} />
+                    </div>
+                    <div>
+                      <p className="text-[11px] font-bold text-slate-700">Artel bilan shartnoma imzolandi</p>
+                      <p className="text-[9px] text-slate-400">1 soat oldin</p>
+                    </div>
+                  </div>
+                </div>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon" className="relative h-10 w-10 rounded-xl hover:bg-slate-50 text-slate-400">
+                  <ShoppingCart size={18} />
+                  {cartCount > 0 && (
+                    <span className="absolute top-1.5 right-1.5 min-w-[14px] h-3.5 bg-[#0b4db1] text-white text-[8px] font-bold rounded-full flex items-center justify-center px-1 border border-white">
+                      {cartCount}
+                    </span>
+                  )}
+                </Button>
+              </SheetTrigger>
+              <SheetContent className="w-full sm:max-w-[450px] rounded-l-[32px] p-0 flex flex-col border-none shadow-2xl">
+                <SheetHeader className="p-8 border-b bg-slate-50/50">
+                  <SheetTitle className="text-sm font-black uppercase tracking-[0.2em] flex items-center gap-3">
+                    <ShoppingCart className="text-[#0b4db1]" size={20} /> Savatingiz
+                  </SheetTitle>
+                </SheetHeader>
+                
+                <div className="flex-1 overflow-y-auto p-8 space-y-6 no-scrollbar">
+                  {cart.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center py-20 text-center">
+                      <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-6">
+                        <ShoppingBag className="text-slate-200" size={40} />
+                      </div>
+                      <h3 className="text-sm font-black text-slate-300 uppercase tracking-widest">Savat bo'sh</h3>
+                      <p className="text-[10px] font-bold text-slate-400 uppercase mt-2">Xaridni davom ettiring</p>
+                    </div>
+                  ) : (
+                    cart.map((item) => (
+                      <div key={item.id} className="flex gap-4 p-4 rounded-2xl bg-white border border-slate-50 hover:border-blue-100 transition-all group">
+                        <div className="flex-1 space-y-1">
+                          <p className="text-[11px] font-black text-slate-900 uppercase leading-tight">{item.title}</p>
+                          <p className="text-[10px] font-bold text-[#0b4db1] tracking-tighter">{formatCurrency(item.price)} UZS / {item.unit}</p>
+                          
+                          <div className="flex items-center gap-3 mt-3">
+                            <button 
+                              onClick={() => onUpdateQuantity?.(item.id, -1)}
+                              className="w-7 h-7 rounded-lg bg-slate-50 flex items-center justify-center text-slate-400 hover:bg-blue-50 hover:text-blue-600 transition-colors"
+                            >
+                              <Minus size={14} />
+                            </button>
+                            <span className="text-[11px] font-black w-4 text-center">{item.quantity}</span>
+                            <button 
+                              onClick={() => onUpdateQuantity?.(item.id, 1)}
+                              className="w-7 h-7 rounded-lg bg-slate-50 flex items-center justify-center text-slate-400 hover:bg-blue-50 hover:text-blue-600 transition-colors"
+                            >
+                              <Plus size={14} />
+                            </button>
+                          </div>
+                        </div>
+                        <div className="text-right flex flex-col justify-between items-end">
+                          <button 
+                            onClick={() => onRemoveFromCart?.(item.id)}
+                            className="text-slate-300 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100"
+                          >
+                            <X size={18} />
+                          </button>
+                          <p className="text-[12px] font-black text-slate-900 tracking-tighter">{formatCurrency(item.price * item.quantity)}</p>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+
+                {cart.length > 0 && (
+                  <SheetFooter className="p-8 bg-slate-50 border-t flex-col gap-4">
+                    <div className="flex justify-between items-center w-full mb-2">
+                      <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Umumiy summa:</span>
+                      <span className="text-xl font-black text-[#0b4db1] tracking-tighter">{formatCurrency(cartTotal)} UZS</span>
+                    </div>
+                    <Button className="w-full h-14 bg-[#0b4db1] hover:bg-blue-700 text-white rounded-2xl font-black uppercase tracking-widest text-[11px] shadow-xl shadow-blue-100">
+                      Buyurtmani tasdiqlash
+                    </Button>
+                  </SheetFooter>
+                )}
+              </SheetContent>
+            </Sheet>
+
             <div className="h-4 w-px bg-slate-100 mx-2" />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
