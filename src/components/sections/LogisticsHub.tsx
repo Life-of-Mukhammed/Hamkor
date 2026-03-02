@@ -12,17 +12,81 @@ import {
   Truck, 
   Filter, 
   Info,
-  CircleAlert
+  CircleAlert,
+  MapPin,
+  Box,
+  DollarSign,
+  Send
 } from "lucide-react";
 import { translations, Language } from "@/lib/translations";
+import { useToast } from "@/hooks/use-toast";
 
 interface LogisticsHubProps {
   lang?: Language;
 }
 
+interface Announcement {
+  id: string;
+  from: string;
+  to: string;
+  details: string;
+  budget: string;
+  distance: string;
+}
+
 export function LogisticsHub({ lang = 'uz' }: LogisticsHubProps) {
   const t = translations[lang];
+  const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("buyer");
+
+  // Form states
+  const [from, setFrom] = useState("");
+  const [to, setTo] = useState("");
+  const [details, setDetails] = useState("");
+  const [budget, setBudget] = useState("");
+
+  // Announcements state
+  const [announcements, setAnnouncements] = useState<Announcement[]>([
+    {
+      id: "1",
+      from: "Toshkent",
+      to: "Xorazm",
+      details: "Qurilish materiallari (5 tonna, uzunligi 6m)",
+      budget: "Kelishilgan",
+      distance: "1000 km"
+    }
+  ]);
+
+  const handlePublishAnnouncement = () => {
+    if (!from || !to || !details) {
+      toast({
+        title: lang === 'uz' ? "Xatolik" : "Ошибка",
+        description: lang === 'uz' ? "Iltimos, barcha maydonlarni to'ldiring" : "Пожалуйста, заполните все поля",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    const newAnnouncement: Announcement = {
+      id: Math.random().toString(36).substr(2, 9),
+      from,
+      to,
+      details,
+      budget: budget || (lang === 'uz' ? "Kelishilgan" : "Договорная"),
+      distance: "Noma'lum" // Simulated
+    };
+
+    setAnnouncements([newAnnouncement, ...announcements]);
+    setFrom("");
+    setTo("");
+    setDetails("");
+    setBudget("");
+
+    toast({
+      title: lang === 'uz' ? "Muvaffaqiyatli" : "Успешно",
+      description: lang === 'uz' ? "E'loningiz ochiq qilindi va dispetcherlarga yuborildi." : "Ваше объявление опубликовано и отправлено диспетчерам.",
+    });
+  };
 
   const formatCurrency = (val: number) => 
     new Intl.NumberFormat('uz-UZ').format(val);
@@ -40,7 +104,7 @@ export function LogisticsHub({ lang = 'uz' }: LogisticsHubProps) {
       </div>
 
       {/* Tabs Section */}
-      <Tabs defaultValue="buyer" className="w-full" onValueChange={setActiveTab}>
+      <Tabs defaultValue="buyer" className="w-full" value={activeTab} onValueChange={setActiveTab}>
         <div className="border-b border-slate-100 mb-8">
           <TabsList className="bg-transparent h-12 p-0 gap-10">
             <TabsTrigger value="buyer" className="data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-blue-600 rounded-none h-full px-0 text-[11px] font-black uppercase tracking-widest text-slate-400 data-[state=active]:text-blue-600">
@@ -65,27 +129,50 @@ export function LogisticsHub({ lang = 'uz' }: LogisticsHubProps) {
                 <div className="space-y-3">
                   <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest">Yo'nalish</label>
                   <div className="grid grid-cols-2 gap-3">
-                    <Input placeholder="Qayerdan" className="h-12 rounded-xl text-[12px] font-bold border-slate-100 bg-slate-50/50" />
-                    <Input placeholder="Qayerga" className="h-12 rounded-xl text-[12px] font-bold border-slate-100 bg-slate-50/50" />
+                    <Input 
+                      placeholder={lang === 'uz' ? "Qayerdan" : "Откуда"} 
+                      className="h-12 rounded-xl text-[12px] font-bold border-slate-100 bg-slate-50/50" 
+                      value={from}
+                      onChange={(e) => setFrom(e.target.value)}
+                    />
+                    <Input 
+                      placeholder={lang === 'uz' ? "Qayerga" : "Куда"} 
+                      className="h-12 rounded-xl text-[12px] font-bold border-slate-100 bg-slate-50/50" 
+                      value={to}
+                      onChange={(e) => setTo(e.target.value)}
+                    />
                   </div>
                 </div>
                 <div className="space-y-3">
                   <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest">Yuk haqida</label>
-                  <Input placeholder="Turi, og'irligi, hajmi" className="h-12 rounded-xl text-[12px] font-bold border-slate-100 bg-slate-50/50" />
+                  <Input 
+                    placeholder={lang === 'uz' ? "Turi, og'irligi, hajmi" : "Тип, вес, объем"} 
+                    className="h-12 rounded-xl text-[12px] font-bold border-slate-100 bg-slate-50/50" 
+                    value={details}
+                    onChange={(e) => setDetails(e.target.value)}
+                  />
                 </div>
                 <div className="space-y-3">
                   <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest">Byudjet (UZS)</label>
-                  <Input placeholder="Masalan: 500 000" className="h-12 rounded-xl text-[12px] font-bold border-slate-100 bg-slate-50/50" />
+                  <Input 
+                    placeholder={lang === 'uz' ? "Masalan: 500 000" : "Например: 500 000"} 
+                    className="h-12 rounded-xl text-[12px] font-bold border-slate-100 bg-slate-50/50" 
+                    value={budget}
+                    onChange={(e) => setBudget(e.target.value)}
+                  />
                 </div>
-                <Button className="w-full h-14 bg-[#0b4db1] hover:bg-blue-700 text-white rounded-2xl font-black uppercase tracking-widest text-[11px] shadow-xl shadow-blue-100 mt-4">
-                  E'lonni ochiq qilish
+                <Button 
+                  onClick={handlePublishAnnouncement}
+                  className="w-full h-14 bg-[#0b4db1] hover:bg-blue-700 text-white rounded-2xl font-black uppercase tracking-widest text-[11px] shadow-xl shadow-blue-100 mt-4 gap-2"
+                >
+                  <Send size={16} /> {lang === 'uz' ? "E'lonni ochiq qilish" : "Опубликовать объявление"}
                 </Button>
               </div>
             </Card>
             <Card className="lg:col-span-8 border-none shadow-sm rounded-[32px] bg-white p-8">
-              <h2 className="text-lg font-black text-slate-900 mb-8">Kelgan takliflar</h2>
+              <h2 className="text-lg font-black text-slate-900 mb-8">{lang === 'uz' ? "Kelgan takliflar" : "Полученные предложения"}</h2>
               <div className="space-y-6">
-                <div className="p-8 rounded-[24px] border border-slate-50 group">
+                <div className="p-8 rounded-[24px] border border-slate-50 group hover:border-blue-100 transition-all bg-slate-50/30">
                   <div className="flex justify-between items-start mb-4">
                     <div className="flex items-center gap-3">
                       <h3 className="text-[16px] font-black text-slate-900 uppercase">Toshkent Logistika MChJ</h3>
@@ -96,7 +183,9 @@ export function LogisticsHub({ lang = 'uz' }: LogisticsHubProps) {
                   <div className="flex items-center gap-2 text-amber-500 font-black text-[11px] mb-4">
                     <Star size={14} fill="currentColor" /> 4.9 <span className="text-slate-300 font-bold ml-1">(124 ta yuk)</span>
                   </div>
-                  <Button className="w-full bg-[#0b4db1] text-white rounded-xl h-11 text-[11px] font-black uppercase tracking-widest">Qabul qilish</Button>
+                  <Button className="w-full bg-[#0b4db1] hover:bg-blue-700 text-white rounded-xl h-11 text-[11px] font-black uppercase tracking-widest transition-all">
+                    {lang === 'uz' ? "Qabul qilish" : "Принять"}
+                  </Button>
                 </div>
               </div>
             </Card>
@@ -107,67 +196,71 @@ export function LogisticsHub({ lang = 'uz' }: LogisticsHubProps) {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <Card className="border-none shadow-sm rounded-[24px] bg-white p-10 flex flex-col items-center justify-center text-center">
               <h3 className="text-4xl font-black text-[#0b4db1] mb-2">140+</h3>
-              <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Shu oy tashkil qilingan yuklar</p>
+              <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">{lang === 'uz' ? "Shu oy tashkil qilingan yuklar" : "Грузы в этом месяце"}</p>
             </Card>
             <Card className="border-none shadow-sm rounded-[24px] bg-white p-10 flex flex-col items-center justify-center text-center">
               <h3 className="text-4xl font-black text-emerald-500 mb-2">4.9 <span className="text-lg text-emerald-300">★</span></h3>
-              <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Mijozlar tomonidan o'rtacha baho</p>
+              <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">{lang === 'uz' ? "Mijozlar tomonidan o'rtacha baho" : "Средняя оценка клиентов"}</p>
             </Card>
             <Card className="border-none shadow-sm rounded-[24px] bg-white p-10 flex flex-col items-center justify-center text-center">
               <h3 className="text-4xl font-black text-amber-500 mb-2">12 ta</h3>
-              <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Tasdiqlangan hamkor tashuvchilar</p>
+              <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">{lang === 'uz' ? "Tasdiqlangan hamkor tashuvchilar" : "Партнеры-перевозчики"}</p>
             </Card>
           </div>
 
           <div className="space-y-6">
             <div className="flex items-center justify-between">
-              <h2 className="text-xl font-black text-slate-900 uppercase tracking-tight">Bozordagi ochiq e'lonlar</h2>
+              <h2 className="text-xl font-black text-slate-900 uppercase tracking-tight">{lang === 'uz' ? "Bozordagi ochiq e'lonlar" : "Открытые объявления"}</h2>
               <Button variant="outline" className="h-10 rounded-xl border-slate-100 text-[10px] font-black uppercase tracking-widest gap-2">
                 <Filter size={14} /> Filterlar
               </Button>
             </div>
 
-            <Card className="border-none shadow-sm rounded-[32px] bg-white overflow-hidden p-8 border border-slate-50">
-              <div className="grid lg:grid-cols-12 gap-8 items-center">
-                <div className="lg:col-span-8 space-y-8">
-                  <div className="flex items-center justify-between gap-4 px-2">
-                    <span className="text-lg font-black text-slate-900">Toshkent</span>
-                    <div className="flex-1 flex flex-col items-center justify-center">
-                      <div className="w-full h-px bg-slate-100 relative">
-                        <div className="absolute left-1/2 -top-2.5 -translate-x-1/2 bg-white px-3 text-[10px] font-black text-slate-400 uppercase tracking-widest border border-slate-50 rounded-full h-5 flex items-center">
-                          400 km
+            {announcements.map((ann) => (
+              <Card key={ann.id} className="border-none shadow-sm rounded-[32px] bg-white overflow-hidden p-8 border border-slate-50 hover:shadow-lg transition-all">
+                <div className="grid lg:grid-cols-12 gap-8 items-center">
+                  <div className="lg:col-span-8 space-y-8">
+                    <div className="flex items-center justify-between gap-4 px-2">
+                      <span className="text-lg font-black text-slate-900">{ann.from}</span>
+                      <div className="flex-1 flex flex-col items-center justify-center">
+                        <div className="w-full h-px bg-slate-100 relative">
+                          <div className="absolute left-1/2 -top-2.5 -translate-x-1/2 bg-white px-3 text-[10px] font-black text-slate-400 uppercase tracking-widest border border-slate-50 rounded-full h-5 flex items-center">
+                            {ann.distance}
+                          </div>
                         </div>
                       </div>
+                      <span className="text-lg font-black text-slate-900">{ann.to}</span>
                     </div>
-                    <span className="text-lg font-black text-slate-900">Xorazm</span>
+
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-3">
+                        <span className="text-[11px] font-black text-slate-900 uppercase min-w-[120px]">{lang === 'uz' ? "Yuk turi:" : "Тип груза:"}</span>
+                        <span className="text-[12px] font-bold text-slate-500">{ann.details}</span>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <span className="text-[11px] font-black text-slate-900 uppercase min-w-[120px]">{lang === 'uz' ? "Vaqt:" : "Время:"}</span>
+                        <span className="text-[12px] font-bold text-slate-500">{lang === 'uz' ? "Bugun kun davomida kelishilgan holda" : "Сегодня в течение дня"}</span>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <span className="text-[11px] font-black text-slate-900 uppercase min-w-[120px]">{lang === 'uz' ? "Mijoz byudjeti:" : "Бюджет клиента:"}</span>
+                        <span className="text-[12px] font-bold text-[#0b4db1] font-black">
+                          {ann.budget} {ann.budget !== "Kelishilgan" && ann.budget !== "Договорная" ? "UZS" : ""}
+                        </span>
+                      </div>
+                    </div>
                   </div>
 
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-3">
-                      <span className="text-[11px] font-black text-slate-900 uppercase min-w-[120px]">Yuk turi:</span>
-                      <span className="text-[12px] font-bold text-slate-500">Qurilish materiallari (5 tonna, uzunligi 6m)</span>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <span className="text-[11px] font-black text-slate-900 uppercase min-w-[120px]">Vaqt:</span>
-                      <span className="text-[12px] font-bold text-slate-500">Bugun kun davomida kelishilgan holda</span>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <span className="text-[11px] font-black text-slate-900 uppercase min-w-[120px]">Mijoz byudjeti:</span>
-                      <span className="text-[12px] font-bold text-slate-500 italic">Xaridor aniq narx kiritmagan (Taklif kutmoqda)</span>
-                    </div>
+                  <div className="lg:col-span-4 bg-slate-50/50 p-6 rounded-[24px] border border-slate-50 space-y-4">
+                    <p className="text-[11px] font-black text-slate-900 uppercase tracking-widest mb-2">{lang === 'uz' ? "O'z xizmatingizni taklif qiling" : "Предложите свои услуги"}</p>
+                    <Input placeholder={lang === 'uz' ? "Narx taklif qiling (UZS)" : "Цена (UZS)"} className="h-12 rounded-xl text-[12px] font-bold border-slate-100 bg-white" />
+                    <Input placeholder={lang === 'uz' ? "Mijozga xabar (Izoh)..." : "Сообщение..."} className="h-12 rounded-xl text-[12px] font-bold border-slate-100 bg-white" />
+                    <Button className="w-full bg-[#0b4db1] hover:bg-blue-700 text-white rounded-xl h-12 font-black uppercase tracking-widest text-[11px] shadow-lg shadow-blue-100">
+                      {lang === 'uz' ? "Xaridorga yuborish" : "Отправить"}
+                    </Button>
                   </div>
                 </div>
-
-                <div className="lg:col-span-4 bg-slate-50/50 p-6 rounded-[24px] border border-slate-50 space-y-4">
-                  <p className="text-[11px] font-black text-slate-900 uppercase tracking-widest mb-2">O'z xizmatingizni taklif qiling</p>
-                  <Input placeholder="Narx taklif qiling (UZS)" className="h-12 rounded-xl text-[12px] font-bold border-slate-100 bg-white" />
-                  <Input placeholder="Mijozga xabar (Izoh)..." className="h-12 rounded-xl text-[12px] font-bold border-slate-100 bg-white" />
-                  <Button className="w-full bg-[#0b4db1] hover:bg-blue-700 text-white rounded-xl h-12 font-black uppercase tracking-widest text-[11px] shadow-lg shadow-blue-100">
-                    Xaridorga yuborish
-                  </Button>
-                </div>
-              </div>
-            </Card>
+              </Card>
+            ))}
           </div>
         </TabsContent>
 
@@ -178,24 +271,27 @@ export function LogisticsHub({ lang = 'uz' }: LogisticsHubProps) {
               <CircleAlert size={20} />
             </div>
             <div className="space-y-1">
-              <h4 className="text-[13px] font-black text-[#0b4db1] uppercase tracking-widest">Dispetcherdan yangi taklif!</h4>
+              <h4 className="text-[13px] font-black text-[#0b4db1] uppercase tracking-widest">{lang === 'uz' ? "Dispetcherdan yangi taklif!" : "Предложение от диспетчера!"}</h4>
               <p className="text-[11px] font-medium text-[#4b77b8] leading-relaxed max-w-4xl">
-                "Toshkent Logistika MChJ" sizga yangi yuk bo'yicha hamkorlik taklif qilmoqda. Agar "Roziman" ni bossangiz, mijozga sizning nomingizdan yuk tashiydigan dispetcher sifatida shartnoma taklif etiladi.
+                {lang === 'uz' 
+                  ? "\"Toshkent Logistika MChJ\" sizga yangi yuk bo'yicha hamkorlik taklif qilmoqda. Agar \"Roziman\" ni bossangiz, mijozga sizning nomingizdan yuk tashiydigan dispetcher sifatida shartnoma taklif etiladi."
+                  : "\"Toshkent Логистика МЧЖ\" предлагает вам сотрудничество. Если вы нажмете \"Согласен\", диспетчер предложит клиенту контракт от вашего имени."
+                }
               </p>
             </div>
           </div>
 
           <div className="space-y-6 mt-10">
-            <h2 className="text-xl font-black text-slate-900 uppercase tracking-tight ml-2">Dispetcher takliflari</h2>
+            <h2 className="text-xl font-black text-slate-900 uppercase tracking-tight ml-2">{lang === 'uz' ? "Dispetcher takliflari" : "Предложения диспетчеров"}</h2>
             
             <Card className="border-none shadow-sm rounded-[32px] bg-white overflow-hidden p-8 border border-slate-50 hover:shadow-xl transition-all duration-500 group">
               <div className="grid lg:grid-cols-12 gap-8 items-start">
                 {/* Details Section */}
                 <div className="lg:col-span-8 space-y-6">
                   <div>
-                    <h3 className="text-lg font-black text-slate-900 uppercase tracking-tight mb-1">Xorazmga qurilish materiallari</h3>
+                    <h3 className="text-lg font-black text-slate-900 uppercase tracking-tight mb-1">{lang === 'uz' ? "Xorazmga qurilish materiallari" : "Стройматериалы в Хорезм"}</h3>
                     <div className="flex items-center gap-2 text-[11px] font-bold text-slate-400">
-                      Taklif qildi: <span className="text-slate-900 font-black">Toshkent Logistika MChJ</span>
+                      {lang === 'uz' ? "Taklif qildi:" : "Предложил:"} <span className="text-slate-900 font-black">Toshkent Logistika MChJ</span>
                       <div className="flex items-center gap-1 text-amber-500">
                         <Star size={12} fill="currentColor" /> 4.9
                       </div>
@@ -205,15 +301,15 @@ export function LogisticsHub({ lang = 'uz' }: LogisticsHubProps) {
                   <div className="bg-[#fcfdfe] p-6 rounded-[24px] border border-slate-50 space-y-4">
                     <div className="grid grid-cols-1 gap-3">
                       <div className="flex items-start gap-4">
-                        <span className="text-[10px] font-black text-slate-900 uppercase min-w-[80px] mt-0.5">Yuklash:</span>
-                        <span className="text-[11px] font-bold text-slate-500">Chilonzor, Oq-tepa (Bugun 15:00 gacha)</span>
+                        <span className="text-[10px] font-black text-slate-900 uppercase min-w-[80px] mt-0.5">{lang === 'uz' ? "Yuklash:" : "Погрузка:"}</span>
+                        <span className="text-[11px] font-bold text-slate-500">{lang === 'uz' ? "Chilonzor, Oq-tepa (Bugun 15:00 gacha)" : "Чиланзар, Ак-тепа (Сегодня до 15:00)"}</span>
                       </div>
                       <div className="flex items-start gap-4">
-                        <span className="text-[10px] font-black text-slate-900 uppercase min-w-[80px] mt-0.5">Tushirish:</span>
-                        <span className="text-[11px] font-bold text-slate-500">Urganch shahri markazi</span>
+                        <span className="text-[10px] font-black text-slate-900 uppercase min-w-[80px] mt-0.5">{lang === 'uz' ? "Tushirish:" : "Разгрузка:"}</span>
+                        <span className="text-[11px] font-bold text-slate-500">{lang === 'uz' ? "Urganch shahri markazi" : "Центр города Ургенч"}</span>
                       </div>
                       <div className="flex items-start gap-4">
-                        <span className="text-[10px] font-black text-slate-900 uppercase min-w-[80px] mt-0.5">Yuk hajmi:</span>
+                        <span className="text-[10px] font-black text-slate-900 uppercase min-w-[80px] mt-0.5">{lang === 'uz' ? "Yuk hajmi:" : "Объем:"}</span>
                         <span className="text-[11px] font-bold text-slate-500">~5 tonna, og'ir ob'ektlar</span>
                       </div>
                     </div>
@@ -223,16 +319,16 @@ export function LogisticsHub({ lang = 'uz' }: LogisticsHubProps) {
                 {/* Offer Action Section */}
                 <div className="lg:col-span-4 space-y-4 bg-[#f8faff] p-8 rounded-[32px] border border-blue-50/50">
                   <div className="text-center space-y-1 mb-6">
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Sizga taklif etilayotgan haq:</p>
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">{lang === 'uz' ? "Sizga taklif etilayotgan haq:" : "Предлагаемая оплата:"}</p>
                     <p className="text-3xl font-black text-slate-900 tracking-tighter">1,800,000 UZS</p>
                   </div>
                   
                   <div className="space-y-3">
                     <Button className="w-full bg-[#10b981] hover:bg-[#059669] text-white rounded-xl h-14 font-black uppercase tracking-widest text-[11px] shadow-lg shadow-emerald-100">
-                      Roziman
+                      {lang === 'uz' ? "Roziman" : "Согласен"}
                     </Button>
                     <Button variant="outline" className="w-full border-slate-200 text-slate-500 bg-white hover:bg-slate-50 rounded-xl h-14 font-black uppercase tracking-widest text-[11px]">
-                      Rad etish
+                      {lang === 'uz' ? "Rad etish" : "Отказать"}
                     </Button>
                   </div>
                 </div>
