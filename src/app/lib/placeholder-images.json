@@ -18,6 +18,12 @@
       "description": "Akfa Group Premium",
       "imageUrl": "https://picsum.photos/seed/akfa/1200/400",
       "imageHint": "construction window"
+    },
+    {
+      "id": "tracker",
+      "description": "Yangi Chevrolet Tracker — Shahar uchun mukammal tanlov",
+      "imageUrl": "https://picsum.photos/seed/tracker/1200/300",
+      "imageHint": "chevrolet tracker car"
     }
   ]
 }
