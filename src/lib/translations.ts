@@ -12,20 +12,20 @@ export const dict = {
     documents: "ҲУЖЖАТЛАР ВА ФОТО",
     investments: "ИНВЕСТИЦИЯ & БОШҚАРУВ",
     guide: "БИЗНЕС ЙЎРИҚНОМА",
-    aiSecurity: "AI Хавфсизлик",
-    eri: "ЭРИ ва Шартномаlar",
+    aiSecurity: "AI Хавфsizlik",
+    eri: "ХАРИДОР ПАНЕЛИ",
     settings: "Соzlamalar",
-    messages: "Хабарлар",
-    notifications: "Билдиришномалар",
-    reports: "Ҳисоботлар",
-    events: "Тадбирлар"
+    messages: "Хабарlar",
+    notifications: "Билдиришномаlar",
+    reports: "Ҳисоботlar",
+    events: "Тадбирlar"
   },
   labels: {
     search: "Қидириш...",
     welcome: "Хуш келибсиз!",
     inn: "СТИР (ИНН)",
     check: "Текшириш",
-    riskScore: "AI Хавф даражаси",
+    riskScore: "AI Хавф даражаsi",
     recommendation: "Тавсия",
     bidPrice: "Жорий нарх",
     bidHistory: "Савдо тарихи",
@@ -43,6 +43,8 @@ export const dict = {
     lotSubtitle: "Янги харид лотлари очинг ва рақобатни кузатинг",
     newLot: "Янги Лот",
     watch: "Кузатиш",
-    bids: "ТАКЛИФ"
+    bids: "ТАКЛИФ",
+    generateAi: "AI БИЛАН ТАЙЁРЛАШ",
+    fullName: "Исм ва Фамилия"
   }
 };
