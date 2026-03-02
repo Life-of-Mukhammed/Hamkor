@@ -2,7 +2,7 @@
 "use client";
 
 import * as React from "react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -27,11 +27,31 @@ import {
   Globe, 
   User, 
   Sparkles,
-  ChevronDown
+  ChevronDown,
+  Clock
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { ChartContainer, ChartTooltipContent } from "@/components/ui/chart";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 const chartData = [
   { name: "Yan", value: 23 },
@@ -59,6 +79,7 @@ interface Lot {
   quantity: string;
   hasEscrow?: boolean;
   hasBlitz?: boolean;
+  duration?: string;
 }
 
 const INITIAL_LOTS: Lot[] = [
@@ -97,12 +118,56 @@ const INITIAL_LOTS: Lot[] = [
 ];
 
 export function AuctionHub() {
-  const [lots] = useState<Lot[]>(INITIAL_LOTS);
+  const [lots, setLots] = useState<Lot[]>(INITIAL_LOTS);
   const [timeLeft, setTimeLeft] = useState("00:44:37");
   const { toast } = useToast();
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  // Form states
+  const [newLotTitle, setNewLotTitle] = useState("");
+  const [newLotQuantity, setNewLotQuantity] = useState("");
+  const [newLotCategory, setNewLotCategory] = useState("IT");
+  const [newLotPrice, setNewLotPrice] = useState("");
+  const [newLotDuration, setNewLotDuration] = useState("24");
 
   const formatCurrency = (val: number) => 
     new Intl.NumberFormat('uz-UZ').format(val);
+
+  const handleCreateLot = () => {
+    if (!newLotTitle || !newLotQuantity || !newLotPrice) {
+      toast({
+        title: "Xatolik",
+        description: "Iltimos, barcha maydonlarni to'ldiring",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const newLot: Lot = {
+      id: Math.random().toString(36).substr(2, 9),
+      title: newLotTitle,
+      quantity: newLotQuantity,
+      category: newLotCategory,
+      location: "Toshkent", // Standart
+      lotId: `AUC-UZ-2026-${String(lots.length + 1).padStart(3, '0')}`,
+      price: parseFloat(newLotPrice.replace(/\s/g, '')),
+      duration: newLotDuration,
+      hasBlitz: true,
+    };
+
+    setLots([newLot, ...lots]);
+    setIsDialogOpen(false);
+    
+    // Formni tozalash
+    setNewLotTitle("");
+    setNewLotQuantity("");
+    setNewLotPrice("");
+    
+    toast({
+      title: "Muvaffaqiyatli",
+      description: "Yangi lot muvaffaqiyatli yaratildi",
+    });
+  };
 
   return (
     <div className="space-y-6 animate-fade-in text-slate-700">
@@ -110,36 +175,119 @@ export function AuctionHub() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-black text-slate-900 tracking-tight">Auktsion Platformasi</h1>
-          <p className="text-slate-400 text-xs font-medium">Real vaqt auktsionlari — O'rta Osiyo va O'zbekiston bozori</p>
+          <p className="text-slate-400 text-[10px] font-bold uppercase tracking-widest">Real vaqt auktsionlari — O'rta Osiyo va O'zbekiston bozori</p>
         </div>
         <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-red-50 text-red-500 text-[10px] font-bold uppercase tracking-wider border border-red-100">
-            <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-red-50 text-red-500 text-[9px] font-black uppercase tracking-wider border border-red-100">
+            <div className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
             Jonli Efir
           </div>
-          <Button className="bg-[#2563eb] hover:bg-blue-700 text-white rounded-xl h-10 px-5 text-xs font-bold gap-2 shadow-lg shadow-blue-200">
-            <Plus size={16} /> Yangi Lot
-          </Button>
-          <Button variant="outline" className="border-blue-200 text-[#2563eb] hover:bg-blue-50 rounded-xl h-10 px-5 text-xs font-bold gap-2">
-            <FileText size={16} /> Hisobot
+          
+          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+            <DialogTrigger asChild>
+              <Button className="bg-[#2563eb] hover:bg-blue-700 text-white rounded-xl h-10 px-6 text-[10px] font-black uppercase tracking-widest gap-2 shadow-lg shadow-blue-200">
+                <Plus size={14} /> Yangi Lot
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px] rounded-[24px]">
+              <DialogHeader>
+                <DialogTitle className="text-[14px] font-black uppercase tracking-widest">Yangi Lot Yaratish</DialogTitle>
+                <DialogDescription className="text-[11px] font-bold text-slate-400 uppercase">
+                  Auktsion uchun yangi mahsulot ma'lumotlarini kiriting.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="grid gap-4 py-4">
+                <div className="space-y-2">
+                  <Label htmlFor="title" className="text-[10px] font-black uppercase tracking-widest text-slate-500">Lot nomi</Label>
+                  <Input 
+                    id="title" 
+                    placeholder="Masalan: Apple MacBook Pro" 
+                    className="h-10 rounded-xl text-[11px] font-bold"
+                    value={newLotTitle}
+                    onChange={(e) => setNewLotTitle(e.target.value)}
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="quantity" className="text-[10px] font-black uppercase tracking-widest text-slate-500">Miqdor</Label>
+                    <Input 
+                      id="quantity" 
+                      placeholder="100 dona" 
+                      className="h-10 rounded-xl text-[11px] font-bold"
+                      value={newLotQuantity}
+                      onChange={(e) => setNewLotQuantity(e.target.value)}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="category" className="text-[10px] font-black uppercase tracking-widest text-slate-500">Toifa</Label>
+                    <Select value={newLotCategory} onValueChange={setNewLotCategory}>
+                      <SelectTrigger className="h-10 rounded-xl text-[11px] font-bold">
+                        <SelectValue placeholder="Toifani tanlang" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="IT">IT</SelectItem>
+                        <SelectItem value="Qurilish">Qurilish</SelectItem>
+                        <SelectItem value="Transport">Transport</SelectItem>
+                        <SelectItem value="Oziq-ovqat">Oziq-ovqat</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="price" className="text-[10px] font-black uppercase tracking-widest text-slate-500">Boshlang'ich narx (so'm)</Label>
+                  <Input 
+                    id="price" 
+                    placeholder="15 000 000" 
+                    className="h-10 rounded-xl text-[11px] font-bold"
+                    value={newLotPrice}
+                    onChange={(e) => setNewLotPrice(e.target.value)}
+                  />
+                </div>
+                <div className="space-y-3">
+                  <Label className="text-[10px] font-black uppercase tracking-widest text-slate-500">Auktsion davomiyligi</Label>
+                  <RadioGroup value={newLotDuration} onValueChange={setNewLotDuration} className="flex gap-4">
+                    <div className="flex items-center space-x-2 bg-slate-50 p-3 rounded-xl flex-1 border border-slate-100">
+                      <RadioGroupItem value="24" id="r1" />
+                      <Label htmlFor="r1" className="text-[11px] font-bold cursor-pointer">24 soat</Label>
+                    </div>
+                    <div className="flex items-center space-x-2 bg-slate-50 p-3 rounded-xl flex-1 border border-slate-100">
+                      <RadioGroupItem value="48" id="r2" />
+                      <Label htmlFor="r2" className="text-[11px] font-bold cursor-pointer">48 soat</Label>
+                    </div>
+                  </RadioGroup>
+                </div>
+              </div>
+              <DialogFooter>
+                <Button 
+                  onClick={handleCreateLot}
+                  className="w-full bg-[#2563eb] hover:bg-blue-700 text-white rounded-xl h-11 text-[11px] font-black uppercase tracking-[0.2em]"
+                >
+                  Lotni Tasdiqlash
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+
+          <Button variant="outline" className="border-blue-200 text-[#2563eb] hover:bg-blue-50 rounded-xl h-10 px-6 text-[10px] font-black uppercase tracking-widest gap-2">
+            <FileText size={14} /> Hisobot
           </Button>
         </div>
       </div>
 
       {/* Navigation Tabs */}
-      <div className="border-b">
+      <div className="border-b border-slate-100">
         <Tabs defaultValue="uzb" className="w-full">
-          <TabsList className="bg-transparent h-12 p-0 gap-8">
-            <TabsTrigger value="uzb" className="data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-blue-600 rounded-none h-full px-0 text-xs font-bold gap-2 text-slate-400 data-[state=active]:text-blue-600">
+          <TabsList className="bg-transparent h-12 p-0 gap-10">
+            <TabsTrigger value="uzb" className="data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-blue-600 rounded-none h-full px-0 text-[10px] font-black uppercase tracking-widest gap-2 text-slate-400 data-[state=active]:text-blue-600">
               <Flag size={14} /> O'zbekiston
             </TabsTrigger>
-            <TabsTrigger value="central" className="data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-blue-600 rounded-none h-full px-0 text-xs font-bold gap-2 text-slate-400 data-[state=active]:text-blue-600">
+            <TabsTrigger value="central" className="data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-blue-600 rounded-none h-full px-0 text-[10px] font-black uppercase tracking-widest gap-2 text-slate-400 data-[state=active]:text-blue-600">
               <Globe size={14} /> Markaziy Osiyo
             </TabsTrigger>
-            <TabsTrigger value="my" className="data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-blue-600 rounded-none h-full px-0 text-xs font-bold gap-2 text-slate-400 data-[state=active]:text-blue-600">
+            <TabsTrigger value="my" className="data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-blue-600 rounded-none h-full px-0 text-[10px] font-black uppercase tracking-widest gap-2 text-slate-400 data-[state=active]:text-blue-600">
               <User size={14} /> Mening Takliflarim
             </TabsTrigger>
-            <TabsTrigger value="ai" className="data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-blue-600 rounded-none h-full px-0 text-xs font-bold gap-2 text-slate-400 data-[state=active]:text-blue-600">
+            <TabsTrigger value="ai" className="data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-blue-600 rounded-none h-full px-0 text-[10px] font-black uppercase tracking-widest gap-2 text-slate-400 data-[state=active]:text-blue-600">
               <Sparkles size={14} /> AI Tahlil
             </TabsTrigger>
           </TabsList>
@@ -147,48 +295,53 @@ export function AuctionHub() {
       </div>
 
       {/* Main Grid Content */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
         
         {/* Left Column: Lots */}
-        <div className="lg:col-span-7 space-y-6">
+        <div className="lg:col-span-7 space-y-8">
           <div className="flex items-center justify-between">
             <h2 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Aktiv Lotlar</h2>
-            <Button variant="ghost" size="sm" className="text-[10px] font-bold gap-1 text-slate-500">
+            <Button variant="ghost" size="sm" className="text-[10px] font-bold gap-1 text-slate-500 uppercase tracking-widest">
               Barchasi <ChevronDown size={12} />
             </Button>
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-6">
             {lots.map((lot) => (
-              <Card key={lot.id} className="border-none shadow-sm hover:shadow-md transition-all duration-300 rounded-[20px] bg-white overflow-hidden group">
-                <CardContent className="p-6">
-                  <div className="flex justify-between items-start mb-4">
-                    <div className="space-y-1">
-                      <h3 className="text-sm font-bold text-slate-800">{lot.title} — <span className="text-slate-500">{lot.quantity}</span></h3>
-                      <p className="text-[9px] text-slate-400 font-bold uppercase tracking-wider">
-                        Kategoriya: {lot.category} | {lot.location} | Lot: {lot.lotId} 
-                        <span className="inline-block ml-1 w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
-                      </p>
+              <Card key={lot.id} className="border-none shadow-sm hover:shadow-xl transition-all duration-500 rounded-[32px] bg-white overflow-hidden group">
+                <CardContent className="p-8">
+                  <div className="flex justify-between items-start mb-6">
+                    <div className="space-y-2">
+                      <h3 className="text-lg font-black text-slate-900 tracking-tight">{lot.title} — <span className="text-slate-400 font-bold">{lot.quantity}</span></h3>
+                      <div className="flex items-center gap-3">
+                        <p className="text-[9px] text-slate-400 font-black uppercase tracking-[0.1em]">
+                          {lot.category} • {lot.location} • {lot.lotId} 
+                        </p>
+                        <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-red-50 text-red-500 text-[8px] font-black uppercase">
+                          <Clock size={10} /> {lot.duration ? `${lot.duration}:00:00` : "00:44:37"}
+                        </div>
+                      </div>
                     </div>
                     <div className="text-right">
-                      <p className="text-xl font-black text-[#2563eb] tracking-tight">{formatCurrency(lot.price)}</p>
+                      <p className="text-2xl font-black text-[#2563eb] tracking-tighter">{formatCurrency(lot.price)}</p>
+                      <p className="text-[8px] font-black text-slate-300 uppercase tracking-widest mt-1">Boshlang'ich narx</p>
                     </div>
                   </div>
 
-                  <div className="flex flex-wrap gap-2">
-                    <Button size="sm" className="h-7 bg-[#2563eb] hover:bg-blue-700 text-white rounded-full text-[9px] font-black uppercase px-4 gap-1.5">
-                      <Zap size={10} fill="currentColor" /> 130mln taklif
+                  <div className="flex flex-wrap gap-2.5">
+                    <Button size="sm" className="h-8 bg-[#2563eb] hover:bg-blue-700 text-white rounded-full text-[9px] font-black uppercase px-5 gap-2 tracking-widest">
+                      <Zap size={10} fill="currentColor" /> Kuzatish
                     </Button>
-                    <Button variant="outline" size="sm" className="h-7 border-blue-100 text-blue-600 rounded-full text-[9px] font-black uppercase px-3 gap-1.5">
+                    <Button variant="outline" size="sm" className="h-8 border-slate-100 hover:border-blue-200 text-slate-500 hover:text-blue-600 rounded-full text-[9px] font-black uppercase px-4 gap-2 tracking-widest transition-colors">
                       <Info size={10} /> Batafsil
                     </Button>
                     {lot.hasEscrow && (
-                      <Badge className="h-7 bg-[#22c55e] hover:bg-green-600 text-white border-none rounded-full text-[9px] font-black uppercase px-3 flex items-center gap-1.5">
+                      <Badge className="h-8 bg-emerald-50 text-emerald-600 border-none rounded-full text-[9px] font-black uppercase px-4 flex items-center gap-2">
                         <ShieldCheck size={10} /> Escrow
                       </Badge>
                     )}
                     {lot.hasBlitz && (
-                      <Badge className="h-7 bg-[#a855f7] hover:bg-purple-600 text-white border-none rounded-full text-[9px] font-black uppercase px-3 flex items-center gap-1.5">
+                      <Badge className="h-8 bg-violet-50 text-violet-600 border-none rounded-full text-[9px] font-black uppercase px-4 flex items-center gap-2">
                         <Zap size={10} /> Blitz
                       </Badge>
                     )}
@@ -200,9 +353,9 @@ export function AuctionHub() {
         </div>
 
         {/* Right Column: Stats & Bids */}
-        <div className="lg:col-span-5 space-y-6">
-          <Card className="border-none shadow-sm rounded-[24px] bg-white p-6">
-            <h2 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-6">Jonli Statistika</h2>
+        <div className="lg:col-span-5 space-y-8">
+          <Card className="border-none shadow-sm rounded-[32px] bg-white p-8">
+            <h2 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-8">Jonli Statistika</h2>
             <div className="h-48 w-full">
               <ChartContainer config={chartConfig} className="h-full w-full">
                 <ResponsiveContainer width="100%" height="100%">
@@ -212,7 +365,7 @@ export function AuctionHub() {
                       dataKey="name" 
                       axisLine={false} 
                       tickLine={false} 
-                      tick={{ fontSize: 9, fontWeight: 600, fill: '#94a3b8' }} 
+                      tick={{ fontSize: 9, fontWeight: 700, fill: '#94a3b8' }} 
                       dy={10}
                     />
                     <YAxis hide />
@@ -220,8 +373,8 @@ export function AuctionHub() {
                     <Bar 
                       dataKey="value" 
                       fill="#2563eb" 
-                      radius={[4, 4, 0, 0]} 
-                      barSize={32}
+                      radius={[6, 6, 0, 0]} 
+                      barSize={36}
                     />
                   </BarChart>
                 </ResponsiveContainer>
@@ -229,22 +382,25 @@ export function AuctionHub() {
             </div>
           </Card>
 
-          <Card className="border-none shadow-sm rounded-[24px] bg-white p-6">
-            <div className="space-y-6">
+          <Card className="border-none shadow-sm rounded-[32px] bg-white p-8">
+            <div className="space-y-8">
               <div>
-                <h2 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Vaqt Hisoblagich</h2>
-                <p className="text-3xl font-black text-slate-900 tracking-tight">{timeLeft}</p>
+                <h2 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3">Vaqt Hisoblagich</h2>
+                <div className="flex items-end gap-2">
+                  <p className="text-4xl font-black text-slate-900 tracking-tighter">{timeLeft}</p>
+                  <p className="text-[10px] font-black text-red-500 uppercase tracking-widest mb-1">Lot yakuniga</p>
+                </div>
               </div>
 
               <div>
-                <h2 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4">Takliflar</h2>
-                <div className="rounded-xl border border-slate-50 overflow-hidden">
+                <h2 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-5">So'nggi Takliflar</h2>
+                <div className="rounded-2xl border border-slate-50 overflow-hidden">
                   <Table>
                     <TableHeader className="bg-slate-50/50">
                       <TableRow className="hover:bg-transparent border-none">
-                        <TableHead className="text-[9px] font-black uppercase tracking-widest h-8">Taklif beruvchi</TableHead>
-                        <TableHead className="text-[9px] font-black uppercase tracking-widest text-right h-8">Summa</TableHead>
-                        <TableHead className="text-[9px] font-black uppercase tracking-widest text-center h-8">Vaqt</TableHead>
+                        <TableHead className="text-[8px] font-black uppercase tracking-[0.2em] h-10 px-4">Ishtirokchi</TableHead>
+                        <TableHead className="text-[8px] font-black uppercase tracking-[0.2em] text-right h-10 px-4">Summa</TableHead>
+                        <TableHead className="text-[8px] font-black uppercase tracking-[0.2em] text-center h-10 px-4">Vaqt</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -253,10 +409,10 @@ export function AuctionHub() {
                         { name: "Artel Electronics", amount: 125000000, time: "5 daqiqa oldin" },
                         { name: "UzAuto Motors", amount: 118000000, time: "9 daqiqa oldin" },
                       ].map((bid, i) => (
-                        <TableRow key={i} className="border-slate-50 hover:bg-slate-50/50 transition-colors">
-                          <TableCell className="text-[10px] font-bold text-slate-600">{bid.name}</TableCell>
-                          <TableCell className="text-right text-[10px] font-black text-blue-600">{formatCurrency(bid.amount)}</TableCell>
-                          <TableCell className="text-center text-[9px] font-medium text-slate-400">{bid.time}</TableCell>
+                        <TableRow key={i} className="border-slate-50 hover:bg-slate-50/80 transition-colors">
+                          <TableCell className="text-[10px] font-bold text-slate-700 px-4">{bid.name}</TableCell>
+                          <TableCell className="text-right text-[10px] font-black text-blue-600 px-4">{formatCurrency(bid.amount)}</TableCell>
+                          <TableCell className="text-center text-[8px] font-bold text-slate-400 px-4">{bid.time}</TableCell>
                         </TableRow>
                       ))}
                     </TableBody>
@@ -265,16 +421,15 @@ export function AuctionHub() {
               </div>
 
               <div className="pt-2">
-                <h2 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Auto-Taklif</h2>
-                <p className="text-[10px] font-bold text-slate-400 mb-4">Maksimal narx (so'm)</p>
-                <div className="flex gap-2">
+                <h2 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4">Auto-Taklif Faollashtirish</h2>
+                <div className="flex gap-2.5">
                   <input 
                     type="text" 
-                    placeholder="250 000 000"
-                    className="flex-1 bg-slate-50 border-none rounded-xl h-10 px-4 text-xs font-bold placeholder:text-slate-200 focus:ring-2 focus:ring-blue-100 outline-none"
+                    placeholder="Maksimal narx (so'm)"
+                    className="flex-1 bg-slate-50 border border-slate-100 rounded-xl h-11 px-5 text-[11px] font-bold placeholder:text-slate-300 focus:ring-2 focus:ring-blue-100 focus:border-blue-200 outline-none transition-all"
                   />
-                  <Button className="bg-[#2563eb] hover:bg-blue-700 text-white rounded-xl h-10 px-4 text-[10px] font-black uppercase tracking-widest">
-                    Faollashtirish
+                  <Button className="bg-[#1e1e1e] hover:bg-black text-white rounded-xl h-11 px-6 text-[9px] font-black uppercase tracking-widest">
+                    OK
                   </Button>
                 </div>
               </div>
@@ -286,3 +441,4 @@ export function AuctionHub() {
     </div>
   );
 }
+
