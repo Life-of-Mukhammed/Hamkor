@@ -18,20 +18,20 @@ export function TopAdBanner() {
       id: 1,
       title: "UzAuto Motors",
       description: "Yangi Chevrolet Tracker — Shahar uchun mukammal tanlov",
-      imageUrl: "https://picsum.photos/seed/tracker/1200/300",
-      imageHint: "chevrolet tracker car"
+      imageUrl: "https://picsum.photos/seed/tracker1/1200/400",
+      imageHint: "chevrolet car"
     },
     {
       id: 2,
       title: "Artel Electronics",
       description: "Yangi avlod maishiy texnikalari — Sizning qulayligingiz uchun",
-      imageUrl: "https://picsum.photos/seed/artel/1200/300",
-      imageHint: "modern appliances"
+      imageUrl: "https://picsum.photos/seed/artel1/1200/400",
+      imageHint: "home appliances"
     }
   ];
 
   return (
-    <div className="w-full bg-white border-b border-slate-100 overflow-hidden h-[80px] md:h-[120px] shrink-0">
+    <div className="w-full bg-white border-b border-slate-100 overflow-hidden h-[100px] md:h-[130px] shrink-0">
       <Carousel
         plugins={[plugin.current]}
         className="w-full h-full"
@@ -42,11 +42,12 @@ export function TopAdBanner() {
             <CarouselItem key={ad.id} className="h-full">
               <div className="flex h-full w-full">
                 {/* Image Section - 50% width */}
-                <div className="relative w-1/2 h-full overflow-hidden shrink-0">
+                <div className="relative w-1/2 h-full overflow-hidden shrink-0 bg-slate-100">
                   <Image
                     src={ad.imageUrl}
                     alt={ad.title}
                     fill
+                    priority
                     className="object-cover"
                     data-ai-hint={ad.imageHint}
                   />
@@ -54,15 +55,15 @@ export function TopAdBanner() {
                 </div>
                 
                 {/* Content Section - 50% width */}
-                <div className="w-1/2 px-4 md:px-12 flex items-center justify-between bg-white">
+                <div className="w-1/2 px-6 md:px-12 flex items-center justify-between bg-white">
                   <div className="space-y-1 md:space-y-2">
                     <div className="flex items-center gap-2">
                       <div className="w-4 md:w-8 h-[2px] bg-[#0b4db1]" />
-                      <h3 className="text-[9px] md:text-[13px] font-black text-[#0b4db1] uppercase tracking-[0.2em]">
+                      <h3 className="text-[9px] md:text-[12px] font-black text-[#0b4db1] uppercase tracking-[0.2em]">
                         {ad.title}
                       </h3>
                     </div>
-                    <p className="text-[10px] md:text-[18px] font-black text-slate-900 uppercase tracking-tight line-clamp-2 leading-tight max-w-sm">
+                    <p className="text-[10px] md:text-[16px] lg:text-[20px] font-black text-slate-900 uppercase tracking-tight line-clamp-2 leading-tight max-w-sm">
                       {ad.description}
                     </p>
                   </div>
