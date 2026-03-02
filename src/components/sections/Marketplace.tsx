@@ -14,7 +14,10 @@ import {
   Sparkles, 
   Star,
   ShoppingCart,
-  ChevronDown
+  Trash2,
+  Plus,
+  Minus,
+  X
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -24,6 +27,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+  SheetFooter,
+} from "@/components/ui/sheet";
+import { useToast } from "@/hooks/use-toast";
 
 const CATEGORIES = [
   { id: 'all', label: 'Barchasi' },
@@ -109,9 +121,19 @@ const PRODUCTS = [
   }
 ];
 
+interface CartItem {
+  id: number;
+  title: string;
+  price: number;
+  quantity: number;
+  unit: string;
+}
+
 export function Marketplace() {
   const [activeCategory, setActiveCategory] = useState('all');
   const [searchTerm, setSearchTerm] = useState("");
+  const [cart, setCart] = useState<CartItem[]>([]);
+  const { toast } = useToast();
 
   const filteredProducts = PRODUCTS.filter(p => 
     (activeCategory === 'all' || p.categoryKey === activeCategory) &&
@@ -122,10 +144,131 @@ export function Marketplace() {
   const formatCurrency = (val: number) => 
     new Intl.NumberFormat('uz-UZ').format(val);
 
+  const handleAddToCart = (product: typeof PRODUCTS[0]) => {
+    setCart(prev => {
+      const existing = prev.find(item => item.id === product.id);
+      if (existing) {
+        return prev.map(item => 
+          item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+        );
+      }
+      return [...prev, { 
+        id: product.id, 
+        title: product.title, 
+        price: product.price, 
+        quantity: 1,
+        unit: product.unit
+      }];
+    });
+
+    toast({
+      title: "Savatga qo'shildi",
+      description: `${product.title} muvaffaqiyatli savatga qo'shildi.`,
+    });
+  };
+
+  const removeFromCart = (id: number) => {
+    setCart(prev => prev.filter(item => item.id !== id));
+  };
+
+  const updateQuantity = (id: number, delta: number) => {
+    setCart(prev => prev.map(item => {
+      if (item.id === id) {
+        const newQty = Math.max(1, item.quantity + delta);
+        return { ...item, quantity: newQty };
+      }
+      return item;
+    }));
+  };
+
+  const cartTotal = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+  const cartCount = cart.reduce((acc, item) => acc + item.quantity, 0);
+
   return (
     <div className="space-y-6 animate-fade-in text-slate-700 pb-20">
-      {/* Page Title */}
-      <h1 className="text-2xl font-black text-slate-900 tracking-tight">B2B Marketplace</h1>
+      {/* Page Title and Cart Trigger */}
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-black text-slate-900 tracking-tight">B2B Marketplace</h1>
+        
+        <Sheet>
+          <SheetTrigger asChild>
+            <Button variant="outline" className="relative h-12 rounded-xl border-slate-100 bg-white shadow-sm px-6 gap-3 hover:bg-slate-50">
+              <ShoppingCart size={20} className="text-[#0b4db1]" />
+              <span className="text-[12px] font-black uppercase tracking-widest">Savat</span>
+              {cartCount > 0 && (
+                <span className="absolute -top-2 -right-2 w-6 h-6 bg-[#0b4db1] text-white text-[10px] font-bold rounded-full flex items-center justify-center shadow-lg border-2 border-white">
+                  {cartCount}
+                </span>
+              )}
+            </Button>
+          </SheetTrigger>
+          <SheetContent className="w-full sm:max-w-[450px] rounded-l-[32px] p-0 flex flex-col border-none shadow-2xl">
+            <SheetHeader className="p-8 border-b bg-slate-50/50">
+              <SheetTitle className="text-sm font-black uppercase tracking-[0.2em] flex items-center gap-3">
+                <ShoppingCart className="text-[#0b4db1]" size={20} /> Savatingiz
+              </SheetTitle>
+            </SheetHeader>
+            
+            <div className="flex-1 overflow-y-auto p-8 space-y-6 no-scrollbar">
+              {cart.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-20 text-center">
+                  <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-6">
+                    <ShoppingBag className="text-slate-200" size={40} />
+                  </div>
+                  <h3 className="text-sm font-black text-slate-300 uppercase tracking-widest">Savat bo'sh</h3>
+                  <p className="text-[10px] font-bold text-slate-400 uppercase mt-2">Xaridni davom ettiring</p>
+                </div>
+              ) : (
+                cart.map((item) => (
+                  <div key={item.id} className="flex gap-4 p-4 rounded-2xl bg-white border border-slate-50 hover:border-blue-100 transition-all group">
+                    <div className="flex-1 space-y-1">
+                      <p className="text-[11px] font-black text-slate-900 uppercase leading-tight">{item.title}</p>
+                      <p className="text-[10px] font-bold text-[#0b4db1] tracking-tighter">{formatCurrency(item.price)} UZS / {item.unit}</p>
+                      
+                      <div className="flex items-center gap-3 mt-3">
+                        <button 
+                          onClick={() => updateQuantity(item.id, -1)}
+                          className="w-7 h-7 rounded-lg bg-slate-50 flex items-center justify-center text-slate-400 hover:bg-blue-50 hover:text-blue-600 transition-colors"
+                        >
+                          <Minus size={14} />
+                        </button>
+                        <span className="text-[11px] font-black w-4 text-center">{item.quantity}</span>
+                        <button 
+                          onClick={() => updateQuantity(item.id, 1)}
+                          className="w-7 h-7 rounded-lg bg-slate-50 flex items-center justify-center text-slate-400 hover:bg-blue-50 hover:text-blue-600 transition-colors"
+                        >
+                          <Plus size={14} />
+                        </button>
+                      </div>
+                    </div>
+                    <div className="text-right flex flex-col justify-between items-end">
+                      <button 
+                        onClick={() => removeFromCart(item.id)}
+                        className="text-slate-300 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100"
+                      >
+                        <X size={18} />
+                      </button>
+                      <p className="text-[12px] font-black text-slate-900 tracking-tighter">{formatCurrency(item.price * item.quantity)}</p>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+
+            {cart.length > 0 && (
+              <SheetFooter className="p-8 bg-slate-50 border-t flex-col gap-4">
+                <div className="flex justify-between items-center w-full mb-2">
+                  <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Umumiy summa:</span>
+                  <span className="text-xl font-black text-[#0b4db1] tracking-tighter">{formatCurrency(cartTotal)} UZS</span>
+                </div>
+                <Button className="w-full h-14 bg-[#0b4db1] hover:bg-blue-700 text-white rounded-2xl font-black uppercase tracking-widest text-[11px] shadow-xl shadow-blue-100">
+                  Buyurtmani tasdiqlash
+                </Button>
+              </SheetFooter>
+            )}
+          </SheetContent>
+        </Sheet>
+      </div>
 
       {/* AI Recommendation Banner */}
       <div className="bg-[#f0f4ff] border border-blue-100 rounded-xl p-4 flex items-start gap-4 shadow-sm">
@@ -265,7 +408,10 @@ export function Marketplace() {
                     </div>
                   </div>
 
-                  <Button className="w-full bg-[#0b4db1] hover:bg-blue-700 text-white rounded-xl h-11 font-black uppercase tracking-widest text-[11px] gap-2 mt-6 shadow-md shadow-blue-100">
+                  <Button 
+                    onClick={() => handleAddToCart(product)}
+                    className="w-full bg-[#0b4db1] hover:bg-blue-700 text-white rounded-xl h-11 font-black uppercase tracking-widest text-[11px] gap-2 mt-6 shadow-md shadow-blue-100"
+                  >
                     <ShoppingCart size={16} /> Savatga qo'shish
                   </Button>
                 </CardContent>
