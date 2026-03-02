@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -22,19 +22,13 @@ import {
   FileText, 
   Info, 
   Zap, 
-  ShieldCheck, 
   Flag, 
   Globe, 
   User, 
   Sparkles,
-  ChevronDown,
   Clock,
   TrendingUp,
-  AlertCircle,
-  Cpu,
-  Search,
   Handshake,
-  LayoutGrid,
   Loader2,
   ShieldAlert
 } from "lucide-react";
@@ -201,14 +195,15 @@ export function AuctionHub({ onNavigate }: { onNavigate?: (id: string) => void }
       const details = await getLotAiDetails({
         title: lot.title,
         category: lot.category,
-        price: lot.price,
+        price: Number(lot.price),
         quantity: lot.quantity
       });
       setSelectedLotDetails(details);
     } catch (error) {
+      console.error("Details loading error:", error);
       toast({
         title: "Xatolik",
-        description: "AI ma'lumotlarni yuklashda xatolik yuz berdi",
+        description: "AI ma'lumotlarni yuklashda xatolik yuz berdi. Iltimos, qayta urinib ko'ring.",
         variant: "destructive",
       });
       setIsDetailsOpen(false);
@@ -618,7 +613,11 @@ export function AuctionHub({ onNavigate }: { onNavigate?: (id: string) => void }
                   </div>
                 </div>
               </div>
-            ) : null}
+            ) : (
+              <div className="flex flex-col items-center justify-center py-20 gap-4">
+                <p className="text-[11px] font-black text-slate-400 uppercase tracking-widest">Ma'lumot mavjud emas.</p>
+              </div>
+            )}
           </div>
           <DialogFooter className="p-6 bg-slate-50 border-t">
             <Button onClick={() => setIsDetailsOpen(false)} className="bg-slate-900 text-white rounded-xl h-12 px-8 font-black uppercase text-[11px] tracking-widest w-full">Yopish</Button>
