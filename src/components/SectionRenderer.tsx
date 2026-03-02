@@ -7,6 +7,7 @@ import { LogisticsHub } from "@/components/sections/LogisticsHub";
 import { AiSecurity } from "@/components/sections/AiSecurity";
 import { EriWorkflow } from "@/components/sections/EriWorkflow";
 import { Contracts } from "@/components/sections/Contracts";
+import { Marketplace } from "@/components/sections/Marketplace";
 import { Hammer } from "lucide-react";
 import { ContractGenerationOutput } from "@/ai/flows/contract-generation-flow";
 
@@ -25,6 +26,7 @@ export function SectionRenderer({
 }: SectionRendererProps) {
   switch (sectionId) {
     case 'dashboard': return <Dashboard />;
+    case 'marketplace': return <Marketplace />;
     case 'auction': return <AuctionHub onNavigate={onNavigate} />;
     case 'logistics': return <LogisticsHub />;
     case 'aiSecurity': return <AiSecurity />;
