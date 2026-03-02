@@ -37,12 +37,19 @@ export const dict = {
     bidPrice: "Жорий нарх",
     bidHistory: "Савдо тарихи",
     placeBid: "Таклиф бериш",
-    truckEta: "ЕТА (Келиш вақти)",
+    truckEta: "ЕТА (Келиш вақti)",
     approve: "Тасдиқлаш",
     reject: "Рад этиш",
     preview: "Кўриб чиқиш",
     status: "Ҳолат",
     active: "Фаол",
-    completed: "Якунланган"
+    completed: "Якунланган",
+    buyerPanel: "ХАРИДОР ПАНЕЛИ",
+    sellerPanel: "СОТУВЧИ ПАНЕЛИ",
+    manageLots: "ЛОТЛАРНИ БОШҚАРИШ",
+    lotSubtitle: "Янги харид лотлари очинг ва рақобатни кузатинг",
+    newLot: "Янги Лот",
+    watch: "Кузатиш",
+    bids: "ТАКЛИФ"
   }
 };
