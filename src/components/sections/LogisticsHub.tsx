@@ -5,17 +5,15 @@ import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { 
-  Select, 
-  SelectContent, 
-  SelectItem, 
-  SelectTrigger, 
-  SelectValue 
-} from "@/components/ui/select";
-import { Star, Truck, User, Building2, MapPin, Package, Filter, ArrowRight, Share2, Info } from "lucide-react";
+  Star, 
+  Truck, 
+  Filter, 
+  Info,
+  CircleAlert
+} from "lucide-react";
 import { translations, Language } from "@/lib/translations";
 
 interface LogisticsHubProps {
@@ -106,7 +104,6 @@ export function LogisticsHub({ lang = 'uz' }: LogisticsHubProps) {
         </TabsContent>
 
         <TabsContent value="dispatcher" className="m-0 space-y-8">
-          {/* Stats Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <Card className="border-none shadow-sm rounded-[24px] bg-white p-10 flex flex-col items-center justify-center text-center">
               <h3 className="text-4xl font-black text-[#0b4db1] mb-2">140+</h3>
@@ -122,7 +119,6 @@ export function LogisticsHub({ lang = 'uz' }: LogisticsHubProps) {
             </Card>
           </div>
 
-          {/* Open Ads List */}
           <div className="space-y-6">
             <div className="flex items-center justify-between">
               <h2 className="text-xl font-black text-slate-900 uppercase tracking-tight">Bozordagi ochiq e'lonlar</h2>
@@ -133,7 +129,6 @@ export function LogisticsHub({ lang = 'uz' }: LogisticsHubProps) {
 
             <Card className="border-none shadow-sm rounded-[32px] bg-white overflow-hidden p-8 border border-slate-50">
               <div className="grid lg:grid-cols-12 gap-8 items-center">
-                {/* Cargo Details */}
                 <div className="lg:col-span-8 space-y-8">
                   <div className="flex items-center justify-between gap-4 px-2">
                     <span className="text-lg font-black text-slate-900">Toshkent</span>
@@ -163,7 +158,6 @@ export function LogisticsHub({ lang = 'uz' }: LogisticsHubProps) {
                   </div>
                 </div>
 
-                {/* Action Form */}
                 <div className="lg:col-span-4 bg-slate-50/50 p-6 rounded-[24px] border border-slate-50 space-y-4">
                   <p className="text-[11px] font-black text-slate-900 uppercase tracking-widest mb-2">O'z xizmatingizni taklif qiling</p>
                   <Input placeholder="Narx taklif qiling (UZS)" className="h-12 rounded-xl text-[12px] font-bold border-slate-100 bg-white" />
@@ -177,14 +171,74 @@ export function LogisticsHub({ lang = 'uz' }: LogisticsHubProps) {
           </div>
         </TabsContent>
 
-        <TabsContent value="carrier" className="m-0">
-          <Card className="border-none shadow-sm rounded-[32px] bg-white p-20 flex flex-col items-center justify-center text-center">
-            <div className="w-20 h-20 bg-emerald-50 rounded-full flex items-center justify-center mb-6 text-emerald-600">
-              <Truck size={40} />
+        <TabsContent value="carrier" className="m-0 space-y-8 animate-fade-in">
+          {/* Notification Alert */}
+          <div className="bg-[#e7f1ff] border border-[#c5dcff] rounded-[18px] p-6 flex gap-4 items-start shadow-sm">
+            <div className="bg-white p-2.5 rounded-xl text-[#0b4db1] shadow-sm">
+              <CircleAlert size={20} />
             </div>
-            <h3 className="text-lg font-black text-slate-900 uppercase tracking-widest">Tashuvchi Paneli</h3>
-            <p className="text-[11px] font-bold text-slate-400 uppercase mt-2">Bu bo'limda siz o'z texnikangiz va reyslarni boshqarishingiz mumkin</p>
-          </Card>
+            <div className="space-y-1">
+              <h4 className="text-[13px] font-black text-[#0b4db1] uppercase tracking-widest">Dispetcherdan yangi taklif!</h4>
+              <p className="text-[11px] font-medium text-[#4b77b8] leading-relaxed max-w-4xl">
+                "Toshkent Logistika MChJ" sizga yangi yuk bo'yicha hamkorlik taklif qilmoqda. Agar "Roziman" ni bossangiz, mijozga sizning nomingizdan yuk tashiydigan dispetcher sifatida shartnoma taklif etiladi.
+              </p>
+            </div>
+          </div>
+
+          <div className="space-y-6 mt-10">
+            <h2 className="text-xl font-black text-slate-900 uppercase tracking-tight ml-2">Dispetcher takliflari</h2>
+            
+            <Card className="border-none shadow-sm rounded-[32px] bg-white overflow-hidden p-8 border border-slate-50 hover:shadow-xl transition-all duration-500 group">
+              <div className="grid lg:grid-cols-12 gap-8 items-start">
+                {/* Details Section */}
+                <div className="lg:col-span-8 space-y-6">
+                  <div>
+                    <h3 className="text-lg font-black text-slate-900 uppercase tracking-tight mb-1">Xorazmga qurilish materiallari</h3>
+                    <div className="flex items-center gap-2 text-[11px] font-bold text-slate-400">
+                      Taklif qildi: <span className="text-slate-900 font-black">Toshkent Logistika MChJ</span>
+                      <div className="flex items-center gap-1 text-amber-500">
+                        <Star size={12} fill="currentColor" /> 4.9
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="bg-[#fcfdfe] p-6 rounded-[24px] border border-slate-50 space-y-4">
+                    <div className="grid grid-cols-1 gap-3">
+                      <div className="flex items-start gap-4">
+                        <span className="text-[10px] font-black text-slate-900 uppercase min-w-[80px] mt-0.5">Yuklash:</span>
+                        <span className="text-[11px] font-bold text-slate-500">Chilonzor, Oq-tepa (Bugun 15:00 gacha)</span>
+                      </div>
+                      <div className="flex items-start gap-4">
+                        <span className="text-[10px] font-black text-slate-900 uppercase min-w-[80px] mt-0.5">Tushirish:</span>
+                        <span className="text-[11px] font-bold text-slate-500">Urganch shahri markazi</span>
+                      </div>
+                      <div className="flex items-start gap-4">
+                        <span className="text-[10px] font-black text-slate-900 uppercase min-w-[80px] mt-0.5">Yuk hajmi:</span>
+                        <span className="text-[11px] font-bold text-slate-500">~5 tonna, og'ir ob'ektlar</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Offer Action Section */}
+                <div className="lg:col-span-4 space-y-4 bg-[#f8faff] p-8 rounded-[32px] border border-blue-50/50">
+                  <div className="text-center space-y-1 mb-6">
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Sizga taklif etilayotgan haq:</p>
+                    <p className="text-3xl font-black text-slate-900 tracking-tighter">1,800,000 UZS</p>
+                  </div>
+                  
+                  <div className="space-y-3">
+                    <Button className="w-full bg-[#10b981] hover:bg-[#059669] text-white rounded-xl h-14 font-black uppercase tracking-widest text-[11px] shadow-lg shadow-emerald-100">
+                      Roziman
+                    </Button>
+                    <Button variant="outline" className="w-full border-slate-200 text-slate-500 bg-white hover:bg-slate-50 rounded-xl h-14 font-black uppercase tracking-widest text-[11px]">
+                      Rad etish
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </Card>
+          </div>
         </TabsContent>
       </Tabs>
     </div>
