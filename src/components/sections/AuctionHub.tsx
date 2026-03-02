@@ -2,7 +2,7 @@
 "use client";
 
 import * as React from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -146,6 +146,7 @@ const INITIAL_LOTS: Lot[] = [
 
 export function AuctionHub() {
   const [lots, setLots] = useState<Lot[]>(INITIAL_LOTS);
+  const lotsRef = useRef<Lot[]>(lots);
   const [activeTab, setActiveTab] = useState("uzb");
   const { toast } = useToast();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -164,6 +165,11 @@ export function AuctionHub() {
 
   const [globalTimeLeft, setGlobalTimeLeft] = useState(2677);
 
+  // Sync ref with state to access latest values in intervals safely
+  useEffect(() => {
+    lotsRef.current = lots;
+  }, [lots]);
+
   useEffect(() => {
     const timer = setInterval(() => {
       setGlobalTimeLeft((prev) => (prev > 0 ? prev - 1 : 0));
@@ -177,44 +183,38 @@ export function AuctionHub() {
     return () => clearInterval(timer);
   }, []);
 
-  // Robot Auto-Bid Simulation Logic
+  // Robot Auto-Bid Simulation Logic - Fixed to avoid side effects during render
   useEffect(() => {
-    let autoBidInterval: NodeJS.Timeout;
+    if (!isAutoBidActive) return;
 
-    if (isAutoBidActive) {
-      autoBidInterval = setInterval(() => {
-        setLots((currentLots) => {
-          return currentLots.map((lot) => {
-            if (lot.lotId === autoBidLotId) {
-              const maxPriceNum = parseFloat(autoBidMaxPrice.replace(/\s/g, ''));
-              const stepNum = parseFloat(autoBidStep.replace(/\s/g, ''));
-              
-              if (lot.price + stepNum <= maxPriceNum) {
-                return {
-                  ...lot,
-                  price: lot.price + stepNum,
-                  bidsCount: (lot.bidsCount || 0) + 1
-                };
-              } else {
-                // Stop robot if max price reached
-                setIsAutoBidActive(false);
-                toast({
-                  title: "Robot to'xtadi",
-                  description: `${lot.lotId} uchun maksimal narxga yetildi!`,
-                  variant: "default",
-                });
-                return lot;
-              }
-            }
-            return lot;
-          });
+    const autoBidInterval = setInterval(() => {
+      const currentLots = lotsRef.current;
+      const targetLot = currentLots.find(l => l.lotId === autoBidLotId);
+      
+      if (!targetLot) return;
+
+      const maxPriceNum = parseFloat(autoBidMaxPrice.replace(/\s/g, ''));
+      const stepNum = parseFloat(autoBidStep.replace(/\s/g, ''));
+
+      if (targetLot.price + stepNum > maxPriceNum) {
+        // Stop robot if max price reached - Side effects are outside the updater
+        setIsAutoBidActive(false);
+        toast({
+          title: "Robot to'xtadi",
+          description: `${targetLot.lotId} uchun maksimal narxga yetildi!`,
         });
-      }, 3000); // Bid every 3 seconds for demo purposes
-    }
+        return;
+      }
 
-    return () => {
-      if (autoBidInterval) clearInterval(autoBidInterval);
-    };
+      // Update state if price is within limits
+      setLots(prev => prev.map(lot => 
+        lot.lotId === autoBidLotId 
+          ? { ...lot, price: lot.price + stepNum, bidsCount: (lot.bidsCount || 0) + 1 }
+          : lot
+      ));
+    }, 3000);
+
+    return () => clearInterval(autoBidInterval);
   }, [isAutoBidActive, autoBidLotId, autoBidMaxPrice, autoBidStep, toast]);
 
   const handleToggleAutoBid = () => {
