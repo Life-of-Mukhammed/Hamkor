@@ -36,7 +36,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
-import { ChartContainer, ChartTooltipContent } from "@/components/ui/chart";
+import { ChartContainer, ChartTooltipContent, ChartTooltip as ShadcnChartTooltip } from "@/components/ui/chart";
 import {
   Dialog,
   DialogContent,
@@ -427,26 +427,28 @@ export function AuctionHub() {
                     </div>
                   </div>
                   <div className="h-64 w-full">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <LineChart data={chartData}>
-                        <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="#f1f5f9" />
-                        <XAxis 
-                          dataKey="name" 
-                          axisLine={false} 
-                          tickLine={false} 
-                          tick={{ fontSize: 9, fontWeight: 700, fill: '#94a3b8' }} 
-                        />
-                        <YAxis hide />
-                        <ChartTooltip content={<ChartTooltipContent />} />
-                        <Line 
-                          type="monotone" 
-                          dataKey="value" 
-                          stroke="#6366f1" 
-                          strokeWidth={4} 
-                          dot={{ r: 4, fill: '#6366f1', strokeWidth: 2, stroke: '#fff' }} 
-                        />
-                      </LineChart>
-                    </ResponsiveContainer>
+                    <ChartContainer config={chartConfig} className="h-full w-full">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <LineChart data={chartData}>
+                          <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="#f1f5f9" />
+                          <XAxis 
+                            dataKey="name" 
+                            axisLine={false} 
+                            tickLine={false} 
+                            tick={{ fontSize: 9, fontWeight: 700, fill: '#94a3b8' }} 
+                          />
+                          <YAxis hide />
+                          <ShadcnChartTooltip content={<ChartTooltipContent />} />
+                          <Line 
+                            type="monotone" 
+                            dataKey="value" 
+                            stroke="#6366f1" 
+                            strokeWidth={4} 
+                            dot={{ r: 4, fill: '#6366f1', strokeWidth: 2, stroke: '#fff' }} 
+                          />
+                        </LineChart>
+                      </ResponsiveContainer>
+                    </ChartContainer>
                   </div>
                 </Card>
 
@@ -491,7 +493,7 @@ export function AuctionHub() {
                           dy={10}
                         />
                         <YAxis hide />
-                        <ChartTooltip content={<ChartTooltipContent />} />
+                        <ShadcnChartTooltip content={<ChartTooltipContent />} />
                         <Bar 
                           dataKey="value" 
                           fill="#2563eb" 
