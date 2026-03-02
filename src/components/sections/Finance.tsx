@@ -21,6 +21,7 @@ import {
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { translations, Language } from "@/lib/translations";
@@ -92,7 +93,7 @@ export function Finance({ lang = 'uz' }: FinanceProps) {
         </p>
       </div>
 
-      <Tabs defaultValue="methods" className="w-full">
+      <Tabs defaultValue="contracts" className="w-full">
         <div className="border-b border-slate-100 mb-10">
           <TabsList className="bg-transparent h-12 p-0 gap-12">
             <TabsTrigger 
