@@ -9,6 +9,7 @@ export const translations = {
       marketplace: "MARKETPLACE",
       auction: "AUKSION",
       contracts: "SHARTNOMALAR",
+      finance: "MOLIYA VA ESCROW",
       payments: "TO'LOVLAR",
       logistics: "LOGISTIKA VA GPS",
       settings: "SOZLAMALAR",
@@ -16,7 +17,6 @@ export const translations = {
       eri: "XARIDOR PANELI",
       offers: "TAKRIFLAR",
       inventory: "OMBOR",
-      finance: "MOLIYA",
       docs: "HUJJATLAR VA FOTO",
       invest: "INVESTITSIYA & BOSHQARUV",
       guide: "BIZNES YO'RIQNOMA"
@@ -59,6 +59,7 @@ export const translations = {
       marketplace: "МАРКЕТПЛЕЙС",
       auction: "АУКЦИОН",
       contracts: "ДОГОВОРЫ",
+      finance: "ФИНАНСЫ И ESCROW",
       payments: "ПЛАТЕЖИ",
       logistics: "ЛОГИСТИКА И GPS",
       settings: "НАСТРОЙКИ",
@@ -66,7 +67,6 @@ export const translations = {
       eri: "ПАНЕЛЬ ПОКУПАТЕЛЯ",
       offers: "ПРЕДЛОЖЕНИЯ",
       inventory: "СКЛАД",
-      finance: "ФИНАНСЫ",
       docs: "ДОКУМЕНТЫ И ФОТО",
       invest: "ИНВЕСТИЦИИ И УПРАВЛЕНИЕ",
       guide: "BIZNES-INSTRUKSIYA"
@@ -109,6 +109,7 @@ export const translations = {
       marketplace: "MARKETPLACE",
       auction: "AUCTION",
       contracts: "CONTRACTS",
+      finance: "FINANCE & ESCROW",
       payments: "PAYMENTS",
       logistics: "LOGISTICS & GPS",
       settings: "SETTINGS",
@@ -116,7 +117,6 @@ export const translations = {
       eri: "BUYER PANEL",
       offers: "OFFERS",
       inventory: "INVENTORY",
-      finance: "FINANCE",
       docs: "DOCS & PHOTOS",
       invest: "INVESTMENT & MGMT",
       guide: "BUSINESS GUIDE"
