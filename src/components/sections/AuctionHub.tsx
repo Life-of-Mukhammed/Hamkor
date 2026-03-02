@@ -16,7 +16,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { ShoppingCart, LayoutGrid, Plus, Gavel, Sparkles, Clock, TrendingUp, CheckCircle2, Hammer } from "lucide-react";
+import { ShoppingCart, LayoutGrid, Plus, Gavel, Sparkles, Clock, TrendingUp, X } from "lucide-react";
 import { dict } from "@/lib/translations";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
@@ -66,37 +66,9 @@ export function AuctionHub() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [newLotTitle, setNewLotTitle] = useState("");
   const [newLotPrice, setNewLotPrice] = useState("");
+  const [bidAmount, setBidAmount] = useState("");
   const [bids, setBids] = useState<Record<string, Bid[]>>({});
   const { toast } = useToast();
-
-  const [timer, setTimer] = useState("00:00:00");
-
-  useEffect(() => {
-    if (!activeLotId) return;
-
-    const interval = setInterval(() => {
-      setBids(prev => {
-        const currentLotBids = prev[activeLotId] || [];
-        const lastBidAmount = currentLotBids.length > 0 
-          ? currentLotBids[0].amount 
-          : (lots.find(l => l.id === activeLotId)?.price || 0);
-        
-        const newAmount = lastBidAmount + Math.floor(Math.random() * 500000) + 100000;
-        const newBid: Bid = {
-          id: `bid-${Date.now()}-${Math.random()}`,
-          bidder: MOCK_BIDDERS[Math.floor(Math.random() * MOCK_BIDDERS.length)],
-          amount: newAmount,
-          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
-          status: 'highest'
-        };
-
-        const updatedBids = [newBid, ...currentLotBids.map(b => ({ ...b, status: 'pending' as const }))].slice(0, 10);
-        return { ...prev, [activeLotId]: updatedBids };
-      });
-    }, 5000);
-
-    return () => clearInterval(interval);
-  }, [activeLotId, lots]);
 
   const formatCurrency = (val: number) => 
     new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format(val);
@@ -108,7 +80,7 @@ export function AuctionHub() {
     }
     const price = parseFloat(newLotPrice);
     if (isNaN(price)) {
-      toast({ title: "Хатоlik", description: "Нархни тўғри киритинг", variant: "destructive" });
+      toast({ title: "Хатолик", description: "Нархни тўғри киритинг", variant: "destructive" });
       return;
     }
 
@@ -128,163 +100,116 @@ export function AuctionHub() {
     toast({ title: "Муваффақиятли", description: "Янги лот муваффақиятли қўшилди" });
   };
 
+  const handleSendBid = () => {
+    if (!activeLotId || !bidAmount) return;
+    const amount = parseFloat(bidAmount);
+    if (isNaN(amount)) return;
+
+    const newBid: Bid = {
+      id: `bid-${Date.now()}-${Math.random()}`,
+      bidder: "Sizning Korxonangiz",
+      amount: amount,
+      time: "Hozir",
+      status: 'highest'
+    };
+
+    setBids(prev => {
+      const currentBids = prev[activeLotId] || [];
+      return {
+        ...prev,
+        [activeLotId]: [newBid, ...currentBids.map(b => ({ ...b, status: 'pending' as const }))]
+      };
+    });
+    setBidAmount("");
+    toast({ title: "Муваффақиятли", description: "Таклифингиз қабул қилинди" });
+  };
+
   const activeLot = lots.find(l => l.id === activeLotId);
   const currentBids = activeLotId ? (bids[activeLotId] || []) : [];
-  const highestBid = currentBids[0];
 
   if (activeLotId && activeLot) {
     return (
-      <div className="space-y-6 animate-fade-in">
-        <div className="flex bg-white p-1 rounded-2xl w-fit border shadow-sm">
-          <button
-            onClick={() => { setActiveTab("buyer"); setActiveLotId(null); }}
-            className={cn(
-              "flex items-center gap-2 px-6 py-3 rounded-xl text-xs font-bold transition-all duration-300",
-              activeTab === "buyer" ? "bg-primary text-white shadow-lg shadow-primary/30" : "text-muted-foreground hover:text-primary"
-            )}
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 md:p-10 animate-fade-in">
+        <div className="bg-white w-full max-w-6xl h-full max-h-[850px] rounded-[40px] shadow-2xl overflow-hidden flex relative">
+          <button 
+            onClick={() => setActiveLotId(null)}
+            className="absolute top-6 right-6 p-2 hover:bg-slate-100 rounded-full transition-colors z-10"
           >
-            <ShoppingCart className="w-4 h-4" />
-            ХАРИДОР ПАНЕЛИ
+            <X size={24} className="text-slate-400" />
           </button>
-          <button
-            onClick={() => { setActiveTab("seller"); setActiveLotId(null); }}
-            className={cn(
-              "flex items-center gap-2 px-6 py-3 rounded-xl text-xs font-bold transition-all duration-300",
-              activeTab === "seller" ? "bg-primary text-white shadow-lg shadow-primary/30" : "text-muted-foreground hover:text-primary"
-            )}
-          >
-            <LayoutGrid className="w-4 h-4" />
-            СОТУВЧИ ПАНЕЛИ
-          </button>
-        </div>
 
-        <div className="bg-white rounded-2xl border px-8 py-4 flex justify-between items-center shadow-sm">
-          <div className="flex items-center gap-3">
-            <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-            <h2 className="text-xs font-black text-slate-500 tracking-widest uppercase">
-              {activeTab === 'seller' ? 'ЛОТ БОШҚАРУВИ' : 'САВДО ТЕРМИНАЛИ'}
-            </h2>
-          </div>
-          <div className="text-primary text-2xl font-black tracking-tighter font-mono">
-            {timer}
-          </div>
-        </div>
+          {/* Left Column: Bid History */}
+          <div className="w-[40%] bg-slate-50/50 border-r border-slate-100 p-10 flex flex-col">
+            <div className="mb-10">
+              <h1 className="text-3xl font-black text-[#121926] uppercase tracking-tight mb-2">
+                ТАКЛИФЛАР ТАРИХИ
+              </h1>
+              <p className="text-sm font-medium text-slate-400">
+                Барча берилган таклифлар рўйхати
+              </p>
+            </div>
 
-        <div className="grid lg:grid-cols-3 gap-6">
-          <Card className="lg:col-span-2 border-none rounded-[40px] shadow-sm bg-white overflow-hidden flex flex-col min-h-[600px]">
-            <CardContent className="p-10 flex flex-col h-full">
-              <div className="mb-8 flex justify-between items-start">
-                <div>
-                  <Badge variant="secondary" className="bg-primary/10 text-primary font-bold text-[10px] mb-4 px-4 py-1.5 rounded-full uppercase tracking-wider">
-                    ЖОНЛИ АУКЦИОН
-                  </Badge>
-                  <h1 className="text-5xl font-black text-[#121926] mb-1">
-                    {activeLot.title}
-                  </h1>
-                  <p className="text-xl text-muted-foreground/60 font-bold tracking-wider">
-                    {activeLot.number}
-                  </p>
-                </div>
+            <ScrollArea className="flex-1 -mr-4 pr-4">
+              <div className="space-y-4">
+                {currentBids.length === 0 ? (
+                  <div className="text-center py-12 text-slate-300 italic text-sm">
+                    Ҳозирcha таклифлар йўқ
+                  </div>
+                ) : (
+                  currentBids.map((bid) => (
+                    <div 
+                      key={bid.id} 
+                      className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex justify-between items-center animate-fade-in"
+                    >
+                      <span className="text-lg font-black text-slate-800">
+                        {formatCurrency(bid.amount)} UZS
+                      </span>
+                      <span className="text-[11px] font-bold text-slate-400 uppercase">
+                        {bid.time}
+                      </span>
+                    </div>
+                  ))
+                )}
+              </div>
+            </ScrollArea>
+
+            <div className="mt-8">
+              <Button 
+                className="w-full h-16 bg-[#534df3] hover:bg-[#433ce0] text-white rounded-2xl font-black text-sm tracking-widest uppercase flex items-center justify-center gap-3 shadow-lg shadow-blue-200"
+              >
+                <Sparkles size={18} />
+                СИ ТАҲЛИЛИ
+              </Button>
+            </div>
+          </div>
+
+          {/* Right Column: Bid Input */}
+          <div className="flex-1 p-10 flex flex-col items-center justify-center">
+            <div className="max-w-md w-full text-center">
+              <h2 className="text-2xl font-black text-[#121926] uppercase mb-2">
+                ТАКЛИФ КИРИТИНГ
+              </h2>
+              <p className="text-sm font-medium text-slate-400 mb-12">
+                Жорий нархдан пастроқ сумма киритинг
+              </p>
+
+              <div className="relative mb-10">
+                <input 
+                  type="text" 
+                  value={bidAmount}
+                  onChange={(e) => setBidAmount(e.target.value)}
+                  placeholder="0.00"
+                  className="w-full h-24 bg-slate-50/80 rounded-3xl border-none text-center text-4xl font-black text-slate-800 placeholder:text-slate-200 focus:ring-4 focus:ring-blue-100 transition-all"
+                />
               </div>
 
-              <div className="flex-1 flex flex-col">
-                <h3 className="text-xs font-black text-muted-foreground tracking-widest uppercase mb-4">ТАКЛИФЛАР ТАРИХИ</h3>
-                
-                <ScrollArea className="flex-1 pr-4">
-                  <div className="space-y-3">
-                    {currentBids.length === 0 ? (
-                      <div className="h-48 border-2 border-dashed border-muted rounded-[30px] flex flex-col items-center justify-center p-12 text-center bg-slate-50/30">
-                        <Gavel className="w-10 h-10 text-muted-foreground/30 mb-4" />
-                        <p className="text-muted-foreground font-medium italic">Ҳозирча таклифлар йўқ...</p>
-                      </div>
-                    ) : (
-                      currentBids.map((bid) => (
-                        <div 
-                          key={bid.id} 
-                          className={cn(
-                            "flex justify-between items-center p-6 rounded-[25px] border-2 transition-all animate-fade-in",
-                            bid.status === 'highest' 
-                              ? "border-primary bg-primary/5 shadow-md" 
-                              : "border-slate-100 bg-white"
-                          )}
-                        >
-                          <div className="flex items-center gap-4">
-                            <div className={cn(
-                              "w-12 h-12 rounded-2xl flex items-center justify-center font-black",
-                              bid.status === 'highest' ? "bg-primary text-white" : "bg-muted text-muted-foreground"
-                            )}>
-                              {bid.bidder[0]}
-                            </div>
-                            <div>
-                              <p className="font-black text-[#121926] uppercase tracking-tight">{bid.bidder}</p>
-                              <p className="text-[10px] font-bold text-muted-foreground flex items-center gap-1">
-                                <Clock className="w-3 h-3" /> {bid.time}
-                              </p>
-                            </div>
-                          </div>
-                          <div className="text-right">
-                            <p className={cn(
-                              "text-xl font-black tracking-tighter",
-                              bid.status === 'highest' ? "text-primary" : "text-slate-600"
-                            )}>
-                              {formatCurrency(bid.amount)} UZS
-                            </p>
-                          </div>
-                        </div>
-                      ))
-                    )}
-                  </div>
-                </ScrollArea>
-              </div>
-            </CardContent>
-          </Card>
-
-          <div className="space-y-6">
-            <Card className="border-[6px] border-primary rounded-[40px] shadow-xl bg-white overflow-hidden">
-              <CardContent className="p-10">
-                <p className="text-[10px] font-black text-amber-500 uppercase tracking-[0.2em] mb-6 flex items-center gap-2">
-                  <TrendingUp className="w-4 h-4" />
-                  ЭНГ ЯХШИ ТАКЛИФ
-                </p>
-                <div className="mb-8">
-                  <div className="text-5xl font-black text-primary tracking-tighter mb-1">
-                    {highestBid ? formatCurrency(highestBid.amount) : formatCurrency(activeLot.price)}
-                  </div>
-                  <p className="text-xl font-bold italic text-slate-800">
-                    {highestBid ? highestBid.bidder : 'Ҳозирча йўқ'}
-                  </p>
-                </div>
-
-                <Button 
-                  className="w-full h-20 bg-primary hover:bg-primary/90 text-white rounded-[25px] text-lg font-black shadow-2xl shadow-primary/40 mb-6 uppercase"
-                  onClick={() => {
-                    toast({ title: "Муваффақиятли", description: "Битим имзоланди" });
-                    setActiveLotId(null);
-                  }}
-                >
-                  БИТИМНИ ИМЗОЛАШ
-                </Button>
-
-                <button 
-                  onClick={() => setActiveLotId(null)}
-                  className="w-full text-center text-[10px] font-black text-slate-400 hover:text-primary tracking-widest uppercase transition-colors"
-                >
-                  САВДОДАН ЧИҚИШ
-                </button>
-              </CardContent>
-            </Card>
-
-            <Card className="border-none rounded-[30px] shadow-sm bg-[#2e2a73] text-white overflow-hidden">
-              <CardContent className="p-8">
-                <div className="flex items-center gap-2 mb-4">
-                  <Sparkles className="w-4 h-4 text-amber-400" />
-                  <h3 className="text-xs font-black tracking-widest uppercase">СИ (AI) ТАҲЛИЛИ</h3>
-                </div>
-                <p className="text-[10px] leading-relaxed text-blue-100/70 font-medium">
-                  Тизим иштирокчиларнинг молиявий ҳолати ва авvalgi савдоларини таҳлил қилиб, энг ишончли ҳамкорни тавсия қилмоқда.
-                </p>
-              </CardContent>
-            </Card>
+              <Button 
+                onClick={handleSendBid}
+                className="w-full h-24 bg-[#121926] hover:bg-black text-white rounded-3xl text-xl font-black tracking-widest uppercase shadow-2xl transition-transform active:scale-95"
+              >
+                ТАКЛИФНИ ЮБОРИШ
+              </Button>
+            </div>
           </div>
         </div>
       </div>
@@ -293,18 +218,18 @@ export function AuctionHub() {
 
   return (
     <div className="space-y-12 animate-fade-in">
-      {/* Header section based on image */}
+      {/* Header section */}
       <div className="flex items-center gap-6">
         <div className="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center shadow-xl shadow-primary/30">
-          <Hammer className="text-white w-8 h-8" />
+          <Gavel className="text-white w-8 h-8" />
         </div>
         <div>
           <h1 className="text-4xl font-black text-[#121926] tracking-tight uppercase">ОНЛАЙН АУКЦИОН</h1>
-          <p className="text-muted-foreground text-sm font-medium">Лотлар очиш ва таклифлар бериш</p>
+          <p className="text-muted-foreground text-sm font-medium">Лотлар очиш ва такliфлар бериш</p>
         </div>
       </div>
 
-      {/* Tab switcher based on image */}
+      {/* Tab switcher */}
       <div className="flex bg-slate-50 p-2 rounded-3xl w-fit border shadow-sm">
         <button
           onClick={() => setActiveTab("buyer")}
@@ -368,7 +293,7 @@ export function AuctionHub() {
         </Dialog>
       )}
 
-      {/* Lot list based on image design */}
+      {/* Lot list */}
       <div className="grid xl:grid-cols-2 gap-10">
         {lots.map((lot) => (
           <Card key={lot.id} className="border-none rounded-[50px] shadow-sm hover:shadow-2xl transition-all duration-500 bg-white p-2">
@@ -379,7 +304,7 @@ export function AuctionHub() {
                 </Badge>
                 <Badge className="bg-red-50 text-red-500 border-none px-4 py-1.5 rounded-full flex items-center gap-2">
                   <div className="w-4 h-4 rounded-full border-2 border-red-500 border-t-transparent animate-spin" />
-                  <span className="text-[11px] font-black font-mono">00:00:00</span>
+                  <span className="text-[11px] font-black font-mono">LIVE</span>
                 </Badge>
               </div>
 
@@ -409,7 +334,7 @@ export function AuctionHub() {
                 onClick={() => setActiveLotId(lot.id)}
                 className="w-full h-20 bg-primary hover:bg-primary/90 text-white rounded-[25px] text-lg font-black shadow-xl shadow-primary/20 uppercase"
               >
-                {activeTab === 'seller' ? 'ЛОТНИ БОШҚАРИШ' : 'ТАКЛИФ БЕРИШ'}
+                ТАКЛИФ БЕРИШ
               </Button>
             </CardContent>
           </Card>
@@ -418,4 +343,3 @@ export function AuctionHub() {
     </div>
   );
 }
-
