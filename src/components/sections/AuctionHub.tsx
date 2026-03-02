@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -16,7 +16,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { ShoppingCart, LayoutGrid, Plus, Gavel, Sparkles, Clock, User, TrendingUp, CheckCircle2 } from "lucide-react";
+import { ShoppingCart, LayoutGrid, Plus, Gavel, Sparkles, Clock, TrendingUp, CheckCircle2, Hammer } from "lucide-react";
 import { dict } from "@/lib/translations";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
@@ -27,6 +27,7 @@ interface Lot {
   title: string;
   code: string;
   price: number;
+  budget: number;
 }
 
 interface Bid {
@@ -40,17 +41,19 @@ interface Bid {
 const INITIAL_LOTS: Lot[] = [
   {
     id: "1",
-    number: "LOT-4594",
-    title: "AVTOMOBIL EHTIYOT QISMLARI",
+    number: "LOT-9921",
+    title: "ПЦ-400 Цемент хариди",
     code: "324242",
-    price: 523423,
+    price: 142000000,
+    budget: 150000000,
   },
   {
     id: "2",
     number: "LOT-7921",
-    title: "ELEKTRONIKA JIXOZLARI",
+    title: "АВТОМОБИЛЬ ЭҲТИЁТ ҚИСМЛАРИ",
     code: "87654",
-    price: 12345678,
+    price: 52000000,
+    budget: 60000000,
   }
 ];
 
@@ -66,9 +69,8 @@ export function AuctionHub() {
   const [bids, setBids] = useState<Record<string, Bid[]>>({});
   const { toast } = useToast();
 
-  const [timer, setTimer] = useState("01:11:25");
+  const [timer, setTimer] = useState("00:00:00");
 
-  // Real-time bid simulation
   useEffect(() => {
     if (!activeLotId) return;
 
@@ -81,7 +83,7 @@ export function AuctionHub() {
         
         const newAmount = lastBidAmount + Math.floor(Math.random() * 500000) + 100000;
         const newBid: Bid = {
-          id: Math.random().toString(36).substr(2, 9),
+          id: `bid-${Date.now()}-${Math.random()}`,
           bidder: MOCK_BIDDERS[Math.floor(Math.random() * MOCK_BIDDERS.length)],
           amount: newAmount,
           time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
@@ -97,16 +99,16 @@ export function AuctionHub() {
   }, [activeLotId, lots]);
 
   const formatCurrency = (val: number) => 
-    new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format(val) + " UZS";
+    new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format(val);
 
   const handleAddLot = () => {
     if (!newLotTitle || !newLotPrice) {
-      toast({ title: "Xatolik", description: "Barcha maydonlarni to'ldiring", variant: "destructive" });
+      toast({ title: "Хатолик", description: "Барча майдонларни тўлдиринг", variant: "destructive" });
       return;
     }
     const price = parseFloat(newLotPrice);
     if (isNaN(price)) {
-      toast({ title: "Xatolik", description: "Narxni to'g'ri kiriting", variant: "destructive" });
+      toast({ title: "Хатоlik", description: "Нархни тўғри киритинг", variant: "destructive" });
       return;
     }
 
@@ -116,13 +118,14 @@ export function AuctionHub() {
       title: newLotTitle.toUpperCase(),
       code: Math.floor(100000 + Math.random() * 900000).toString(),
       price: price,
+      budget: price * 1.1,
     };
 
     setLots([newLot, ...lots]);
     setIsDialogOpen(false);
     setNewLotTitle("");
     setNewLotPrice("");
-    toast({ title: "Muvaffaqiyatli", description: "Yangi lot muvaffaqiyatli qo'shildi" });
+    toast({ title: "Муваффақиятли", description: "Янги лот муваффақиятли қўшилди" });
   };
 
   const activeLot = lots.find(l => l.id === activeLotId);
@@ -132,7 +135,7 @@ export function AuctionHub() {
   if (activeLotId && activeLot) {
     return (
       <div className="space-y-6 animate-fade-in">
-        <div className="flex bg-white/50 backdrop-blur-sm p-1 rounded-2xl w-fit border shadow-sm">
+        <div className="flex bg-white p-1 rounded-2xl w-fit border shadow-sm">
           <button
             onClick={() => { setActiveTab("buyer"); setActiveLotId(null); }}
             className={cn(
@@ -141,7 +144,7 @@ export function AuctionHub() {
             )}
           >
             <ShoppingCart className="w-4 h-4" />
-            {dict.labels.buyerPanel}
+            ХАРИДОР ПАНЕЛИ
           </button>
           <button
             onClick={() => { setActiveTab("seller"); setActiveLotId(null); }}
@@ -151,11 +154,11 @@ export function AuctionHub() {
             )}
           >
             <LayoutGrid className="w-4 h-4" />
-            {dict.labels.sellerPanel}
+            СОТУВЧИ ПАНЕЛИ
           </button>
         </div>
 
-        <div className="bg-white/80 backdrop-blur-md rounded-2xl border px-8 py-4 flex justify-between items-center shadow-sm">
+        <div className="bg-white rounded-2xl border px-8 py-4 flex justify-between items-center shadow-sm">
           <div className="flex items-center gap-3">
             <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
             <h2 className="text-xs font-black text-slate-500 tracking-widest uppercase">
@@ -179,38 +182,29 @@ export function AuctionHub() {
                     {activeLot.title}
                   </h1>
                   <p className="text-xl text-muted-foreground/60 font-bold tracking-wider">
-                    {activeLot.code}
+                    {activeLot.number}
                   </p>
                 </div>
-                {activeTab === 'seller' && (
-                  <div className="text-right">
-                    <p className="text-[10px] font-black text-muted-foreground uppercase mb-1">БОШЛАНҒИЧ НАРХ</p>
-                    <p className="text-xl font-bold text-slate-400 line-through">{formatCurrency(activeLot.price)}</p>
-                  </div>
-                )}
               </div>
 
               <div className="flex-1 flex flex-col">
-                <div className="flex justify-between items-center mb-4 px-4">
-                  <h3 className="text-xs font-black text-muted-foreground tracking-widest uppercase">ТАКЛИФЛАР ТАРИХИ</h3>
-                  <Badge variant="outline" className="text-[10px] font-bold">{currentBids.length} ТАКЛИФ</Badge>
-                </div>
+                <h3 className="text-xs font-black text-muted-foreground tracking-widest uppercase mb-4">ТАКЛИФЛАР ТАРИХИ</h3>
                 
                 <ScrollArea className="flex-1 pr-4">
                   <div className="space-y-3">
                     {currentBids.length === 0 ? (
                       <div className="h-48 border-2 border-dashed border-muted rounded-[30px] flex flex-col items-center justify-center p-12 text-center bg-slate-50/30">
                         <Gavel className="w-10 h-10 text-muted-foreground/30 mb-4" />
-                        <p className="text-muted-foreground font-medium italic">Ҳозирча такliфлар йўқ...</p>
+                        <p className="text-muted-foreground font-medium italic">Ҳозирча таклифлар йўқ...</p>
                       </div>
                     ) : (
-                      currentBids.map((bid, index) => (
+                      currentBids.map((bid) => (
                         <div 
                           key={bid.id} 
                           className={cn(
                             "flex justify-between items-center p-6 rounded-[25px] border-2 transition-all animate-fade-in",
                             bid.status === 'highest' 
-                              ? "border-primary bg-primary/5 shadow-md scale-[1.02]" 
+                              ? "border-primary bg-primary/5 shadow-md" 
                               : "border-slate-100 bg-white"
                           )}
                         >
@@ -233,11 +227,8 @@ export function AuctionHub() {
                               "text-xl font-black tracking-tighter",
                               bid.status === 'highest' ? "text-primary" : "text-slate-600"
                             )}>
-                              {formatCurrency(bid.amount)}
+                              {formatCurrency(bid.amount)} UZS
                             </p>
-                            {bid.status === 'highest' && (
-                              <Badge className="bg-green-500 text-white border-none text-[9px] font-black uppercase">ЭНГ ЮҚОРИ</Badge>
-                            )}
                           </div>
                         </div>
                       ))
@@ -249,14 +240,11 @@ export function AuctionHub() {
           </Card>
 
           <div className="space-y-6">
-            <Card className={cn(
-              "border-[6px] rounded-[40px] shadow-xl bg-white overflow-hidden transition-colors",
-              highestBid ? "border-primary" : "border-yellow-400"
-            )}>
+            <Card className="border-[6px] border-primary rounded-[40px] shadow-xl bg-white overflow-hidden">
               <CardContent className="p-10">
                 <p className="text-[10px] font-black text-amber-500 uppercase tracking-[0.2em] mb-6 flex items-center gap-2">
                   <TrendingUp className="w-4 h-4" />
-                  {activeTab === 'seller' ? 'ЖОРИЙ ФОЙДА' : 'ЭНГ ЯХШИ ТАКЛИФ'}
+                  ЭНГ ЯХШИ ТАКЛИФ
                 </p>
                 <div className="mb-8">
                   <div className="text-5xl font-black text-primary tracking-tighter mb-1">
@@ -267,22 +255,14 @@ export function AuctionHub() {
                   </p>
                 </div>
 
-                <div className="flex items-center gap-2 mb-10">
-                  <span className="text-xs text-muted-foreground font-medium">Ҳолат:</span>
-                  <span className="text-xs font-black text-green-500 flex items-center gap-1">
-                    <CheckCircle2 className="w-4 h-4" /> 
-                    {activeTab === 'seller' ? 'Муваффақиятли савдо' : 'Рейтинг: Аъло'}
-                  </span>
-                </div>
-
                 <Button 
-                  className="w-full h-20 bg-primary hover:bg-primary/90 text-white rounded-[25px] text-lg font-black shadow-2xl shadow-primary/40 mb-6 transition-all active:scale-95 uppercase"
+                  className="w-full h-20 bg-primary hover:bg-primary/90 text-white rounded-[25px] text-lg font-black shadow-2xl shadow-primary/40 mb-6 uppercase"
                   onClick={() => {
-                    toast({ title: "Муваффақиятли", description: activeTab === 'seller' ? "Савдо якунланди ва битим тасдиқланди" : "Сизнинг таклифингиз қабул қилинди" });
+                    toast({ title: "Муваффақиятли", description: "Битим имзоланди" });
                     setActiveLotId(null);
                   }}
                 >
-                  {activeTab === 'seller' ? 'БИТИМНИ ТАСДИҚЛАШ' : 'БИТИМНИ ИМЗОЛАШ'}
+                  БИТИМНИ ИМЗОЛАШ
                 </Button>
 
                 <button 
@@ -294,18 +274,15 @@ export function AuctionHub() {
               </CardContent>
             </Card>
 
-            <Card className="border-none rounded-[30px] shadow-sm bg-[#2e2a73] text-white overflow-hidden relative">
+            <Card className="border-none rounded-[30px] shadow-sm bg-[#2e2a73] text-white overflow-hidden">
               <CardContent className="p-8">
                 <div className="flex items-center gap-2 mb-4">
                   <Sparkles className="w-4 h-4 text-amber-400" />
                   <h3 className="text-xs font-black tracking-widest uppercase">СИ (AI) ТАҲЛИЛИ</h3>
                 </div>
                 <p className="text-[10px] leading-relaxed text-blue-100/70 font-medium">
-                  {activeTab === 'seller' 
-                    ? "AI тизимимиз таклифларни таҳлил қилиб, ушбу нархни бозор қийматидан 15% юқори деб баҳолади. Сотиш тавсия этилади."
-                    : "Тизим иштирокчиларнинг молиявий ҳолати ва аввалги савдоларини таҳлил қилиб, энг ишончli ҳамкорни тавсия қилмоқда."}
+                  Тизим иштирокчиларнинг молиявий ҳолати ва авvalgi савдоларини таҳлил қилиб, энг ишончли ҳамкорни тавсия қилмоқда.
                 </p>
-                <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-white/5 rounded-full" />
               </CardContent>
             </Card>
           </div>
@@ -315,133 +292,125 @@ export function AuctionHub() {
   }
 
   return (
-    <div className="space-y-8 animate-fade-in">
-      <div className="flex bg-white/50 backdrop-blur-sm p-1 rounded-2xl w-fit border shadow-sm">
+    <div className="space-y-12 animate-fade-in">
+      {/* Header section based on image */}
+      <div className="flex items-center gap-6">
+        <div className="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center shadow-xl shadow-primary/30">
+          <Hammer className="text-white w-8 h-8" />
+        </div>
+        <div>
+          <h1 className="text-4xl font-black text-[#121926] tracking-tight uppercase">ОНЛАЙН АУКЦИОН</h1>
+          <p className="text-muted-foreground text-sm font-medium">Лотлар очиш ва таклифлар бериш</p>
+        </div>
+      </div>
+
+      {/* Tab switcher based on image */}
+      <div className="flex bg-slate-50 p-2 rounded-3xl w-fit border shadow-sm">
         <button
           onClick={() => setActiveTab("buyer")}
           className={cn(
-            "flex items-center gap-2 px-6 py-3 rounded-xl text-xs font-bold transition-all duration-300",
-            activeTab === "buyer" ? "bg-primary text-white shadow-lg shadow-primary/30" : "text-muted-foreground hover:text-primary"
+            "flex items-center gap-2 px-8 py-4 rounded-2xl text-xs font-bold transition-all duration-300 uppercase tracking-widest",
+            activeTab === "buyer" ? "bg-primary text-white shadow-lg shadow-primary/30" : "text-slate-400 hover:text-primary"
           )}
         >
           <ShoppingCart className="w-4 h-4" />
-          {dict.labels.buyerPanel}
+          ХАРИДОР ПАНЕЛИ
         </button>
         <button
           onClick={() => setActiveTab("seller")}
           className={cn(
-            "flex items-center gap-2 px-6 py-3 rounded-xl text-xs font-bold transition-all duration-300",
-            activeTab === "seller" ? "bg-primary text-white shadow-lg shadow-primary/30" : "text-muted-foreground hover:text-primary"
+            "flex items-center gap-2 px-8 py-4 rounded-2xl text-xs font-bold transition-all duration-300 uppercase tracking-widest",
+            activeTab === "seller" ? "bg-primary text-white shadow-lg shadow-primary/30" : "text-slate-400 hover:text-primary"
           )}
         >
           <LayoutGrid className="w-4 h-4" />
-          {dict.labels.sellerPanel}
+          СОТУВЧИ ПАНЕЛИ
         </button>
       </div>
 
-      <div className="bg-[#121926] rounded-[40px] p-10 flex flex-col md:flex-row justify-between items-center gap-6 shadow-2xl relative overflow-hidden">
-        <div className="relative z-10">
-          <h1 className="text-3xl md:text-4xl font-black text-white tracking-tight mb-2 uppercase">
-            {activeTab === 'seller' ? 'МЕНИНГ ЛОТЛАРИМ' : 'ОЧИҚ САВДОЛАР'}
-          </h1>
-          <p className="text-muted-foreground text-sm font-medium opacity-80">
-            {activeTab === 'seller' ? 'Ўз лотларингизни бошқаринг ва таклифларни кўринг' : 'Янги харид лотларини кузатинг ва иштирок этинг'}
-          </p>
-        </div>
-
-        {activeTab === 'seller' && (
-          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-            <DialogTrigger asChild>
-              <Button className="relative z-10 bg-primary hover:bg-primary/90 text-white h-14 px-8 rounded-2xl text-md font-bold shadow-xl shadow-primary/20 flex items-center gap-3 transition-transform hover:scale-105 active:scale-95">
-                <Plus className="w-5 h-5" />
-                {dict.labels.newLot}
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px] rounded-[30px] border-none shadow-2xl">
-              <DialogHeader>
-                <DialogTitle className="text-2xl font-black uppercase tracking-tight">{dict.labels.newLot}</DialogTitle>
-              </DialogHeader>
-              <div className="grid gap-6 py-4">
-                <div className="grid gap-2">
-                  <Label htmlFor="name" className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Lot nomi</Label>
-                  <Input
-                    id="name"
-                    value={newLotTitle}
-                    onChange={(e) => setNewLotTitle(e.target.value)}
-                    placeholder="Masalan: Qurilish materiallari"
-                    className="h-12 rounded-xl border-muted bg-muted/30 focus:bg-white transition-all font-bold"
-                  />
-                </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="price" className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Boshlang'ich narx (UZS)</Label>
-                  <Input
-                    id="price"
-                    type="number"
-                    value={newLotPrice}
-                    onChange={(e) => setNewLotPrice(e.target.value)}
-                    placeholder="10 000 000"
-                    className="h-12 rounded-xl border-muted bg-muted/30 focus:bg-white transition-all font-bold"
-                  />
-                </div>
+      {activeTab === 'seller' && (
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <DialogTrigger asChild>
+            <Button className="bg-primary hover:bg-primary/90 text-white h-14 px-8 rounded-2xl text-md font-bold shadow-xl shadow-primary/20 flex items-center gap-3">
+              <Plus className="w-5 h-5" />
+              ЯНГИ ЛОТ
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[425px] rounded-[30px]">
+            <DialogHeader>
+              <DialogTitle className="text-2xl font-black uppercase">ЯНГИ ЛОТ</DialogTitle>
+            </DialogHeader>
+            <div className="grid gap-6 py-4">
+              <div className="grid gap-2">
+                <Label htmlFor="name" className="text-xs font-bold uppercase text-muted-foreground">Lot nomi</Label>
+                <Input
+                  id="name"
+                  value={newLotTitle}
+                  onChange={(e) => setNewLotTitle(e.target.value)}
+                  className="h-12 rounded-xl font-bold"
+                />
               </div>
-              <DialogFooter>
-                <Button variant="ghost" onClick={() => setIsDialogOpen(false)} className="rounded-xl h-12 font-bold uppercase">Bekor qilish</Button>
-                <Button onClick={handleAddLot} className="rounded-xl h-12 px-8 font-bold bg-primary shadow-lg shadow-primary/20 uppercase">Қошиш</Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
-        )}
+              <div className="grid gap-2">
+                <Label htmlFor="price" className="text-xs font-bold uppercase text-muted-foreground">Boshlang'ich narx (UZS)</Label>
+                <Input
+                  id="price"
+                  type="number"
+                  value={newLotPrice}
+                  onChange={(e) => setNewLotPrice(e.target.value)}
+                  className="h-12 rounded-xl font-bold"
+                />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button onClick={handleAddLot} className="rounded-xl h-12 px-8 font-bold bg-primary uppercase">Қошиш</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
 
-        <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-3xl -mr-32 -mt-32" />
-      </div>
-
-      <div className="grid md:grid-cols-2 gap-8">
+      {/* Lot list based on image design */}
+      <div className="grid xl:grid-cols-2 gap-10">
         {lots.map((lot) => (
-          <Card key={lot.id} className="border-none rounded-[40px] shadow-sm hover:shadow-xl transition-all duration-300 group overflow-hidden bg-white">
-            <CardContent className="p-10">
-              <div className="flex justify-between items-start mb-6">
-                <div>
-                  <Badge variant="secondary" className="bg-muted/50 text-muted-foreground font-mono text-[10px] mb-4 px-3 py-1 rounded-full uppercase">
-                    #{lot.number}
-                  </Badge>
-                  <h2 className="text-3xl font-black text-[#121926] mb-1 uppercase tracking-tight">
-                    {lot.title}
-                  </h2>
-                  <p className="text-muted-foreground/60 text-sm font-bold tracking-wider">
-                    ID: {lot.code}
-                  </p>
-                </div>
-                <Button 
-                  size="lg"
-                  onClick={() => setActiveLotId(lot.id)}
-                  className="bg-primary hover:bg-primary/90 text-white rounded-2xl px-6 font-bold h-12 shadow-lg shadow-primary/20 uppercase"
-                >
-                  {activeTab === 'seller' ? 'БОШҚАРИШ' : dict.labels.watch}
-                </Button>
+          <Card key={lot.id} className="border-none rounded-[50px] shadow-sm hover:shadow-2xl transition-all duration-500 bg-white p-2">
+            <CardContent className="p-10 space-y-8">
+              <div className="flex justify-between items-center">
+                <Badge variant="secondary" className="bg-slate-100 text-slate-500 font-bold text-[11px] px-4 py-1.5 rounded-full">
+                  ID: {lot.number}
+                </Badge>
+                <Badge className="bg-red-50 text-red-500 border-none px-4 py-1.5 rounded-full flex items-center gap-2">
+                  <div className="w-4 h-4 rounded-full border-2 border-red-500 border-t-transparent animate-spin" />
+                  <span className="text-[11px] font-black font-mono">00:00:00</span>
+                </Badge>
               </div>
 
-              <div className="flex justify-between items-end border-t pt-6 mt-4">
+              <h2 className="text-4xl font-black text-[#121926] leading-tight uppercase tracking-tight">
+                {lot.title}
+              </h2>
+
+              <div className="bg-slate-50 rounded-[35px] p-8 flex justify-between items-center">
                 <div>
-                  <p className="text-[10px] font-black text-muted-foreground uppercase mb-1">
-                    {activeTab === 'seller' ? 'ЖОРИЙ ТАКЛИФ' : 'БОШЛАНҒИЧ НАРХ'}
-                  </p>
-                  <div className="text-4xl font-black text-[#121926] tracking-tight font-mono">
-                    {bids[lot.id]?.[0]?.amount ? formatCurrency(bids[lot.id][0].amount) : formatCurrency(lot.price)}
+                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">ЖОРИЙ НАРХ</p>
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-5xl font-black text-primary tracking-tighter">
+                      {formatCurrency(bids[lot.id]?.[0]?.amount || lot.price)}
+                    </span>
+                    <span className="text-sm font-black text-primary uppercase">UZS</span>
                   </div>
                 </div>
-                <div className="flex flex-col items-end gap-2">
-                  <div className="flex items-center gap-2 px-4 py-2 bg-green-50 rounded-full border border-green-100">
-                    <span className="text-[10px] font-black text-green-600 uppercase">
-                      {bids[lot.id]?.length || 0} ТАКЛИФЛАР
-                    </span>
-                  </div>
-                  {activeTab === 'seller' && (
-                    <div className="flex items-center gap-1 text-[9px] font-bold text-primary animate-pulse">
-                      <TrendingUp className="w-3 h-3" /> ОНЛАЙН КУЗАТИШ
-                    </div>
-                  )}
+                <div className="text-right">
+                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">БЮДЖЕТ</p>
+                  <p className="text-xl font-black text-slate-600 tracking-tight">
+                    {formatCurrency(lot.budget)} UZS
+                  </p>
                 </div>
               </div>
+
+              <Button 
+                onClick={() => setActiveLotId(lot.id)}
+                className="w-full h-20 bg-primary hover:bg-primary/90 text-white rounded-[25px] text-lg font-black shadow-xl shadow-primary/20 uppercase"
+              >
+                {activeTab === 'seller' ? 'ЛОТНИ БОШҚАРИШ' : 'ТАКЛИФ БЕРИШ'}
+              </Button>
             </CardContent>
           </Card>
         ))}
@@ -449,3 +418,4 @@ export function AuctionHub() {
     </div>
   );
 }
+
