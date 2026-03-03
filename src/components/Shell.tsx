@@ -1,6 +1,8 @@
+
 "use client";
 
 import * as React from "react";
+import { useRouter } from "next/navigation";
 import { SidebarProvider, Sidebar, SidebarContent, SidebarHeader, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarFooter, SidebarTrigger, SidebarInset } from "@/components/ui/sidebar";
 import { 
   LayoutGrid, Gavel, FileText, ShoppingBag, 
@@ -51,6 +53,7 @@ export function Shell({
   const [lang, setLang] = React.useState<Language>('uz');
   const t = translations[lang];
   const { toast } = useToast();
+  const router = useRouter();
 
   const menuItems = [
     { id: 'dashboard', label: t.sections.dashboard, icon: LayoutGrid },
@@ -74,9 +77,10 @@ export function Shell({
       title: t.labels.logout,
       description: lang === 'uz' ? "Tizimdan muvaffaqiyatli chiqdingiz." : lang === 'ru' ? "Вы успешно вышли из системы." : "You have successfully logged out.",
     });
-    // Simulate logout delay then refresh the app state
+    
+    // 1.5 soniyadan so'ng login sahifasiga yo'naltirish
     setTimeout(() => {
-      window.location.reload();
+      router.push("/login");
     }, 1500);
   };
 
