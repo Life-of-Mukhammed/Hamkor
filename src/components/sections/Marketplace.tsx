@@ -31,6 +31,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 
@@ -313,6 +314,12 @@ export function Marketplace({ onAddToCart }: MarketplaceProps) {
       {/* Mahsulot tafsilotlari oynasi */}
       <Dialog open={!!selectedProduct} onOpenChange={() => setSelectedProduct(null)}>
         <DialogContent className="sm:max-w-[850px] rounded-[40px] p-0 overflow-hidden border-none shadow-2xl bg-white">
+          <DialogHeader className="sr-only">
+            <DialogTitle>{selectedProduct?.title || "Mahsulot tafsilotlari"}</DialogTitle>
+            <DialogDescription>
+              Tanlangan mahsulot haqida batafsil ma'lumot, narx va yetkazib berish shartlari.
+            </DialogDescription>
+          </DialogHeader>
           <div className="grid grid-cols-1 md:grid-cols-2">
             {/* Chap tomon: Rasm */}
             <div className="relative bg-[#f4f9ff] flex items-center justify-center p-12 h-full min-h-[400px]">
