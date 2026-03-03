@@ -3,12 +3,12 @@
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
-import { SidebarProvider, Sidebar, SidebarContent, SidebarHeader, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarFooter, SidebarTrigger, SidebarInset } from "@/components/ui/sidebar";
+import { SidebarProvider, Sidebar, SidebarContent, SidebarHeader, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarFooter, SidebarTrigger, SidebarInset, useSidebar } from "@/components/ui/sidebar";
 import { 
   LayoutGrid, Gavel, FileText, ShoppingBag, 
   Settings, Truck, Globe, Bell, ShoppingCart,
   Minus, Plus, X, ShoppingBasket, FileCheck, Wallet,
-  LogOut, Search
+  LogOut, Search, ShieldCheck as ShieldIcon
 } from "lucide-react";
 import { translations, Language } from "@/lib/translations";
 import { cn } from "@/lib/utils";
@@ -78,7 +78,6 @@ export function Shell({
       description: lang === 'uz' ? "Tizimdan muvaffaqiyatli chiqdingiz." : lang === 'ru' ? "Вы успешно вышли из системы." : "You have successfully logged out.",
     });
     
-    // 1.5 soniyadan so'ng login sahifasiga yo'naltirish
     setTimeout(() => {
       router.push("/login");
     }, 1500);
@@ -91,17 +90,17 @@ export function Shell({
       </div>
       
       <SidebarProvider className="flex-1 overflow-hidden">
-        <Sidebar className="border-r border-[#001529]/5 bg-white shrink-0 h-full">
-          <SidebarHeader className="p-6 pt-10">
+        <Sidebar collapsible="icon" className="border-r border-[#001529]/5 bg-white shrink-0 h-full">
+          <SidebarHeader className="p-4 group-data-[state=expanded]:p-6 group-data-[state=expanded]:pt-10 transition-all">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-[#0b5dbb] rounded-xl flex items-center justify-center shadow-lg shadow-blue-900/10">
+              <div className="w-10 h-10 bg-[#0b5dbb] rounded-xl flex items-center justify-center shadow-lg shadow-blue-900/10 shrink-0">
                 <div className="w-5 h-5 rounded-[4px] border-2 border-white" />
               </div>
-              <h1 className="text-xl font-black tracking-tight text-[#001529]">{t.appName}</h1>
+              <h1 className="text-xl font-black tracking-tight text-[#001529] group-data-[state=collapsed]:hidden transition-all">{t.appName}</h1>
             </div>
           </SidebarHeader>
           
-          <SidebarContent className="px-4 mt-6">
+          <SidebarContent className="px-2 group-data-[state=expanded]:px-4 mt-6">
             <SidebarMenu className="gap-2">
               {menuItems.map((item) => (
                 <SidebarMenuItem key={item.id}>
@@ -116,8 +115,8 @@ export function Shell({
                     )}
                   >
                     <div className="flex items-center gap-3">
-                      <item.icon className={cn("w-5 h-5 transition-colors", activeSection === item.id ? "text-white" : "text-[#001529]/40 group-hover:text-[#0b5dbb]")} />
-                      <span className="font-black text-[12px] tracking-wide uppercase">{item.label}</span>
+                      <item.icon className={cn("w-5 h-5 transition-colors shrink-0", activeSection === item.id ? "text-white" : "text-[#001529]/40 group-hover:text-[#0b5dbb]")} />
+                      <span className="font-black text-[12px] tracking-wide uppercase group-data-[state=collapsed]:hidden whitespace-nowrap">{item.label}</span>
                     </div>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -125,8 +124,8 @@ export function Shell({
             </SidebarMenu>
           </SidebarContent>
 
-          <SidebarFooter className="p-6 mb-4">
-            <div className="bg-[#001529]/5 rounded-[32px] p-6 text-center border border-[#001529]/5">
+          <SidebarFooter className="p-2 group-data-[state=expanded]:p-6 mb-4">
+            <div className="bg-[#001529]/5 rounded-[32px] p-4 group-data-[state=expanded]:p-6 text-center border border-[#001529]/5 group-data-[state=collapsed]:hidden">
               <p className="text-[10px] font-bold text-[#001529]/40 uppercase tracking-widest mb-4 leading-relaxed px-2">
                 {t.labels.premiumServices}
               </p>
@@ -138,10 +137,10 @@ export function Shell({
             </div>
             
             <div className="mt-6 flex items-center gap-3 px-2">
-              <Avatar className="h-10 w-10 border-2 border-[#001529]/5">
+              <Avatar className="h-10 w-10 border-2 border-[#001529]/5 shrink-0">
                 <AvatarFallback className="bg-[#001529]/5 text-[#001529] font-black text-xs">SZ</AvatarFallback>
               </Avatar>
-              <div className="flex-1 min-w-0">
+              <div className="flex-1 min-w-0 group-data-[state=collapsed]:hidden">
                 <p className="text-[12px] font-black text-[#001529] truncate">sheyx2772</p>
                 <p className="text-[9px] font-bold text-[#001529]/40 uppercase tracking-tighter">Premium User</p>
               </div>
@@ -149,7 +148,7 @@ export function Shell({
                 onClick={handleLogout}
                 variant="ghost" 
                 size="icon" 
-                className="text-[#001529]/30 hover:text-[#001529] hover:bg-[#001529]/5 rounded-lg transition-all active:scale-90"
+                className="text-[#001529]/30 hover:text-[#001529] hover:bg-[#001529]/5 rounded-lg transition-all active:scale-90 group-data-[state=collapsed]:hidden"
               >
                 <LogOut size={18} />
               </Button>
@@ -168,7 +167,7 @@ export function Shell({
             </div>
             
             <div className="flex items-center gap-3">
-              <div className="relative group">
+              <div className="hidden lg:block relative group">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#001529]/30 w-4 h-4" />
                 <input 
                   type="text" 
@@ -301,7 +300,7 @@ export function Shell({
           </header>
           
           <div className="flex-1 overflow-y-auto bg-white">
-            <main className="p-10 pb-20 max-w-[1600px] mx-auto">
+            <main className="p-6 md:p-10 pb-20 max-w-[1600px] mx-auto">
               {React.Children.map(children, child => {
                 if (React.isValidElement(child)) {
                   return React.cloneElement(child as React.ReactElement<any>, { lang, t });
@@ -315,3 +314,4 @@ export function Shell({
     </div>
   );
 }
+
