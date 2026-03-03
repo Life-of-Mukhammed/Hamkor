@@ -4,12 +4,14 @@
 import { Card } from "@/components/ui/card";
 import { 
   Landmark, TrendingUp, Users, Package, Bell, 
-  ArrowUpRight, ArrowDownRight
+  ArrowUpRight, ArrowDownRight, Activity,
+  Calendar, CreditCard, ShieldCheck,
+  Wallet
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { 
   ResponsiveContainer, XAxis, YAxis, 
-  CartesianGrid, Area, AreaChart 
+  CartesianGrid, Area, AreaChart, Tooltip 
 } from "recharts";
 import { ChartContainer, ChartTooltipContent, ChartTooltip as ShadcnChartTooltip } from "@/components/ui/chart";
 import { translations, Language } from "@/lib/translations";
@@ -28,8 +30,8 @@ const marketData = [
 
 const chartConfig = {
   value: {
-    label: "Market Value",
-    color: "#2563eb",
+    label: "Bozor qiymati",
+    color: "#0b4db1",
   },
 };
 
@@ -80,46 +82,67 @@ export function Dashboard({ lang = 'uz' }: DashboardProps) {
   ];
 
   const notifications = [
-    { title: "UzAuto Motors", desc: lang === 'uz' ? "Yangi tender g'olibi aniqlandi" : lang === 'ru' ? "Определен победитель тендера" : "New tender winner determined", time: "12:45", bgColor: "bg-blue-50", iconColor: "text-blue-600" },
-    { title: "Artel Electronics", desc: lang === 'uz' ? "To'lov tasdiqlandi" : lang === 'ru' ? "Платеж подтвержден" : "Payment confirmed", time: "11:20", bgColor: "bg-emerald-50", iconColor: "text-emerald-600" },
-    { title: "Akfa Group", desc: lang === 'uz' ? "Yangi shartnoma imzolandi" : lang === 'ru' ? "Подписан новый контракт" : "New contract signed", time: "09:15", bgColor: "bg-violet-50", iconColor: "text-violet-600" },
-    { title: "Inventory", desc: lang === 'uz' ? "Zaxira kamaymoqda" : lang === 'ru' ? "Запасы уменьшаются" : "Stock is low", time: "Yesterday", bgColor: "bg-rose-50", iconColor: "text-rose-500" },
+    { title: "UzAuto Motors", desc: lang === 'uz' ? "Yangi tender g'olibi aniqlandi" : lang === 'ru' ? "Определен победитель тендера" : "New tender winner determined", time: "12:45", status: "success" },
+    { title: "Artel Electronics", desc: lang === 'uz' ? "To'lov tasdiqlandi" : lang === 'ru' ? "Платеж подтвержден" : "Payment confirmed", time: "11:20", status: "info" },
+    { title: "Akfa Group", desc: lang === 'uz' ? "Yangi shartnoma imzolandi" : lang === 'ru' ? "Подписан новый контракт" : "New contract signed", time: "09:15", status: "info" },
+    { title: "Inventory", desc: lang === 'uz' ? "Zaxira kamaymoqda" : lang === 'ru' ? "Запасы уменьшаются" : "Stock is low", time: "Kecha", status: "warning" },
   ];
 
   return (
-    <div className="space-y-10 animate-fade-in text-slate-700">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div className="space-y-12 animate-fade-in">
+      {/* Welcome Header */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div className="space-y-1">
+          <h1 className="text-3xl font-black text-slate-900 tracking-tight leading-tight">XUSH KELIBSIZ, <span className="text-[#0b4db1]">SHEYX2772!</span></h1>
+          <p className="text-[12px] font-bold text-slate-400 uppercase tracking-[0.3em]">I-TIJORAT PLATFORMASI • TOSHKENT VAKTI 10:45</p>
+        </div>
+        <div className="flex items-center gap-3">
+          <div className="flex flex-col items-end">
+            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Balans</span>
+            <span className="text-lg font-black text-slate-900 tracking-tighter">12,500,000 UZS</span>
+          </div>
+          <div className="h-10 w-px bg-slate-200 mx-2" />
+          <button className="h-12 w-12 rounded-2xl bg-white border border-slate-200 flex items-center justify-center text-[#0b4db1] hover:bg-blue-50 transition-all shadow-sm">
+            <Wallet size={20} />
+          </button>
+        </div>
+      </div>
+
+      {/* Stats Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
         {stats.map((stat, i) => (
-          <Card key={i} className="border-none shadow-sm rounded-[32px] bg-white p-6 hover:shadow-xl transition-all duration-500 cursor-pointer group">
-            <div className="flex justify-between items-start mb-4">
-              <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">{stat.title}</p>
-              <div className={cn("w-10 h-10 rounded-2xl flex items-center justify-center transition-transform group-hover:scale-110", stat.bgColor, stat.color)}>
-                <stat.icon size={20} />
+          <Card key={i} className="border-none shadow-xl shadow-slate-200/40 rounded-[32px] bg-white p-8 hover:-translate-y-1 transition-all duration-500 cursor-pointer group">
+            <div className="flex justify-between items-start mb-6">
+              <div className={cn("w-14 h-14 rounded-2xl flex items-center justify-center transition-all group-hover:bg-[#0b4db1] group-hover:text-white", stat.bgColor, stat.color)}>
+                <stat.icon size={24} />
+              </div>
+              <div className={cn(
+                "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-wider",
+                stat.isUp ? "bg-emerald-50 text-emerald-600" : "bg-rose-50 text-rose-500"
+              )}>
+                {stat.isUp ? <ArrowUpRight size={14} /> : <ArrowDownRight size={14} />}
+                {stat.trend}
               </div>
             </div>
             <div className="space-y-1">
               <h2 className="text-3xl font-black text-slate-900 tracking-tighter">{stat.value}</h2>
-              <div className={cn(
-                "flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest",
-                stat.isUp ? "text-emerald-600" : "text-rose-500"
-              )}>
-                {stat.isUp ? <ArrowUpRight size={14} /> : <ArrowDownRight size={14} />}
-                {stat.trend} <span className="text-slate-300">{t.labels.lastMonth}</span>
-              </div>
+              <p className="text-[11px] font-black text-slate-400 uppercase tracking-widest">{stat.title}</p>
             </div>
           </Card>
         ))}
       </div>
 
+      {/* Main Content Row */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-        <Card className="lg:col-span-8 border-none shadow-sm rounded-[40px] bg-white p-10 h-[550px] flex flex-col relative overflow-hidden group">
-          <div className="flex justify-between items-center mb-8 relative z-10">
+        <Card className="lg:col-span-8 border-none shadow-2xl shadow-slate-200/40 rounded-[48px] bg-white p-12 h-[600px] flex flex-col relative overflow-hidden group">
+          <div className="flex justify-between items-center mb-10 relative z-10">
             <div>
-              <h3 className="text-lg font-black text-slate-900 tracking-tight uppercase">{t.labels.marketDynamics}</h3>
-              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">{t.labels.realTimeAnalysis}</p>
+              <h3 className="text-xl font-black text-slate-900 tracking-tight uppercase">{t.labels.marketDynamics}</h3>
+              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-[0.3em] mt-2">{t.labels.realTimeAnalysis}</p>
             </div>
-            <div className="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400 hover:text-blue-600 transition-colors cursor-pointer">
-              <TrendingUp size={20} />
+            <div className="flex gap-2">
+              <button className="h-10 px-6 rounded-xl bg-slate-100 text-[10px] font-black uppercase tracking-widest text-slate-500 hover:bg-[#0b4db1] hover:text-white transition-all">Kunlik</button>
+              <button className="h-10 px-6 rounded-xl bg-[#0b4db1] text-[10px] font-black uppercase tracking-widest text-white transition-all shadow-lg shadow-blue-100">Oylik</button>
             </div>
           </div>
           
@@ -129,8 +152,8 @@ export function Dashboard({ lang = 'uz' }: DashboardProps) {
                 <AreaChart data={marketData}>
                   <defs>
                     <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#2563eb" stopOpacity={0.1}/>
-                      <stop offset="95%" stopColor="#2563eb" stopOpacity={0}/>
+                      <stop offset="5%" stopColor="#0b4db1" stopOpacity={0.15}/>
+                      <stop offset="95%" stopColor="#0b4db1" stopOpacity={0}/>
                     </linearGradient>
                   </defs>
                   <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="#f1f5f9" />
@@ -138,19 +161,19 @@ export function Dashboard({ lang = 'uz' }: DashboardProps) {
                     dataKey="name" 
                     axisLine={false} 
                     tickLine={false} 
-                    tick={{ fontSize: 10, fontWeight: 700, fill: '#94a3b8' }} 
-                    dy={10}
+                    tick={{ fontSize: 10, fontWeight: 800, fill: '#94a3b8' }} 
+                    dy={15}
                   />
                   <YAxis hide />
                   <ShadcnChartTooltip content={<ChartTooltipContent />} />
                   <Area 
                     type="monotone" 
                     dataKey="value" 
-                    stroke="#2563eb" 
-                    strokeWidth={4} 
+                    stroke="#0b4db1" 
+                    strokeWidth={5} 
                     fillOpacity={1} 
                     fill="url(#colorValue)" 
-                    dot={{ r: 4, fill: '#2563eb', strokeWidth: 2, stroke: '#fff' }}
+                    dot={{ r: 5, fill: '#0b4db1', strokeWidth: 3, stroke: '#fff' }}
                   />
                 </AreaChart>
               </ResponsiveContainer>
@@ -158,24 +181,28 @@ export function Dashboard({ lang = 'uz' }: DashboardProps) {
           </div>
         </Card>
 
-        <Card className="lg:col-span-4 border-none shadow-sm rounded-[40px] bg-white p-10 flex flex-col h-[550px]">
-          <div className="flex justify-between items-center mb-10">
-            <h3 className="text-sm font-black text-slate-900 tracking-tight uppercase">{t.labels.notifications}</h3>
-            <div className="w-2 h-2 rounded-full bg-blue-600 animate-ping" />
+        <Card className="lg:col-span-4 border-none shadow-2xl shadow-slate-200/40 rounded-[48px] bg-white p-12 flex flex-col h-[600px]">
+          <div className="flex justify-between items-center mb-12">
+            <h3 className="text-[12px] font-black text-slate-900 tracking-tight uppercase tracking-[0.2em]">{t.labels.notifications}</h3>
+            <div className="w-3 h-3 rounded-full bg-blue-600 animate-pulse" />
           </div>
 
-          <div className="space-y-8 flex-1 overflow-y-auto no-scrollbar">
+          <div className="space-y-10 flex-1 overflow-y-auto no-scrollbar">
             {notifications.map((n, i) => (
-              <div key={i} className="flex gap-5 group cursor-pointer">
-                <div className={cn("w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 group-hover:bg-blue-600 group-hover:text-white transition-all duration-300", n.bgColor)}>
-                  <Bell size={20} className={cn("transition-colors group-hover:text-white", n.iconColor)} />
+              <div key={i} className="flex gap-6 group cursor-pointer">
+                <div className={cn(
+                  "w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 transition-all duration-300 group-hover:scale-110 shadow-sm",
+                  n.status === 'success' ? "bg-emerald-50 text-emerald-600" : 
+                  n.status === 'warning' ? "bg-rose-50 text-rose-500" : "bg-blue-50 text-[#0b4db1]"
+                )}>
+                  <Bell size={22} />
                 </div>
-                <div className="space-y-1">
+                <div className="space-y-1.5 flex-1 min-w-0">
                   <div className="flex justify-between items-center">
-                    <p className="text-[11px] font-black text-slate-900 uppercase tracking-tight">{n.title}</p>
-                    <span className="text-[9px] font-bold text-slate-300">{n.time}</span>
+                    <p className="text-[12px] font-black text-slate-900 uppercase tracking-tight truncate">{n.title}</p>
+                    <span className="text-[9px] font-bold text-slate-300 shrink-0">{n.time}</span>
                   </div>
-                  <p className="text-[10px] font-bold text-slate-400 uppercase leading-relaxed line-clamp-2">
+                  <p className="text-[11px] font-bold text-slate-400 uppercase leading-relaxed line-clamp-2">
                     {n.desc}
                   </p>
                 </div>
@@ -183,10 +210,29 @@ export function Dashboard({ lang = 'uz' }: DashboardProps) {
             ))}
           </div>
 
-          <button className="mt-8 text-[10px] font-black text-blue-600 uppercase tracking-[0.2em] hover:tracking-[0.3em] transition-all text-center">
+          <button className="mt-12 w-full h-14 rounded-2xl border-2 border-slate-50 text-[11px] font-black text-slate-400 hover:text-[#0b4db1] hover:border-[#0b4db1]/20 uppercase tracking-[0.25em] transition-all text-center">
             {t.labels.viewAll}
           </button>
         </Card>
+      </div>
+
+      {/* Quick Access Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pb-10">
+        {[
+          { title: "To'lovlar", icon: CreditCard, color: "text-[#0b4db1]", bg: "bg-blue-50", desc: "Escrow va tranzaksiyalar" },
+          { title: "Statistika", icon: Activity, color: "text-emerald-600", bg: "bg-emerald-50", desc: "Tahliliy hisobotlar" },
+          { title: "Xavfsizlik", icon: ShieldCheck, color: "text-violet-600", bg: "bg-violet-50", desc: "AI risk tekshiruvi" },
+        ].map((item, i) => (
+          <Card key={i} className="border-none shadow-xl shadow-slate-200/30 rounded-[32px] bg-white p-8 flex items-center gap-6 hover:shadow-2xl transition-all cursor-pointer">
+            <div className={cn("w-14 h-14 rounded-2xl flex items-center justify-center shrink-0", item.bg, item.color)}>
+              <item.icon size={24} />
+            </div>
+            <div>
+              <h4 className="text-[14px] font-black text-slate-900 uppercase tracking-tight">{item.title}</h4>
+              <p className="text-[11px] font-bold text-slate-400 uppercase mt-1">{item.desc}</p>
+            </div>
+          </Card>
+        ))}
       </div>
     </div>
   );

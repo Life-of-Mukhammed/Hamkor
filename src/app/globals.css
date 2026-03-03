@@ -1,11 +1,10 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    --background: 220 54% 96%;
+    --background: 210 20% 98%;
     --foreground: 222.2 84% 4.9%;
     --card: 0 0% 100%;
     --card-foreground: 222.2 84% 4.9%;
@@ -24,19 +23,19 @@
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
     --ring: 221.2 83.2% 53.3%;
-    --radius: 0.75rem;
+    --radius: 1rem;
     --chart-1: 221.2 83.2% 53.3%;
     --chart-2: 44 79% 49%;
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
-    --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 222.2 84% 4.9%;
+    --sidebar-background: 221 75% 37%;
+    --sidebar-foreground: 210 40% 98%;
     --sidebar-primary: 221 75% 49%;
     --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 210 40% 96.1%;
-    --sidebar-accent-foreground: 221 75% 49%;
-    --sidebar-border: 214.3 31.8% 91.4%;
+    --sidebar-accent: 221 75% 45%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 221 75% 30%;
     --sidebar-ring: 221.2 83.2% 53.3%;
   }
 }
@@ -46,8 +45,16 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground font-body antialiased;
+    @apply bg-background text-foreground font-body antialiased selection:bg-[#0b4db1] selection:text-white;
   }
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 .glass {
@@ -55,20 +62,14 @@
 }
 
 .neo-shadow {
-  box-shadow: 20px 20px 60px #cad0da, -20px -20px 60px #ffffff;
+  box-shadow: 10px 10px 30px #d1d9e6, -10px -10px 30px #ffffff;
 }
 
-.ripple {
-  position: relative;
-  overflow: hidden;
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes truck-move {
-  0% { transform: translateX(0); }
-  50% { transform: translateX(20px); }
-  100% { transform: translateX(0); }
-}
-
-.animate-truck {
-  animation: truck-move 3s ease-in-out infinite;
+.animate-fade-in {
+  animation: fade-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
