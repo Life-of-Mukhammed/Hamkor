@@ -1,4 +1,3 @@
-
 "use client";
 
 import { Card } from "@/components/ui/card";
@@ -89,20 +88,20 @@ export function Dashboard({ lang = 'uz' }: DashboardProps) {
   ];
 
   return (
-    <div className="space-y-12 animate-fade-in">
+    <div className="space-y-12 animate-fade-in font-body">
       {/* Welcome Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="space-y-1">
-          <h1 className="text-3xl font-black text-slate-900 tracking-tight leading-tight">XUSH KELIBSIZ, <span className="text-[#0b5dbb]">SHEYX2772!</span></h1>
-          <p className="text-[12px] font-bold text-slate-400 uppercase tracking-[0.3em]">I-TIJORAT PLATFORMASI • TOSHKENT VAKTI 10:45</p>
+          <h1 className="text-3xl font-black text-[#001529] tracking-tight leading-tight">XUSH KELIBSIZ, <span className="text-[#0b5dbb]">SHEYX2772!</span></h1>
+          <p className="text-[12px] font-bold text-[#001529]/40 uppercase tracking-[0.3em]">I-TIJORAT PLATFORMASI • TOSHKENT VAKTI 10:45</p>
         </div>
         <div className="flex items-center gap-3">
           <div className="flex flex-col items-end">
-            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Balans</span>
-            <span className="text-lg font-black text-slate-900 tracking-tighter">12,500,000 UZS</span>
+            <span className="text-[10px] font-black text-[#001529]/40 uppercase tracking-widest">Balans</span>
+            <span className="text-lg font-black text-[#001529] tracking-tighter">12,500,000 UZS</span>
           </div>
-          <div className="h-10 w-px bg-slate-200 mx-2" />
-          <button className="h-12 w-12 rounded-2xl bg-white border border-slate-200 flex items-center justify-center text-[#0b5dbb] hover:bg-blue-50 transition-all shadow-sm">
+          <div className="h-10 w-px bg-[#001529]/10 mx-2" />
+          <button className="h-12 w-12 rounded-2xl bg-white border border-[#001529]/10 flex items-center justify-center text-[#0b5dbb] hover:bg-blue-50 transition-all shadow-sm">
             <Wallet size={20} />
           </button>
         </div>
@@ -111,7 +110,7 @@ export function Dashboard({ lang = 'uz' }: DashboardProps) {
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
         {stats.map((stat, i) => (
-          <Card key={i} className="border-none shadow-xl shadow-slate-200/40 rounded-[32px] bg-white p-8 hover:-translate-y-1 transition-all duration-500 cursor-pointer group">
+          <Card key={i} className="border-none shadow-xl shadow-[#001529]/5 rounded-[32px] bg-white p-8 hover:-translate-y-1 transition-all duration-500 cursor-pointer group">
             <div className="flex justify-between items-start mb-6">
               <div className={cn("w-14 h-14 rounded-2xl flex items-center justify-center transition-all group-hover:bg-[#0b5dbb] group-hover:text-white", stat.bgColor, stat.color)}>
                 <stat.icon size={24} />
@@ -125,8 +124,8 @@ export function Dashboard({ lang = 'uz' }: DashboardProps) {
               </div>
             </div>
             <div className="space-y-1">
-              <h2 className="text-3xl font-black text-slate-900 tracking-tighter">{stat.value}</h2>
-              <p className="text-[11px] font-black text-slate-400 uppercase tracking-widest">{stat.title}</p>
+              <h2 className="text-3xl font-black text-[#001529] tracking-tighter">{stat.value}</h2>
+              <p className="text-[11px] font-black text-[#001529]/40 uppercase tracking-widest">{stat.title}</p>
             </div>
           </Card>
         ))}
@@ -134,14 +133,14 @@ export function Dashboard({ lang = 'uz' }: DashboardProps) {
 
       {/* Main Content Row */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-        <Card className="lg:col-span-8 border-none shadow-2xl shadow-slate-200/40 rounded-[48px] bg-white p-12 h-[600px] flex flex-col relative overflow-hidden group">
+        <Card className="lg:col-span-8 border-none shadow-2xl shadow-[#001529]/5 rounded-[48px] bg-white p-12 h-[600px] flex flex-col relative overflow-hidden group">
           <div className="flex justify-between items-center mb-10 relative z-10">
             <div>
-              <h3 className="text-xl font-black text-slate-900 tracking-tight uppercase">{t.labels.marketDynamics}</h3>
-              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-[0.3em] mt-2">{t.labels.realTimeAnalysis}</p>
+              <h3 className="text-xl font-black text-[#001529] tracking-tight uppercase">{t.labels.marketDynamics}</h3>
+              <p className="text-[10px] text-[#001529]/40 font-bold uppercase tracking-[0.3em] mt-2">{t.labels.realTimeAnalysis}</p>
             </div>
             <div className="flex gap-2">
-              <button className="h-10 px-6 rounded-xl bg-slate-100 text-[10px] font-black uppercase tracking-widest text-slate-500 hover:bg-[#0b5dbb] hover:text-white transition-all">Kunlik</button>
+              <button className="h-10 px-6 rounded-xl bg-[#001529]/5 text-[10px] font-black uppercase tracking-widest text-[#001529]/50 hover:bg-[#0b5dbb] hover:text-white transition-all">Kunlik</button>
               <button className="h-10 px-6 rounded-xl bg-[#0b5dbb] text-[10px] font-black uppercase tracking-widest text-white transition-all shadow-lg shadow-blue-100">Oylik</button>
             </div>
           </div>
@@ -161,7 +160,7 @@ export function Dashboard({ lang = 'uz' }: DashboardProps) {
                     dataKey="name" 
                     axisLine={false} 
                     tickLine={false} 
-                    tick={{ fontSize: 10, fontWeight: 800, fill: '#94a3b8' }} 
+                    tick={{ fontSize: 10, fontWeight: 800, fill: '#001529', opacity: 0.3 }} 
                     dy={15}
                   />
                   <YAxis hide />
@@ -181,10 +180,10 @@ export function Dashboard({ lang = 'uz' }: DashboardProps) {
           </div>
         </Card>
 
-        <Card className="lg:col-span-4 border-none shadow-2xl shadow-slate-200/40 rounded-[48px] bg-white p-12 flex flex-col h-[600px]">
+        <Card className="lg:col-span-4 border-none shadow-2xl shadow-[#001529]/5 rounded-[48px] bg-white p-12 flex flex-col h-[600px]">
           <div className="flex justify-between items-center mb-12">
-            <h3 className="text-[12px] font-black text-slate-900 tracking-tight uppercase tracking-[0.2em]">{t.labels.notifications}</h3>
-            <div className="w-3 h-3 rounded-full bg-blue-600 animate-pulse" />
+            <h3 className="text-[12px] font-black text-[#001529] tracking-tight uppercase tracking-[0.2em]">{t.labels.notifications}</h3>
+            <div className="w-3 h-3 rounded-full bg-[#0b5dbb] animate-pulse" />
           </div>
 
           <div className="space-y-10 flex-1 overflow-y-auto no-scrollbar">
@@ -199,10 +198,10 @@ export function Dashboard({ lang = 'uz' }: DashboardProps) {
                 </div>
                 <div className="space-y-1.5 flex-1 min-w-0">
                   <div className="flex justify-between items-center">
-                    <p className="text-[12px] font-black text-slate-900 uppercase tracking-tight truncate">{n.title}</p>
-                    <span className="text-[9px] font-bold text-slate-300 shrink-0">{n.time}</span>
+                    <p className="text-[12px] font-black text-[#001529] uppercase tracking-tight truncate">{n.title}</p>
+                    <span className="text-[9px] font-bold text-[#001529]/20 shrink-0">{n.time}</span>
                   </div>
-                  <p className="text-[11px] font-bold text-slate-400 uppercase leading-relaxed line-clamp-2">
+                  <p className="text-[11px] font-bold text-[#001529]/40 uppercase leading-relaxed line-clamp-2">
                     {n.desc}
                   </p>
                 </div>
@@ -210,7 +209,7 @@ export function Dashboard({ lang = 'uz' }: DashboardProps) {
             ))}
           </div>
 
-          <button className="mt-12 w-full h-14 rounded-2xl border-2 border-slate-50 text-[11px] font-black text-slate-400 hover:text-[#0b5dbb] hover:border-[#0b5dbb]/20 uppercase tracking-[0.25em] transition-all text-center">
+          <button className="mt-12 w-full h-14 rounded-2xl border-2 border-[#001529]/5 text-[11px] font-black text-[#001529]/30 hover:text-[#0b5dbb] hover:border-[#0b5dbb]/20 uppercase tracking-[0.25em] transition-all text-center">
             {t.labels.viewAll}
           </button>
         </Card>
@@ -223,13 +222,13 @@ export function Dashboard({ lang = 'uz' }: DashboardProps) {
           { title: "Statistika", icon: Activity, color: "text-emerald-600", bg: "bg-emerald-50", desc: "Tahliliy hisobotlar" },
           { title: "Xavfsizlik", icon: ShieldCheck, color: "text-violet-600", bg: "bg-violet-50", desc: "AI risk tekshiruvi" },
         ].map((item, i) => (
-          <Card key={i} className="border-none shadow-xl shadow-slate-200/30 rounded-[32px] bg-white p-8 flex items-center gap-6 hover:shadow-2xl transition-all cursor-pointer">
+          <Card key={i} className="border-none shadow-xl shadow-[#001529]/5 rounded-[32px] bg-white p-8 flex items-center gap-6 hover:shadow-2xl transition-all cursor-pointer">
             <div className={cn("w-14 h-14 rounded-2xl flex items-center justify-center shrink-0", item.bg, item.color)}>
               <item.icon size={24} />
             </div>
             <div>
-              <h4 className="text-[14px] font-black text-slate-900 uppercase tracking-tight">{item.title}</h4>
-              <p className="text-[11px] font-bold text-slate-400 uppercase mt-1">{item.desc}</p>
+              <h4 className="text-[14px] font-black text-[#001529] uppercase tracking-tight">{item.title}</h4>
+              <p className="text-[11px] font-bold text-[#001529]/40 uppercase mt-1">{item.desc}</p>
             </div>
           </Card>
         ))}

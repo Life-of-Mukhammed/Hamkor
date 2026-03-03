@@ -4,9 +4,9 @@
 
 @layer base {
   :root {
-    /* Yangilangan ranglar palitrasi */
+    /* Yangilangan ranglar palitrasi - Kulrang o'rniga ko'k tuslari */
     --background: 0 0% 100%;
-    --foreground: 209 100% 8%;
+    --foreground: 209 100% 8%; /* #001529 - To'q ko'k */
     
     --card: 0 0% 100%;
     --card-foreground: 209 100% 8%;
@@ -14,14 +14,15 @@
     --popover: 0 0% 100%;
     --popover-foreground: 209 100% 8%;
     
-    --primary: 209 100% 8%; /* #001529 - To'q ko'k */
+    --primary: 209 100% 8%;
     --primary-foreground: 0 0% 100%;
     
     --secondary: 210 100% 75%;
     --secondary-foreground: 209 100% 8%;
     
+    /* Muted matnlar endi kulrang emas, och ko'k-binafsha tusda */
     --muted: 210 40% 96%;
-    --muted-foreground: 215 16% 47%;
+    --muted-foreground: 209 40% 45%; 
     
     --accent: 210 100% 96%;
     --accent-foreground: 209 100% 8%;
@@ -29,8 +30,8 @@
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
     
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
+    --border: 209 30% 90%;
+    --input: 209 30% 90%;
     --ring: 209 100% 8%;
     
     --radius: 1rem;
@@ -42,12 +43,12 @@
     --chart-5: 27 87% 67%;
     
     --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 215 16% 47%;
+    --sidebar-foreground: 209 40% 45%;
     --sidebar-primary: 209 100% 8%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 210 100% 96%;
     --sidebar-accent-foreground: 209 100% 8%;
-    --sidebar-border: 214.3 31.8% 91.4%;
+    --sidebar-border: 209 30% 90%;
     --sidebar-ring: 209 100% 8%;
   }
 }
@@ -74,7 +75,7 @@
 }
 
 .neo-shadow {
-  box-shadow: 10px 10px 30px #d1d9e6, -10px -10px 30px #ffffff;
+  box-shadow: 10px 10px 30px rgba(0, 21, 41, 0.05), -10px -10px 30px #ffffff;
 }
 
 @keyframes fade-in {
