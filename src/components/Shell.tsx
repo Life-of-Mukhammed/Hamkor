@@ -77,7 +77,7 @@ export function Shell({
         <Sidebar className="border-r border-slate-100 bg-white shrink-0 h-full">
           <SidebarHeader className="p-6 pt-10">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-[#003366] rounded-xl flex items-center justify-center shadow-lg shadow-blue-900/10">
+              <div className="w-10 h-10 bg-[#0b4db1] rounded-xl flex items-center justify-center shadow-lg shadow-blue-900/10">
                 <div className="w-5 h-5 rounded-[4px] border-2 border-white" />
               </div>
               <h1 className="text-xl font-black tracking-tight text-[#001529]">{t.appName}</h1>
@@ -94,12 +94,12 @@ export function Shell({
                     className={cn(
                       "w-full px-4 py-6 rounded-xl transition-all duration-300 group border border-transparent",
                       activeSection === item.id 
-                        ? "bg-[#003366] text-white shadow-xl shadow-blue-900/20" 
-                        : "text-slate-500 hover:bg-slate-50 hover:text-[#003366]"
+                        ? "bg-[#0b4db1] text-white shadow-xl shadow-blue-900/20" 
+                        : "text-slate-500 hover:bg-slate-50 hover:text-[#0b4db1]"
                     )}
                   >
                     <div className="flex items-center gap-3">
-                      <item.icon className={cn("w-5 h-5 transition-colors", activeSection === item.id ? "text-white" : "text-slate-400 group-hover:text-[#003366]")} />
+                      <item.icon className={cn("w-5 h-5 transition-colors", activeSection === item.id ? "text-white" : "text-slate-400 group-hover:text-[#0b4db1]")} />
                       <span className="font-bold text-[13px] tracking-wide">{item.label}</span>
                     </div>
                   </SidebarMenuButton>
@@ -114,7 +114,7 @@ export function Shell({
                 {t.labels.premiumServices}
               </p>
               <Button 
-                className="w-full h-11 bg-[#003366] text-white hover:bg-[#001529] rounded-xl font-black py-0 uppercase tracking-[0.15em] text-[10px] shadow-md"
+                className="w-full h-11 bg-[#0b4db1] text-white hover:bg-[#001529] rounded-xl font-black py-0 uppercase tracking-[0.15em] text-[10px] shadow-md"
               >
                 {t.labels.premiumBtn}
               </Button>
@@ -122,7 +122,7 @@ export function Shell({
             
             <div className="mt-6 flex items-center gap-3 px-2">
               <Avatar className="h-9 w-9 border-2 border-slate-100">
-                <AvatarFallback className="bg-slate-100 text-[#003366] font-black text-xs">SZ</AvatarFallback>
+                <AvatarFallback className="bg-slate-100 text-[#0b4db1] font-black text-xs">SZ</AvatarFallback>
               </Avatar>
               <div className="flex-1 min-w-0">
                 <p className="text-[11px] font-black text-slate-900 truncate">sheyx2772</p>
@@ -140,7 +140,7 @@ export function Shell({
             <SidebarTrigger className="hover:bg-slate-50 p-2 rounded-xl transition-all text-slate-500" />
             <div className="h-6 w-px bg-slate-100 mx-2" />
             <div className="flex-1">
-              <p className="text-[11px] font-black text-[#003366] uppercase tracking-[0.25em]">
+              <p className="text-[11px] font-black text-[#0b4db1] uppercase tracking-[0.25em]">
                 {[...menuItems].find(m => m.id === activeSection)?.label || "BOSH SAHIFA"}
               </p>
             </div>
@@ -151,7 +151,7 @@ export function Shell({
                 <input 
                   type="text" 
                   placeholder={t.labels.search}
-                  className="bg-slate-50 border-none rounded-xl h-10 pl-10 pr-4 text-[12px] font-bold w-48 focus:w-64 transition-all focus:ring-2 focus:ring-[#003366]/10 outline-none text-slate-700"
+                  className="bg-slate-50 border-none rounded-xl h-10 pl-10 pr-4 text-[12px] font-bold w-48 focus:w-64 transition-all focus:ring-2 focus:ring-[#0b4db1]/10 outline-none text-slate-700"
                 />
               </div>
 
@@ -167,7 +167,7 @@ export function Shell({
                   <DropdownMenuSeparator />
                   <div className="space-y-4 mt-2 max-h-80 overflow-y-auto no-scrollbar">
                     <div className="flex gap-4 p-2 rounded-xl hover:bg-slate-50 transition-colors cursor-pointer">
-                      <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-[#003366] shrink-0">
+                      <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-[#0b4db1] shrink-0">
                         <ShoppingBasket size={16} />
                       </div>
                       <div>
@@ -184,7 +184,7 @@ export function Shell({
                   <Button variant="ghost" size="icon" className="relative h-11 w-11 rounded-xl hover:bg-slate-50 text-slate-400">
                     <ShoppingCart size={20} />
                     {cartCount > 0 && (
-                      <span className="absolute top-2 right-2 min-w-[18px] h-[18px] bg-[#003366] text-white text-[9px] font-black rounded-full flex items-center justify-center px-1 border-2 border-white">
+                      <span className="absolute top-2 right-2 min-w-[18px] h-[18px] bg-[#0b4db1] text-white text-[9px] font-black rounded-full flex items-center justify-center px-1 border-2 border-white">
                         {cartCount}
                       </span>
                     )}
@@ -193,7 +193,7 @@ export function Shell({
                 <SheetContent className="w-full sm:max-w-[480px] rounded-l-[40px] p-0 flex flex-col border-none shadow-2xl bg-white">
                   <SheetHeader className="p-10 border-b bg-slate-50/50">
                     <SheetTitle className="text-sm font-black uppercase tracking-[0.2em] flex items-center gap-4 text-[#001529]">
-                      <div className="w-10 h-10 rounded-xl bg-[#003366] flex items-center justify-center text-white">
+                      <div className="w-10 h-10 rounded-xl bg-[#0b4db1] flex items-center justify-center text-white">
                         <ShoppingCart size={20} />
                       </div>
                       Savatingiz
@@ -214,19 +214,19 @@ export function Shell({
                         <div key={item.id} className="flex gap-6 p-5 rounded-3xl bg-white border border-slate-100 hover:border-blue-100 transition-all group shadow-sm">
                           <div className="flex-1 space-y-2">
                             <p className="text-[12px] font-black text-[#001529] uppercase leading-tight tracking-tight">{item.title}</p>
-                            <p className="text-[11px] font-black text-[#003366] tracking-tighter">{formatCurrency(item.price)} UZS / {item.unit}</p>
+                            <p className="text-[11px] font-black text-[#0b4db1] tracking-tighter">{formatCurrency(item.price)} UZS / {item.unit}</p>
                             
                             <div className="flex items-center gap-4 mt-4">
                               <button 
                                 onClick={() => onUpdateQuantity?.(item.id, -1)}
-                                className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center text-slate-400 hover:bg-[#003366] hover:text-white transition-all"
+                                className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center text-slate-400 hover:bg-[#0b4db1] hover:text-white transition-all"
                               >
                                 <Minus size={14} />
                               </button>
                               <span className="text-[12px] font-black w-6 text-center text-[#001529]">{item.quantity}</span>
                               <button 
                                 onClick={() => onUpdateQuantity?.(item.id, 1)}
-                                className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center text-slate-400 hover:bg-[#003366] hover:text-white transition-all"
+                                className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center text-slate-400 hover:bg-[#0b4db1] hover:text-white transition-all"
                               >
                                 <Plus size={14} />
                               </button>
@@ -250,9 +250,9 @@ export function Shell({
                     <SheetFooter className="p-10 bg-slate-50 border-t flex-col gap-6">
                       <div className="flex justify-between items-center w-full">
                         <span className="text-[11px] font-black text-slate-400 uppercase tracking-widest">Umumiy summa</span>
-                        <span className="text-2xl font-black text-[#003366] tracking-tighter">{formatCurrency(cartTotal)} UZS</span>
+                        <span className="text-2xl font-black text-[#0b4db1] tracking-tighter">{formatCurrency(cartTotal)} UZS</span>
                       </div>
-                      <Button className="w-full h-16 bg-[#003366] hover:bg-[#001529] text-white rounded-2xl font-black uppercase tracking-[0.2em] text-[12px] shadow-2xl shadow-blue-900/20">
+                      <Button className="w-full h-16 bg-[#0b4db1] hover:bg-[#001529] text-white rounded-2xl font-black uppercase tracking-[0.2em] text-[12px] shadow-2xl shadow-blue-900/20">
                         Buyurtmani tasdiqlash
                       </Button>
                     </SheetFooter>
@@ -264,15 +264,15 @@ export function Shell({
               
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="h-11 px-4 gap-3 rounded-xl hover:bg-slate-50 font-black text-[12px] text-[#003366] border border-transparent">
+                  <Button variant="ghost" className="h-11 px-4 gap-3 rounded-xl hover:bg-slate-50 font-black text-[12px] text-[#0b4db1] border border-transparent">
                     <Globe size={18} />
                     {lang.toUpperCase()}
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="rounded-2xl border-slate-100 min-w-[120px] p-2 shadow-2xl bg-white">
-                  <DropdownMenuItem onClick={() => setLang('uz')} className="text-[11px] font-black uppercase tracking-widest cursor-pointer rounded-xl h-10 text-slate-600 hover:text-[#003366]">O'zbek</DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setLang('ru')} className="text-[11px] font-black uppercase tracking-widest cursor-pointer rounded-xl h-10 text-slate-600 hover:text-[#003366]">Русский</DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setLang('en')} className="text-[11px] font-black uppercase tracking-widest cursor-pointer rounded-xl h-10 text-slate-600 hover:text-[#003366]">English</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setLang('uz')} className="text-[11px] font-black uppercase tracking-widest cursor-pointer rounded-xl h-10 text-slate-600 hover:text-[#0b4db1]">O'zbek</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setLang('ru')} className="text-[11px] font-black uppercase tracking-widest cursor-pointer rounded-xl h-10 text-slate-600 hover:text-[#0b4db1]">Русский</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setLang('en')} className="text-[11px] font-black uppercase tracking-widest cursor-pointer rounded-xl h-10 text-slate-600 hover:text-[#0b4db1]">English</DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
