@@ -1,3 +1,4 @@
+
 "use client";
 
 import * as React from "react";
@@ -77,7 +78,7 @@ export function Shell({
         <Sidebar className="border-r border-slate-100 bg-white shrink-0 h-full">
           <SidebarHeader className="p-6 pt-10">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-[#001529] rounded-xl flex items-center justify-center shadow-lg shadow-blue-900/10">
+              <div className="w-10 h-10 bg-[#0b5dbb] rounded-xl flex items-center justify-center shadow-lg shadow-blue-900/10">
                 <div className="w-5 h-5 rounded-[4px] border-2 border-white" />
               </div>
               <h1 className="text-xl font-black tracking-tight text-[#001529]">{t.appName}</h1>
@@ -92,15 +93,15 @@ export function Shell({
                     isActive={activeSection === item.id}
                     onClick={() => onNavigate(item.id)}
                     className={cn(
-                      "w-full px-4 py-6 rounded-xl transition-all duration-300 group border border-transparent",
+                      "w-full px-4 py-6 rounded-2xl transition-all duration-300 group border border-transparent",
                       activeSection === item.id 
-                        ? "bg-[#001529] text-white shadow-xl shadow-blue-900/20" 
-                        : "text-slate-500 hover:bg-slate-50 hover:text-[#001529]"
+                        ? "bg-[#0b5dbb] text-white shadow-xl shadow-blue-600/40" 
+                        : "text-slate-500 hover:bg-slate-50 hover:text-[#0b5dbb]"
                     )}
                   >
                     <div className="flex items-center gap-3">
-                      <item.icon className={cn("w-5 h-5 transition-colors", activeSection === item.id ? "text-white" : "text-slate-400 group-hover:text-[#001529]")} />
-                      <span className="font-bold text-[13px] tracking-wide">{item.label}</span>
+                      <item.icon className={cn("w-5 h-5 transition-colors", activeSection === item.id ? "text-white" : "text-slate-400 group-hover:text-[#0b5dbb]")} />
+                      <span className="font-black text-[12px] tracking-wide uppercase">{item.label}</span>
                     </div>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -109,27 +110,27 @@ export function Shell({
           </SidebarContent>
 
           <SidebarFooter className="p-6 mb-4">
-            <div className="bg-slate-50 rounded-[28px] p-6 text-center border border-slate-100">
-              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">
+            <div className="bg-slate-50/80 rounded-[32px] p-6 text-center border border-slate-100/50">
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4 leading-relaxed px-2">
                 {t.labels.premiumServices}
               </p>
               <Button 
-                className="w-full h-11 bg-[#001529] text-white hover:bg-slate-800 rounded-xl font-black py-0 uppercase tracking-[0.15em] text-[10px] shadow-md"
+                className="w-full h-12 bg-[#001529] text-white hover:bg-black rounded-xl font-black py-0 uppercase tracking-[0.1em] text-[11px] shadow-lg"
               >
                 {t.labels.premiumBtn}
               </Button>
             </div>
             
             <div className="mt-6 flex items-center gap-3 px-2">
-              <Avatar className="h-9 w-9 border-2 border-slate-100">
+              <Avatar className="h-10 w-10 border-2 border-slate-100">
                 <AvatarFallback className="bg-slate-100 text-[#001529] font-black text-xs">SZ</AvatarFallback>
               </Avatar>
               <div className="flex-1 min-w-0">
-                <p className="text-[11px] font-black text-slate-900 truncate">sheyx2772</p>
-                <p className="text-[9px] font-bold text-slate-400 uppercase">Premium User</p>
+                <p className="text-[12px] font-black text-slate-900 truncate">sheyx2772</p>
+                <p className="text-[9px] font-bold text-slate-400 uppercase tracking-tighter">Premium User</p>
               </div>
-              <Button variant="ghost" size="icon" className="text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg">
-                <LogOut size={16} />
+              <Button variant="ghost" size="icon" className="text-slate-300 hover:text-slate-600 hover:bg-slate-50 rounded-lg">
+                <LogOut size={18} />
               </Button>
             </div>
           </SidebarFooter>
@@ -151,7 +152,7 @@ export function Shell({
                 <input 
                   type="text" 
                   placeholder={t.labels.search}
-                  className="bg-slate-50 border-none rounded-xl h-10 pl-10 pr-4 text-[12px] font-bold w-48 focus:w-64 transition-all focus:ring-2 focus:ring-[#001529]/10 outline-none text-slate-700"
+                  className="bg-slate-50 border-none rounded-xl h-10 pl-10 pr-4 text-[12px] font-bold w-48 focus:w-64 transition-all focus:ring-2 focus:ring-[#0b5dbb]/10 outline-none text-slate-700"
                 />
               </div>
 
@@ -184,7 +185,7 @@ export function Shell({
                   <Button variant="ghost" size="icon" className="relative h-11 w-11 rounded-xl hover:bg-slate-50 text-slate-400">
                     <ShoppingCart size={20} />
                     {cartCount > 0 && (
-                      <span className="absolute top-2 right-2 min-w-[18px] h-[18px] bg-[#001529] text-white text-[9px] font-black rounded-full flex items-center justify-center px-1 border-2 border-white">
+                      <span className="absolute top-2 right-2 min-w-[18px] h-[18px] bg-[#0b5dbb] text-white text-[9px] font-black rounded-full flex items-center justify-center px-1 border-2 border-white">
                         {cartCount}
                       </span>
                     )}
@@ -193,7 +194,7 @@ export function Shell({
                 <SheetContent className="w-full sm:max-w-[480px] rounded-l-[40px] p-0 flex flex-col border-none shadow-2xl bg-white">
                   <SheetHeader className="p-10 border-b bg-slate-50/50">
                     <SheetTitle className="text-sm font-black uppercase tracking-[0.2em] flex items-center gap-4 text-[#001529]">
-                      <div className="w-10 h-10 rounded-xl bg-[#001529] flex items-center justify-center text-white">
+                      <div className="w-10 h-10 rounded-xl bg-[#0b5dbb] flex items-center justify-center text-white">
                         <ShoppingCart size={20} />
                       </div>
                       Savatingiz
@@ -219,14 +220,14 @@ export function Shell({
                             <div className="flex items-center gap-4 mt-4">
                               <button 
                                 onClick={() => onUpdateQuantity?.(item.id, -1)}
-                                className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center text-slate-400 hover:bg-[#001529] hover:text-white transition-all"
+                                className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center text-slate-400 hover:bg-[#0b5dbb] hover:text-white transition-all"
                               >
                                 <Minus size={14} />
                               </button>
                               <span className="text-[12px] font-black w-6 text-center text-[#001529]">{item.quantity}</span>
                               <button 
                                 onClick={() => onUpdateQuantity?.(item.id, 1)}
-                                className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center text-slate-400 hover:bg-[#001529] hover:text-white transition-all"
+                                className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center text-slate-400 hover:bg-[#0b5dbb] hover:text-white transition-all"
                               >
                                 <Plus size={14} />
                               </button>
@@ -252,7 +253,7 @@ export function Shell({
                         <span className="text-[11px] font-black text-slate-400 uppercase tracking-widest">Umumiy summa</span>
                         <span className="text-2xl font-black text-[#001529] tracking-tighter">{formatCurrency(cartTotal)} UZS</span>
                       </div>
-                      <Button className="w-full h-16 bg-[#001529] hover:bg-slate-800 text-white rounded-2xl font-black uppercase tracking-[0.2em] text-[12px] shadow-2xl shadow-blue-900/20">
+                      <Button className="w-full h-16 bg-[#0b5dbb] hover:bg-blue-700 text-white rounded-2xl font-black uppercase tracking-[0.2em] text-[12px] shadow-2xl shadow-blue-900/20">
                         Buyurtmani tasdiqlash
                       </Button>
                     </SheetFooter>
@@ -270,9 +271,9 @@ export function Shell({
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="rounded-2xl border-slate-100 min-w-[120px] p-2 shadow-2xl bg-white">
-                  <DropdownMenuItem onClick={() => setLang('uz')} className="text-[11px] font-black uppercase tracking-widest cursor-pointer rounded-xl h-10 text-slate-600 hover:text-[#001529]">O'zbek</DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setLang('ru')} className="text-[11px] font-black uppercase tracking-widest cursor-pointer rounded-xl h-10 text-slate-600 hover:text-[#001529]">Русский</DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setLang('en')} className="text-[11px] font-black uppercase tracking-widest cursor-pointer rounded-xl h-10 text-slate-600 hover:text-[#001529]">English</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setLang('uz')} className="text-[11px] font-black uppercase tracking-widest cursor-pointer rounded-xl h-10 text-slate-600 hover:text-[#0b5dbb]">O'zbek</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setLang('ru')} className="text-[11px] font-black uppercase tracking-widest cursor-pointer rounded-xl h-10 text-slate-600 hover:text-[#0b5dbb]">Русский</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setLang('en')} className="text-[11px] font-black uppercase tracking-widest cursor-pointer rounded-xl h-10 text-slate-600 hover:text-[#0b5dbb]">English</DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>

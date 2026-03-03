@@ -31,7 +31,7 @@ const marketData = [
 const chartConfig = {
   value: {
     label: "Bozor qiymati",
-    color: "#0b4db1",
+    color: "#0b5dbb",
   },
 };
 
@@ -93,7 +93,7 @@ export function Dashboard({ lang = 'uz' }: DashboardProps) {
       {/* Welcome Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="space-y-1">
-          <h1 className="text-3xl font-black text-slate-900 tracking-tight leading-tight">XUSH KELIBSIZ, <span className="text-[#0b4db1]">SHEYX2772!</span></h1>
+          <h1 className="text-3xl font-black text-slate-900 tracking-tight leading-tight">XUSH KELIBSIZ, <span className="text-[#0b5dbb]">SHEYX2772!</span></h1>
           <p className="text-[12px] font-bold text-slate-400 uppercase tracking-[0.3em]">I-TIJORAT PLATFORMASI • TOSHKENT VAKTI 10:45</p>
         </div>
         <div className="flex items-center gap-3">
@@ -102,7 +102,7 @@ export function Dashboard({ lang = 'uz' }: DashboardProps) {
             <span className="text-lg font-black text-slate-900 tracking-tighter">12,500,000 UZS</span>
           </div>
           <div className="h-10 w-px bg-slate-200 mx-2" />
-          <button className="h-12 w-12 rounded-2xl bg-white border border-slate-200 flex items-center justify-center text-[#0b4db1] hover:bg-blue-50 transition-all shadow-sm">
+          <button className="h-12 w-12 rounded-2xl bg-white border border-slate-200 flex items-center justify-center text-[#0b5dbb] hover:bg-blue-50 transition-all shadow-sm">
             <Wallet size={20} />
           </button>
         </div>
@@ -113,7 +113,7 @@ export function Dashboard({ lang = 'uz' }: DashboardProps) {
         {stats.map((stat, i) => (
           <Card key={i} className="border-none shadow-xl shadow-slate-200/40 rounded-[32px] bg-white p-8 hover:-translate-y-1 transition-all duration-500 cursor-pointer group">
             <div className="flex justify-between items-start mb-6">
-              <div className={cn("w-14 h-14 rounded-2xl flex items-center justify-center transition-all group-hover:bg-[#0b4db1] group-hover:text-white", stat.bgColor, stat.color)}>
+              <div className={cn("w-14 h-14 rounded-2xl flex items-center justify-center transition-all group-hover:bg-[#0b5dbb] group-hover:text-white", stat.bgColor, stat.color)}>
                 <stat.icon size={24} />
               </div>
               <div className={cn(
@@ -141,8 +141,8 @@ export function Dashboard({ lang = 'uz' }: DashboardProps) {
               <p className="text-[10px] text-slate-400 font-bold uppercase tracking-[0.3em] mt-2">{t.labels.realTimeAnalysis}</p>
             </div>
             <div className="flex gap-2">
-              <button className="h-10 px-6 rounded-xl bg-slate-100 text-[10px] font-black uppercase tracking-widest text-slate-500 hover:bg-[#0b4db1] hover:text-white transition-all">Kunlik</button>
-              <button className="h-10 px-6 rounded-xl bg-[#0b4db1] text-[10px] font-black uppercase tracking-widest text-white transition-all shadow-lg shadow-blue-100">Oylik</button>
+              <button className="h-10 px-6 rounded-xl bg-slate-100 text-[10px] font-black uppercase tracking-widest text-slate-500 hover:bg-[#0b5dbb] hover:text-white transition-all">Kunlik</button>
+              <button className="h-10 px-6 rounded-xl bg-[#0b5dbb] text-[10px] font-black uppercase tracking-widest text-white transition-all shadow-lg shadow-blue-100">Oylik</button>
             </div>
           </div>
           
@@ -152,8 +152,8 @@ export function Dashboard({ lang = 'uz' }: DashboardProps) {
                 <AreaChart data={marketData}>
                   <defs>
                     <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#0b4db1" stopOpacity={0.15}/>
-                      <stop offset="95%" stopColor="#0b4db1" stopOpacity={0}/>
+                      <stop offset="5%" stopColor="#0b5dbb" stopOpacity={0.15}/>
+                      <stop offset="95%" stopColor="#0b5dbb" stopOpacity={0}/>
                     </linearGradient>
                   </defs>
                   <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="#f1f5f9" />
@@ -169,11 +169,11 @@ export function Dashboard({ lang = 'uz' }: DashboardProps) {
                   <Area 
                     type="monotone" 
                     dataKey="value" 
-                    stroke="#0b4db1" 
+                    stroke="#0b5dbb" 
                     strokeWidth={5} 
                     fillOpacity={1} 
                     fill="url(#colorValue)" 
-                    dot={{ r: 5, fill: '#0b4db1', strokeWidth: 3, stroke: '#fff' }}
+                    dot={{ r: 5, fill: '#0b5dbb', strokeWidth: 3, stroke: '#fff' }}
                   />
                 </AreaChart>
               </ResponsiveContainer>
@@ -193,7 +193,7 @@ export function Dashboard({ lang = 'uz' }: DashboardProps) {
                 <div className={cn(
                   "w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 transition-all duration-300 group-hover:scale-110 shadow-sm",
                   n.status === 'success' ? "bg-emerald-50 text-emerald-600" : 
-                  n.status === 'warning' ? "bg-rose-50 text-rose-500" : "bg-blue-50 text-[#0b4db1]"
+                  n.status === 'warning' ? "bg-rose-50 text-rose-500" : "bg-blue-50 text-[#0b5dbb]"
                 )}>
                   <Bell size={22} />
                 </div>
@@ -210,7 +210,7 @@ export function Dashboard({ lang = 'uz' }: DashboardProps) {
             ))}
           </div>
 
-          <button className="mt-12 w-full h-14 rounded-2xl border-2 border-slate-50 text-[11px] font-black text-slate-400 hover:text-[#0b4db1] hover:border-[#0b4db1]/20 uppercase tracking-[0.25em] transition-all text-center">
+          <button className="mt-12 w-full h-14 rounded-2xl border-2 border-slate-50 text-[11px] font-black text-slate-400 hover:text-[#0b5dbb] hover:border-[#0b5dbb]/20 uppercase tracking-[0.25em] transition-all text-center">
             {t.labels.viewAll}
           </button>
         </Card>
@@ -219,7 +219,7 @@ export function Dashboard({ lang = 'uz' }: DashboardProps) {
       {/* Quick Access Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pb-10">
         {[
-          { title: "To'lovlar", icon: CreditCard, color: "text-[#0b4db1]", bg: "bg-blue-50", desc: "Escrow va tranzaksiyalar" },
+          { title: "To'lovlar", icon: CreditCard, color: "text-[#0b5dbb]", bg: "bg-blue-50", desc: "Escrow va tranzaksiyalar" },
           { title: "Statistika", icon: Activity, color: "text-emerald-600", bg: "bg-emerald-50", desc: "Tahliliy hisobotlar" },
           { title: "Xavfsizlik", icon: ShieldCheck, color: "text-violet-600", bg: "bg-violet-50", desc: "AI risk tekshiruvi" },
         ].map((item, i) => (
