@@ -27,7 +27,8 @@ import {
   ArrowDownRight,
   ShieldAlert,
   Sparkles,
-  Globe
+  Globe,
+  UserCheck
 } from "lucide-react";
 import {
   Accordion,
@@ -53,12 +54,21 @@ interface SettingsProps {
 export function Settings({ lang = 'uz' }: SettingsProps) {
   const { toast } = useToast();
   const t = translations[lang];
+  const [role, setRole] = useState("haridor");
 
   const formatCurrency = (val: number) => 
     new Intl.NumberFormat('uz-UZ').format(val);
 
+  const handleSaveRole = (newRole: string) => {
+    setRole(newRole);
+    toast({
+      title: "Muvaffaqiyatli",
+      description: `Sizning rolingiz "${newRole === 'sotuvchi' ? 'Sotuvchi' : 'Haridor'}" qilib yangilandi.`,
+    });
+  };
+
   return (
-    <div className="space-y-8 animate-fade-in text-slate-700 pb-20">
+    <div className="space-y-8 animate-fade-in text-[#001529] pb-20">
       {/* Profile Header Stats */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-[#f4f9ff] p-8 rounded-[32px] shadow-sm border border-[#001529]/5">
         <div className="flex items-center gap-6">
@@ -66,11 +76,14 @@ export function Settings({ lang = 'uz' }: SettingsProps) {
             S
           </div>
           <div className="space-y-1.5">
-            <h1 className="text-2xl font-black text-slate-900">Salom, sheyx2772!</h1>
+            <h1 className="text-2xl font-black text-[#001529]">Salom, sheyx2772!</h1>
             <div className="flex items-center gap-6 text-[11px] font-bold text-[#001529]/40 uppercase tracking-widest">
               <span className="flex items-center gap-1.5">Reyting: <span className="text-amber-500 flex items-center gap-0.5">4.8 <Star size={12} fill="currentColor" /></span></span>
-              <span className="text-blue-600">Faol e'lonlar: 2 ta</span>
-              <span className="text-blue-600">Shartnomalar: 1 ta</span>
+              <span className="text-[#0b4db1]">Faol e'lonlar: 2 ta</span>
+              <span className="text-[#0b4db1]">Shartnomalar: 1 ta</span>
+              <Badge className="bg-[#0b4db1] text-white border-none text-[9px] font-black uppercase px-2 py-0.5">
+                {role === 'sotuvchi' ? 'Sotuvchi' : 'Haridor'}
+              </Badge>
             </div>
           </div>
         </div>
@@ -82,8 +95,8 @@ export function Settings({ lang = 'uz' }: SettingsProps) {
           {/* Personal Info */}
           <Card className="border-none shadow-sm rounded-[40px] bg-[#f4f9ff] overflow-hidden">
             <CardHeader className="flex flex-row items-center justify-between px-10 py-8 border-b border-[#001529]/5">
-              <CardTitle className="text-[12px] font-black uppercase tracking-[0.2em] flex items-center gap-3 text-slate-900">
-                <User size={18} className="text-blue-600" /> Shaxsiy Ma'lumotlar
+              <CardTitle className="text-[12px] font-black uppercase tracking-[0.2em] flex items-center gap-3 text-[#001529]">
+                <User size={18} className="text-[#0b4db1]" /> Shaxsiy Ma'lumotlar
               </CardTitle>
               <Button variant="ghost" size="sm" className="h-9 rounded-xl text-[10px] font-black uppercase tracking-widest gap-2 bg-white shadow-sm">
                 Tahrirlash
@@ -92,30 +105,48 @@ export function Settings({ lang = 'uz' }: SettingsProps) {
             <CardContent className="p-10 space-y-8">
               <div className="grid gap-6">
                 <div className="space-y-3">
-                  <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Ism / Kompaniya nomi</Label>
-                  <Input defaultValue="sheyx2772" className="rounded-2xl h-12 text-[13px] font-bold border-none bg-white shadow-sm" />
+                  <Label className="text-[10px] font-black uppercase tracking-widest text-[#001529]/40">Ism / Kompaniya nomi</Label>
+                  <Input defaultValue="sheyx2772" className="rounded-2xl h-12 text-[13px] font-bold border-none bg-white shadow-sm focus-visible:ring-2 focus-visible:ring-blue-100" />
                 </div>
+                
+                {/* Role Selection Added Here */}
+                <div className="space-y-3">
+                  <Label className="text-[10px] font-black uppercase tracking-widest text-[#001529]/40">Foydalanuvchi roli</Label>
+                  <Select value={role} onValueChange={handleSaveRole}>
+                    <SelectTrigger className="rounded-2xl h-12 text-[13px] font-bold border-none bg-white shadow-sm focus:ring-2 focus:ring-blue-100">
+                      <div className="flex items-center gap-2">
+                        <UserCheck size={16} className="text-[#0b4db1]" />
+                        <SelectValue placeholder="Rolni tanlang" />
+                      </div>
+                    </SelectTrigger>
+                    <SelectContent className="rounded-2xl border-none shadow-2xl">
+                      <SelectItem value="sotuvchi" className="text-[12px] font-bold uppercase tracking-tight py-3">Sotuvchi</SelectItem>
+                      <SelectItem value="haridor" className="text-[12px] font-bold uppercase tracking-tight py-3">Haridor</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
                 <div className="grid grid-cols-2 gap-6">
                   <div className="space-y-3">
-                    <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Telefon</Label>
-                    <Input defaultValue="+998 90 123 45 67" className="rounded-2xl h-12 text-[13px] font-bold border-none bg-white shadow-sm" />
+                    <Label className="text-[10px] font-black uppercase tracking-widest text-[#001529]/40">Telefon</Label>
+                    <Input defaultValue="+998 90 123 45 67" className="rounded-2xl h-12 text-[13px] font-bold border-none bg-white shadow-sm focus-visible:ring-2 focus-visible:ring-blue-100" />
                   </div>
                   <div className="space-y-3">
-                    <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Email</Label>
-                    <Input defaultValue="sheyx2772@gmail.com" className="rounded-2xl h-12 text-[13px] font-bold border-none bg-white shadow-sm" />
+                    <Label className="text-[10px] font-black uppercase tracking-widest text-[#001529]/40">Email</Label>
+                    <Input defaultValue="sheyx2772@gmail.com" className="rounded-2xl h-12 text-[13px] font-bold border-none bg-white shadow-sm focus-visible:ring-2 focus-visible:ring-blue-100" />
                   </div>
                 </div>
                 <div className="space-y-3">
-                  <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Manzil</Label>
-                  <Input defaultValue="Toshkent shahri, Yunusobod tumani" className="rounded-2xl h-12 text-[13px] font-bold border-none bg-white shadow-sm" />
+                  <Label className="text-[10px] font-black uppercase tracking-widest text-[#001529]/40">Manzil</Label>
+                  <Input defaultValue="Toshkent shahri, Yunusobod tumani" className="rounded-2xl h-12 text-[13px] font-bold border-none bg-white shadow-sm focus-visible:ring-2 focus-visible:ring-blue-100" />
                 </div>
                 <div className="space-y-3">
-                  <Label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Bank hisob raqami (STIR/Karta)</Label>
-                  <Input defaultValue="2020 8000 1234 5678 9012" className="rounded-2xl h-12 text-[13px] font-bold border-none bg-white shadow-sm" />
+                  <Label className="text-[10px] font-black uppercase tracking-widest text-[#001529]/40">Bank hisob raqami (STIR/Karta)</Label>
+                  <Input defaultValue="2020 8000 1234 5678 9012" className="rounded-2xl h-12 text-[13px] font-bold border-none bg-white shadow-sm focus-visible:ring-2 focus-visible:ring-blue-100" />
                 </div>
                 <div className="flex items-center space-x-3 pt-2">
                   <Checkbox id="juridical" className="rounded-lg border-[#001529]/10 bg-white" />
-                  <label htmlFor="juridical" className="text-[12px] font-black text-slate-600 cursor-pointer uppercase tracking-tight">Yuridik shaxsman</label>
+                  <label htmlFor="juridical" className="text-[12px] font-black text-[#001529]/60 cursor-pointer uppercase tracking-tight">Yuridik shaxsman</label>
                 </div>
               </div>
             </CardContent>
@@ -124,8 +155,8 @@ export function Settings({ lang = 'uz' }: SettingsProps) {
           {/* Balance */}
           <Card className="border-none shadow-sm rounded-[40px] bg-[#f4f9ff] overflow-hidden">
             <CardHeader className="px-10 py-8 border-b border-[#001529]/5">
-              <CardTitle className="text-[12px] font-black uppercase tracking-[0.2em] flex items-center gap-3 text-slate-900">
-                <Wallet size={18} className="text-blue-600" /> Mening Balansim
+              <CardTitle className="text-[12px] font-black uppercase tracking-[0.2em] flex items-center gap-3 text-[#001529]">
+                <Wallet size={18} className="text-[#0b4db1]" /> Mening Balansim
               </CardTitle>
             </CardHeader>
             <CardContent className="p-10">
@@ -154,8 +185,8 @@ export function Settings({ lang = 'uz' }: SettingsProps) {
           {/* History & Statistics */}
           <Card className="border-none shadow-sm rounded-[40px] bg-[#f4f9ff] overflow-hidden">
             <CardHeader className="px-10 py-8 border-b border-[#001529]/5">
-              <CardTitle className="text-[12px] font-black uppercase tracking-[0.2em] flex items-center gap-3 text-slate-900">
-                <ArrowUpRight size={18} className="text-blue-600" /> Statistika
+              <CardTitle className="text-[12px] font-black uppercase tracking-[0.2em] flex items-center gap-3 text-[#001529]">
+                <ArrowUpRight size={18} className="text-[#0b4db1]" /> Statistika
               </CardTitle>
             </CardHeader>
             <CardContent className="p-10 space-y-8">
@@ -178,14 +209,14 @@ export function Settings({ lang = 'uz' }: SettingsProps) {
                 ].map((item, i) => (
                   <div key={i} className="flex justify-between items-center p-5 rounded-2xl bg-white border border-[#001529]/5 last:border-blue-100">
                     <div>
-                      <p className="text-[12px] font-black text-slate-800 uppercase tracking-tight">{item.title}</p>
-                      <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">{item.date}</p>
+                      <p className="text-[12px] font-black text-[#001529] uppercase tracking-tight">{item.title}</p>
+                      <p className="text-[9px] font-bold text-[#001529]/40 uppercase tracking-widest">{item.date}</p>
                     </div>
                     <p className={`text-[13px] font-black ${item.color}`}>{item.amount}</p>
                   </div>
                 ))}
               </div>
-              <Button variant="ghost" className="w-full text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 gap-2 hover:bg-white rounded-xl h-12">
+              <Button variant="ghost" className="w-full text-[10px] font-black uppercase tracking-[0.2em] text-[#001529]/40 gap-2 hover:bg-white rounded-xl h-12">
                 Barcha cheklarni yuklab olish (PDF)
               </Button>
             </CardContent>
@@ -194,16 +225,16 @@ export function Settings({ lang = 'uz' }: SettingsProps) {
           {/* System Settings */}
           <Card className="border-none shadow-sm rounded-[40px] bg-[#f4f9ff] overflow-hidden">
             <CardHeader className="px-10 py-8 border-b border-[#001529]/5">
-              <CardTitle className="text-[12px] font-black uppercase tracking-[0.2em] flex items-center gap-3 text-slate-900">
-                <SettingsIcon size={18} className="text-blue-600" /> Tizim Sozlamalari
+              <CardTitle className="text-[12px] font-black uppercase tracking-[0.2em] flex items-center gap-3 text-[#001529]">
+                <SettingsIcon size={18} className="text-[#0b4db1]" /> Tizim Sozlamalari
               </CardTitle>
             </CardHeader>
             <CardContent className="p-10 space-y-8">
               <div className="space-y-8">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <Globe size={16} className="text-blue-600" />
-                    <span className="text-[12px] font-black uppercase text-slate-800 tracking-tight">Interface tili</span>
+                    <Globe size={16} className="text-[#0b4db1]" />
+                    <span className="text-[12px] font-black uppercase text-[#001529] tracking-tight">Interface tili</span>
                   </div>
                   <Select defaultValue="uz">
                     <SelectTrigger className="w-36 h-11 rounded-xl border-none bg-white shadow-sm text-[11px] font-black uppercase tracking-widest">
@@ -219,14 +250,14 @@ export function Settings({ lang = 'uz' }: SettingsProps) {
                 
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <Bell size={16} className="text-blue-600" />
-                    <span className="text-[12px] font-black uppercase text-slate-800 tracking-tight">Xabarnomalar</span>
+                    <Bell size={16} className="text-[#0b4db1]" />
+                    <span className="text-[12px] font-black uppercase text-[#001529] tracking-tight">Xabarnomalar</span>
                   </div>
                   <Switch defaultChecked className="data-[state=checked]:bg-[#0b4db1]" />
                 </div>
 
                 <div className="pt-6 border-t border-[#001529]/5 flex items-center gap-2 text-rose-500 cursor-pointer group">
-                  <ShieldAlert size={16} className="group-hover:animate-shake" />
+                  <ShieldAlert size={16} />
                   <span className="text-[11px] font-black uppercase tracking-[0.2em]">Hisobni butkul o'chirish</span>
                 </div>
               </div>
@@ -234,18 +265,18 @@ export function Settings({ lang = 'uz' }: SettingsProps) {
           </Card>
 
           {/* Premium Banner */}
-          <div className="bg-[#0f172a] rounded-[40px] p-12 text-white relative overflow-hidden group shadow-2xl shadow-slate-900/20">
+          <div className="bg-[#001529] rounded-[40px] p-12 text-white relative overflow-hidden group shadow-2xl shadow-[#001529]/20">
             <div className="relative z-10">
-              <p className="text-[11px] font-black uppercase tracking-[0.4em] text-blue-400 mb-3">PRO-HUJJATLAR</p>
+              <p className="text-[11px] font-black uppercase tracking-[0.4em] text-[#0b4db1] mb-3">PRO-HUJJATLAR</p>
               <h3 className="text-2xl font-black tracking-tight uppercase mb-6 leading-tight">PREMIUM darajasiga o'ting</h3>
               <p className="text-[13px] font-medium opacity-60 leading-relaxed max-w-xs mb-10">
                 Buxgalteriya, huquq, HR va soliq hujjatlarini avtomatik rasmiylashtirishni yoqing.
               </p>
-              <Button className="bg-white text-slate-900 hover:bg-slate-50 rounded-2xl h-16 px-10 font-black uppercase tracking-widest text-[11px] shadow-2xl">
+              <Button className="bg-white text-[#001529] hover:bg-slate-50 rounded-2xl h-16 px-10 font-black uppercase tracking-widest text-[11px] shadow-2xl">
                 Hozir Boshlash
               </Button>
             </div>
-            <div className="absolute top-0 right-0 w-80 h-80 bg-blue-600/20 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/3 group-hover:bg-blue-600/30 transition-all duration-1000" />
+            <div className="absolute top-0 right-0 w-80 h-80 bg-[#0b4db1]/20 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/3 group-hover:bg-[#0b4db1]/30 transition-all duration-1000" />
           </div>
         </div>
       </div>
