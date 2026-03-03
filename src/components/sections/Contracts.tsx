@@ -76,7 +76,7 @@ export function Contracts({ contracts }: ContractsProps) {
           </div>
           <h3 className="text-xl font-black text-slate-300 uppercase tracking-[0.2em]">Shartnomalar topilmadi</h3>
           <p className="text-[11px] font-bold text-slate-400 uppercase mt-4 max-w-sm leading-relaxed tracking-widest opacity-60">
-            Hali hech qanday shartnoma imzolanmagan. "Xaridor paneli" orqali yangi hujjat yarating.
+            Hali hech qanday shartnoma imzolanmagan. "Hafsizlik paneli" orqali yangi hujjat yarating.
           </p>
         </Card>
       ) : (

@@ -160,7 +160,7 @@ export function LogisticsHub({ lang = 'uz' }: LogisticsHubProps) {
                 value={tab} 
                 className="data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-blue-600 rounded-none h-full px-0 text-[11px] font-black uppercase tracking-widest text-slate-400 data-[state=active]:text-blue-600 transition-all"
               >
-                {tab === 'buyer' ? (lang === 'uz' ? 'Xaridor Paneli' : 'Панель Покупателя') :
+                {tab === 'buyer' ? (lang === 'uz' ? 'Hafsizlik Paneli' : 'Панель Покупателя') :
                  tab === 'dispatcher' ? (lang === 'uz' ? 'Dispetcher Paneli' : 'Панель Диспетчера') :
                  tab === 'carrier' ? (lang === 'uz' ? 'Tashuvchi Paneli' : 'Панель Перевозчика') :
                  (lang === 'uz' ? 'GPS Monitoring' : 'GPS Мониторинг')}
