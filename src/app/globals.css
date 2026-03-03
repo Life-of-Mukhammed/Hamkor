@@ -4,9 +4,9 @@
 
 @layer base {
   :root {
-    /* Namunadagi ranglar palitrasi asosida */
+    /* Yangilangan ranglar palitrasi */
     --background: 0 0% 100%;
-    --foreground: 209 100% 8%; /* To'q navy */
+    --foreground: 209 100% 8%;
     
     --card: 0 0% 100%;
     --card-foreground: 209 100% 8%;
@@ -14,42 +14,41 @@
     --popover: 0 0% 100%;
     --popover-foreground: 209 100% 8%;
     
-    --primary: 210 100% 20%; /* Deep Blue */
+    --primary: 217 88% 37%; /* #0b4db1 equivalent */
     --primary-foreground: 0 0% 100%;
     
-    --secondary: 210 100% 75%; /* Sky Blue */
-    --secondary-foreground: 210 100% 20%;
+    --secondary: 210 100% 75%;
+    --secondary-foreground: 217 88% 37%;
     
-    --muted: 48 45% 89%; /* Cream/Pale Sand */
-    --muted-foreground: 209 100% 20%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
     
-    --accent: 210 100% 75%;
-    --accent-foreground: 210 100% 20%;
+    --accent: 210 100% 96%;
+    --accent-foreground: 217 88% 37%;
     
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
     
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 210 100% 20%;
+    --ring: 217 88% 37%;
     
     --radius: 1rem;
     
-    --chart-1: 210 100% 20%;
+    --chart-1: 217 88% 37%;
     --chart-2: 210 100% 75%;
     --chart-3: 209 100% 8%;
     --chart-4: 48 45% 89%;
     --chart-5: 27 87% 67%;
     
-    /* Sidebar oq fonda */
     --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 209 100% 15%;
-    --sidebar-primary: 210 100% 20%;
+    --sidebar-foreground: 215 16% 47%;
+    --sidebar-primary: 217 88% 37%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 48 45% 92%;
-    --sidebar-accent-foreground: 210 100% 20%;
+    --sidebar-accent: 210 100% 96%;
+    --sidebar-accent-foreground: 217 88% 37%;
     --sidebar-border: 214.3 31.8% 91.4%;
-    --sidebar-ring: 210 100% 20%;
+    --sidebar-ring: 217 88% 37%;
   }
 }
 
@@ -58,7 +57,7 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground font-body antialiased selection:bg-[#003366] selection:text-white;
+    @apply bg-background text-foreground font-body antialiased selection:bg-[#0b4db1] selection:text-white;
   }
 }
 
