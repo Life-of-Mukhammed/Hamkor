@@ -1,3 +1,4 @@
+
 "use client";
 
 import { Card } from "@/components/ui/card";
@@ -47,7 +48,8 @@ export function Dashboard({ lang = 'uz' }: DashboardProps) {
       value: lang === 'en' ? "$482.5M" : "482,5 Млрд", 
       icon: Landmark, 
       color: "text-blue-600", 
-      bgColor: "bg-blue-50",
+      bgColor: "bg-blue-50/50",
+      cardBg: "bg-blue-50/30",
       trend: "+12.5%", 
       isUp: true 
     },
@@ -56,7 +58,8 @@ export function Dashboard({ lang = 'uz' }: DashboardProps) {
       value: "1,248", 
       icon: TrendingUp, 
       color: "text-emerald-600", 
-      bgColor: "bg-emerald-50",
+      bgColor: "bg-emerald-50/50",
+      cardBg: "bg-emerald-50/30",
       trend: "+5.2%", 
       isUp: true 
     },
@@ -65,7 +68,8 @@ export function Dashboard({ lang = 'uz' }: DashboardProps) {
       value: "8,912", 
       icon: Users, 
       color: "text-violet-600", 
-      bgColor: "bg-violet-50",
+      bgColor: "bg-violet-50/50",
+      cardBg: "bg-violet-50/30",
       trend: "+3.1%", 
       isUp: true 
     },
@@ -74,7 +78,8 @@ export function Dashboard({ lang = 'uz' }: DashboardProps) {
       value: "12,041", 
       icon: Package, 
       color: "text-orange-600", 
-      bgColor: "bg-orange-50",
+      bgColor: "bg-orange-50/50",
+      cardBg: "bg-orange-50/30",
       trend: "-1.4%", 
       isUp: false 
     },
@@ -92,7 +97,7 @@ export function Dashboard({ lang = 'uz' }: DashboardProps) {
       {/* Welcome Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="space-y-1">
-          <h1 className="text-3xl font-black text-[#001529] tracking-tight leading-tight">XUSH KELIBSIZ, <span className="text-[#0b5dbb]">SHEYX2772!</span></h1>
+          <h1 className="text-3xl font-black text-[#001529] tracking-tight leading-tight uppercase">XUSH KELIBSIZ, <span className="text-[#0b5dbb]">SHEYX2772!</span></h1>
           <p className="text-[12px] font-bold text-[#001529]/40 uppercase tracking-[0.3em]">I-TIJORAT PLATFORMASI • TOSHKENT VAKTI 10:45</p>
         </div>
         <div className="flex items-center gap-3">
@@ -110,14 +115,14 @@ export function Dashboard({ lang = 'uz' }: DashboardProps) {
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
         {stats.map((stat, i) => (
-          <Card key={i} className="border-none shadow-xl shadow-[#001529]/5 rounded-[32px] bg-white p-8 hover:-translate-y-1 transition-all duration-500 cursor-pointer group">
+          <Card key={i} className={cn("border-none shadow-xl shadow-[#001529]/5 rounded-[32px] p-8 hover:-translate-y-1 transition-all duration-500 cursor-pointer group", stat.cardBg)}>
             <div className="flex justify-between items-start mb-6">
-              <div className={cn("w-14 h-14 rounded-2xl flex items-center justify-center transition-all group-hover:bg-[#0b5dbb] group-hover:text-white", stat.bgColor, stat.color)}>
+              <div className={cn("w-14 h-14 rounded-2xl flex items-center justify-center transition-all group-hover:bg-[#0b5dbb] group-hover:text-white shadow-sm bg-white", stat.color)}>
                 <stat.icon size={24} />
               </div>
               <div className={cn(
                 "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-wider",
-                stat.isUp ? "bg-emerald-50 text-emerald-600" : "bg-rose-50 text-rose-500"
+                stat.isUp ? "bg-emerald-100/50 text-emerald-600" : "bg-rose-100/50 text-rose-500"
               )}>
                 {stat.isUp ? <ArrowUpRight size={14} /> : <ArrowDownRight size={14} />}
                 {stat.trend}
@@ -180,7 +185,7 @@ export function Dashboard({ lang = 'uz' }: DashboardProps) {
           </div>
         </Card>
 
-        <Card className="lg:col-span-4 border-none shadow-2xl shadow-[#001529]/5 rounded-[48px] bg-white p-12 flex flex-col h-[600px]">
+        <Card className="lg:col-span-4 border-none shadow-2xl shadow-[#001529]/5 rounded-[48px] bg-[#f8fafc] p-12 flex flex-col h-[600px]">
           <div className="flex justify-between items-center mb-12">
             <h3 className="text-[12px] font-black text-[#001529] tracking-tight uppercase tracking-[0.2em]">{t.labels.notifications}</h3>
             <div className="w-3 h-3 rounded-full bg-[#0b5dbb] animate-pulse" />
@@ -190,9 +195,9 @@ export function Dashboard({ lang = 'uz' }: DashboardProps) {
             {notifications.map((n, i) => (
               <div key={i} className="flex gap-6 group cursor-pointer">
                 <div className={cn(
-                  "w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 transition-all duration-300 group-hover:scale-110 shadow-sm",
-                  n.status === 'success' ? "bg-emerald-50 text-emerald-600" : 
-                  n.status === 'warning' ? "bg-rose-50 text-rose-500" : "bg-blue-50 text-[#0b5dbb]"
+                  "w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 transition-all duration-300 group-hover:scale-110 shadow-sm bg-white",
+                  n.status === 'success' ? "text-emerald-600" : 
+                  n.status === 'warning' ? "text-rose-500" : "text-[#0b5dbb]"
                 )}>
                   <Bell size={22} />
                 </div>
@@ -209,7 +214,7 @@ export function Dashboard({ lang = 'uz' }: DashboardProps) {
             ))}
           </div>
 
-          <button className="mt-12 w-full h-14 rounded-2xl border-2 border-[#001529]/5 text-[11px] font-black text-[#001529]/30 hover:text-[#0b5dbb] hover:border-[#0b5dbb]/20 uppercase tracking-[0.25em] transition-all text-center">
+          <button className="mt-12 w-full h-14 rounded-2xl border-2 border-[#001529]/5 text-[11px] font-black text-[#001529]/30 hover:text-[#0b5dbb] hover:border-[#0b5dbb]/20 uppercase tracking-[0.25em] transition-all text-center bg-white shadow-sm">
             {t.labels.viewAll}
           </button>
         </Card>
@@ -218,12 +223,12 @@ export function Dashboard({ lang = 'uz' }: DashboardProps) {
       {/* Quick Access Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pb-10">
         {[
-          { title: "To'lovlar", icon: CreditCard, color: "text-[#0b5dbb]", bg: "bg-blue-50", desc: "Escrow va tranzaksiyalar" },
-          { title: "Statistika", icon: Activity, color: "text-emerald-600", bg: "bg-emerald-50", desc: "Tahliliy hisobotlar" },
-          { title: "Xavfsizlik", icon: ShieldCheck, color: "text-violet-600", bg: "bg-violet-50", desc: "AI risk tekshiruvi" },
+          { title: "To'lovlar", icon: CreditCard, color: "text-[#0b5dbb]", bg: "bg-blue-50/50", desc: "Escrow va tranzaksiyalar" },
+          { title: "Statistika", icon: Activity, color: "text-emerald-600", bg: "bg-emerald-50/50", desc: "Tahliliy hisobotlar" },
+          { title: "Xavfsizlik", icon: ShieldCheck, color: "text-violet-600", bg: "bg-violet-50/50", desc: "AI risk tekshiruvi" },
         ].map((item, i) => (
-          <Card key={i} className="border-none shadow-xl shadow-[#001529]/5 rounded-[32px] bg-white p-8 flex items-center gap-6 hover:shadow-2xl transition-all cursor-pointer">
-            <div className={cn("w-14 h-14 rounded-2xl flex items-center justify-center shrink-0", item.bg, item.color)}>
+          <Card key={i} className={cn("border-none shadow-xl shadow-[#001529]/5 rounded-[32px] p-8 flex items-center gap-6 hover:shadow-2xl transition-all cursor-pointer", item.bg)}>
+            <div className={cn("w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 bg-white shadow-sm", item.color)}>
               <item.icon size={24} />
             </div>
             <div>
