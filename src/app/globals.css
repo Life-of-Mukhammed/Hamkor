@@ -14,28 +14,28 @@
     --popover: 0 0% 100%;
     --popover-foreground: 209 100% 8%;
     
-    --primary: 217 88% 37%; /* #0b4db1 equivalent */
+    --primary: 209 100% 8%; /* #001529 - To'q ko'k */
     --primary-foreground: 0 0% 100%;
     
     --secondary: 210 100% 75%;
-    --secondary-foreground: 217 88% 37%;
+    --secondary-foreground: 209 100% 8%;
     
     --muted: 210 40% 96%;
     --muted-foreground: 215 16% 47%;
     
     --accent: 210 100% 96%;
-    --accent-foreground: 217 88% 37%;
+    --accent-foreground: 209 100% 8%;
     
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
     
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 217 88% 37%;
+    --ring: 209 100% 8%;
     
     --radius: 1rem;
     
-    --chart-1: 217 88% 37%;
+    --chart-1: 209 100% 8%;
     --chart-2: 210 100% 75%;
     --chart-3: 209 100% 8%;
     --chart-4: 48 45% 89%;
@@ -43,12 +43,12 @@
     
     --sidebar-background: 0 0% 100%;
     --sidebar-foreground: 215 16% 47%;
-    --sidebar-primary: 217 88% 37%;
+    --sidebar-primary: 209 100% 8%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 210 100% 96%;
-    --sidebar-accent-foreground: 217 88% 37%;
+    --sidebar-accent-foreground: 209 100% 8%;
     --sidebar-border: 214.3 31.8% 91.4%;
-    --sidebar-ring: 217 88% 37%;
+    --sidebar-ring: 209 100% 8%;
   }
 }
 
@@ -57,7 +57,7 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground font-body antialiased selection:bg-[#0b4db1] selection:text-white;
+    @apply bg-background text-foreground font-body antialiased selection:bg-[#001529] selection:text-white;
   }
 }
 
