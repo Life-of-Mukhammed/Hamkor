@@ -7,7 +7,7 @@
     --background: 0 0% 100%;
     --foreground: 209 100% 8%; /* #001529 */
     
-    --card: 210 100% 98.5%; /* #f4f9ff - Slightly darker/tinted for contrast */
+    --card: 210 100% 98.5%; /* #f4f9ff */
     --card-foreground: 209 100% 8%;
     
     --popover: 0 0% 100%;
@@ -32,7 +32,7 @@
     --input: 209 100% 8% / 0.08;
     --ring: 210 100% 38%;
     
-    --radius: 1.25rem;
+    --radius: 1.5rem;
     
     --chart-1: 209 100% 8%;
     --chart-2: 210 100% 38%;
@@ -70,6 +70,10 @@
 
 .glass {
   @apply bg-white/70 backdrop-blur-md border border-white/20 shadow-xl;
+}
+
+.premium-card {
+  @apply bg-gradient-to-br from-[#f8fbff] to-[#f0f7ff] border border-white/50 shadow-[0_10px_40px_-10px_rgba(0,21,41,0.05)];
 }
 
 .neo-shadow {
