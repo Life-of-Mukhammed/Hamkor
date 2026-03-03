@@ -29,6 +29,7 @@ import {
 } from "@/components/ui/sheet";
 import { TopAdBanner } from "@/components/TopAdBanner";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { useToast } from "@/hooks/use-toast";
 
 interface ShellProps {
   children: React.ReactNode;
@@ -49,6 +50,7 @@ export function Shell({
 }: ShellProps) {
   const [lang, setLang] = React.useState<Language>('uz');
   const t = translations[lang];
+  const { toast } = useToast();
 
   const menuItems = [
     { id: 'dashboard', label: t.sections.dashboard, icon: LayoutGrid },
@@ -66,6 +68,17 @@ export function Shell({
 
   const formatCurrency = (val: number) => 
     new Intl.NumberFormat('uz-UZ').format(val);
+
+  const handleLogout = () => {
+    toast({
+      title: t.labels.logout,
+      description: lang === 'uz' ? "Tizimdan muvaffaqiyatli chiqdingiz." : lang === 'ru' ? "Вы успешно вышли из системы." : "You have successfully logged out.",
+    });
+    // Simulate logout delay then refresh the app state
+    setTimeout(() => {
+      window.location.reload();
+    }, 1500);
+  };
 
   return (
     <div className="flex flex-col h-screen overflow-hidden bg-white font-body">
@@ -128,7 +141,12 @@ export function Shell({
                 <p className="text-[12px] font-black text-[#001529] truncate">sheyx2772</p>
                 <p className="text-[9px] font-bold text-[#001529]/40 uppercase tracking-tighter">Premium User</p>
               </div>
-              <Button variant="ghost" size="icon" className="text-[#001529]/30 hover:text-[#001529] hover:bg-[#001529]/5 rounded-lg">
+              <Button 
+                onClick={handleLogout}
+                variant="ghost" 
+                size="icon" 
+                className="text-[#001529]/30 hover:text-[#001529] hover:bg-[#001529]/5 rounded-lg transition-all active:scale-90"
+              >
                 <LogOut size={18} />
               </Button>
             </div>
