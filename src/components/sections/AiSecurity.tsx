@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from "react";
@@ -43,22 +42,22 @@ export function AiSecurity({ t }: { t?: any }) {
         <h1 className="text-3xl font-bold tracking-tight">{dict.sections.aiSecurity}</h1>
       </div>
 
-      <Card className="glass border-none neo-shadow">
-        <CardHeader>
-          <CardTitle className="text-lg font-medium">Корхона хавфсизлигини текшириш (СТИР орқали)</CardTitle>
+      <Card className="border-none neo-shadow bg-[#f4f9ff] rounded-[32px] overflow-hidden">
+        <CardHeader className="p-8 pb-4">
+          <CardTitle className="text-lg font-black uppercase tracking-tight text-[#001529]">Корхона хавфсизлигини текшириш (СТИР орқали)</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-8 pt-0">
           <div className="flex gap-4">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
               <Input
                 placeholder={dict.labels.inn}
                 value={inn}
                 onChange={(e) => setInn(e.target.value)}
-                className="pl-10 h-12"
+                className="pl-12 h-14 rounded-2xl border-none bg-white shadow-sm font-bold text-lg"
               />
             </div>
-            <Button onClick={handleCheck} disabled={loading} className="h-12 px-8">
+            <Button onClick={handleCheck} disabled={loading} className="h-14 px-10 rounded-2xl bg-[#0b4db1] hover:bg-blue-700 text-white font-black uppercase tracking-widest shadow-lg shadow-blue-100">
               {loading ? "Текширилмоқда..." : dict.labels.check}
             </Button>
           </div>
@@ -66,41 +65,44 @@ export function AiSecurity({ t }: { t?: any }) {
       </Card>
 
       {result && (
-        <div className="grid md:grid-cols-2 gap-6 animate-fade-in">
-          <Card className="glass border-none neo-shadow overflow-hidden">
-            <CardHeader className="bg-primary/5">
-              <CardTitle className="flex items-center gap-2">
-                {dict.labels.riskScore}: {result.riskScore}%
+        <div className="grid md:grid-cols-2 gap-8 animate-fade-in">
+          <Card className="border-none neo-shadow bg-[#f4f9ff] rounded-[32px] overflow-hidden">
+            <CardHeader className="bg-primary/5 p-8">
+              <CardTitle className="flex items-center gap-3 text-lg font-black uppercase">
+                <Shield className="text-[#0b4db1]" /> {dict.labels.riskScore}: {result.riskScore}%
               </CardTitle>
             </CardHeader>
-            <CardContent className="pt-6">
-              <Progress value={result.riskScore} className="h-4 mb-4" />
-              <div className="flex justify-between items-center p-4 rounded-lg bg-background border">
-                <span className="font-semibold">Даража:</span>
-                <span className={
+            <CardContent className="p-8 pt-6">
+              <Progress value={result.riskScore} className="h-4 mb-8 bg-white" />
+              <div className="flex justify-between items-center p-6 rounded-2xl bg-white shadow-sm border border-[#001529]/5">
+                <span className="font-black uppercase text-[11px] tracking-widest opacity-40">Хавф Даражаси:</span>
+                <span className={cn(
+                  "font-black uppercase tracking-widest text-[13px]",
                   result.riskLevel === 'Low' ? 'text-green-600' :
                   result.riskLevel === 'Medium' ? 'text-yellow-600' :
                   'text-red-600'
-                }>
+                )}>
                   {result.riskLevel}
                 </span>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="glass border-none neo-shadow">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
+          <Card className="border-none neo-shadow bg-[#f4f9ff] rounded-[32px] overflow-hidden">
+            <CardHeader className="p-8">
+              <CardTitle className="flex items-center gap-3 text-lg font-black uppercase">
                 {result.blacklistMatch ? <TriangleAlert className="text-red-500" /> : <CircleCheck className="text-green-500" />}
                 {result.blacklistMatch ? "Қора рўйхатда мавжуд" : "Тоза статус"}
               </CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="p-4 rounded-lg bg-muted/50 text-sm">
-                <p className="font-bold mb-2">{dict.labels.recommendation}:</p>
-                <p className="italic opacity-80">{result.recommendation}</p>
+            <CardContent className="p-8 pt-0">
+              <div className="p-8 rounded-[24px] bg-white shadow-sm border border-[#001529]/5 space-y-4">
+                <p className="font-black uppercase text-[10px] tracking-widest text-[#0b4db1]">{dict.labels.recommendation}:</p>
+                <p className="text-[14px] leading-relaxed font-medium text-[#001529]/70 italic">"{result.recommendation}"</p>
                 {result.blacklistDetails && (
-                  <p className="mt-4 text-xs text-red-500 font-mono">{result.blacklistDetails}</p>
+                  <div className="pt-4 mt-4 border-t border-red-50">
+                    <p className="text-[11px] text-red-500 font-bold uppercase tracking-tighter">{result.blacklistDetails}</p>
+                  </div>
                 )}
               </div>
             </CardContent>

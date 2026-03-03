@@ -1,4 +1,3 @@
-
 "use client";
 
 import { Card } from "@/components/ui/card";
@@ -48,8 +47,8 @@ export function Dashboard({ lang = 'uz' }: DashboardProps) {
       value: lang === 'en' ? "$482.5M" : "482,5 Млрд", 
       icon: Landmark, 
       color: "text-blue-600", 
-      bgColor: "bg-blue-50/50",
-      cardBg: "bg-blue-50/30",
+      bgColor: "bg-blue-100/50",
+      cardBg: "bg-blue-50/80",
       trend: "+12.5%", 
       isUp: true 
     },
@@ -58,8 +57,8 @@ export function Dashboard({ lang = 'uz' }: DashboardProps) {
       value: "1,248", 
       icon: TrendingUp, 
       color: "text-emerald-600", 
-      bgColor: "bg-emerald-50/50",
-      cardBg: "bg-emerald-50/30",
+      bgColor: "bg-emerald-100/50",
+      cardBg: "bg-emerald-50/80",
       trend: "+5.2%", 
       isUp: true 
     },
@@ -68,8 +67,8 @@ export function Dashboard({ lang = 'uz' }: DashboardProps) {
       value: "8,912", 
       icon: Users, 
       color: "text-violet-600", 
-      bgColor: "bg-violet-50/50",
-      cardBg: "bg-violet-50/30",
+      bgColor: "bg-violet-100/50",
+      cardBg: "bg-violet-50/80",
       trend: "+3.1%", 
       isUp: true 
     },
@@ -78,8 +77,8 @@ export function Dashboard({ lang = 'uz' }: DashboardProps) {
       value: "12,041", 
       icon: Package, 
       color: "text-orange-600", 
-      bgColor: "bg-orange-50/50",
-      cardBg: "bg-orange-50/30",
+      bgColor: "bg-orange-100/50",
+      cardBg: "bg-orange-50/80",
       trend: "-1.4%", 
       isUp: false 
     },
@@ -106,7 +105,7 @@ export function Dashboard({ lang = 'uz' }: DashboardProps) {
             <span className="text-lg font-black text-[#001529] tracking-tighter">12,500,000 UZS</span>
           </div>
           <div className="h-10 w-px bg-[#001529]/10 mx-2" />
-          <button className="h-12 w-12 rounded-2xl bg-white border border-[#001529]/10 flex items-center justify-center text-[#0b5dbb] hover:bg-blue-50 transition-all shadow-sm">
+          <button className="h-12 w-12 rounded-2xl bg-[#f4f9ff] border border-[#001529]/10 flex items-center justify-center text-[#0b5dbb] hover:bg-blue-100 transition-all shadow-sm">
             <Wallet size={20} />
           </button>
         </div>
@@ -138,7 +137,7 @@ export function Dashboard({ lang = 'uz' }: DashboardProps) {
 
       {/* Main Content Row */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-        <Card className="lg:col-span-8 border-none shadow-2xl shadow-[#001529]/5 rounded-[48px] bg-white p-12 h-[600px] flex flex-col relative overflow-hidden group">
+        <Card className="lg:col-span-8 border-none shadow-2xl shadow-[#001529]/5 rounded-[48px] bg-[#f4f9ff] p-12 h-[600px] flex flex-col relative overflow-hidden group">
           <div className="flex justify-between items-center mb-10 relative z-10">
             <div>
               <h3 className="text-xl font-black text-[#001529] tracking-tight uppercase">{t.labels.marketDynamics}</h3>
@@ -160,7 +159,7 @@ export function Dashboard({ lang = 'uz' }: DashboardProps) {
                       <stop offset="95%" stopColor="#0b5dbb" stopOpacity={0}/>
                     </linearGradient>
                   </defs>
-                  <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="#f1f5f9" />
+                  <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="#001529" strokeOpacity={0.05} />
                   <XAxis 
                     dataKey="name" 
                     axisLine={false} 
@@ -185,7 +184,7 @@ export function Dashboard({ lang = 'uz' }: DashboardProps) {
           </div>
         </Card>
 
-        <Card className="lg:col-span-4 border-none shadow-2xl shadow-[#001529]/5 rounded-[48px] bg-[#f8fafc] p-12 flex flex-col h-[600px]">
+        <Card className="lg:col-span-4 border-none shadow-2xl shadow-[#001529]/5 rounded-[48px] bg-[#f0f5fa] p-12 flex flex-col h-[600px]">
           <div className="flex justify-between items-center mb-12">
             <h3 className="text-[12px] font-black text-[#001529] tracking-tight uppercase tracking-[0.2em]">{t.labels.notifications}</h3>
             <div className="w-3 h-3 rounded-full bg-[#0b5dbb] animate-pulse" />
@@ -223,9 +222,9 @@ export function Dashboard({ lang = 'uz' }: DashboardProps) {
       {/* Quick Access Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pb-10">
         {[
-          { title: "To'lovlar", icon: CreditCard, color: "text-[#0b5dbb]", bg: "bg-blue-50/50", desc: "Escrow va tranzaksiyalar" },
-          { title: "Statistika", icon: Activity, color: "text-emerald-600", bg: "bg-emerald-50/50", desc: "Tahliliy hisobotlar" },
-          { title: "Xavfsizlik", icon: ShieldCheck, color: "text-violet-600", bg: "bg-violet-50/50", desc: "AI risk tekshiruvi" },
+          { title: "To'lovlar", icon: CreditCard, color: "text-[#0b5dbb]", bg: "bg-blue-50/80", desc: "Escrow va tranzaksiyalar" },
+          { title: "Statistika", icon: Activity, color: "text-emerald-600", bg: "bg-emerald-50/80", desc: "Tahliliy hisobotlar" },
+          { title: "Xavfsizlik", icon: ShieldCheck, color: "text-violet-600", bg: "bg-violet-50/80", desc: "AI risk tekshiruvi" },
         ].map((item, i) => (
           <Card key={i} className={cn("border-none shadow-xl shadow-[#001529]/5 rounded-[32px] p-8 flex items-center gap-6 hover:shadow-2xl transition-all cursor-pointer", item.bg)}>
             <div className={cn("w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 bg-white shadow-sm", item.color)}>

@@ -1,4 +1,3 @@
-
 "use client";
 
 import * as React from "react";
@@ -349,7 +348,7 @@ export function AuctionHub({ onNavigate }: { onNavigate?: (id: string) => void }
   const renderLotList = (displayLots: Lot[]) => (
     <div className="space-y-6">
       {displayLots.map((lot) => (
-        <Card key={lot.id} className="border-none shadow-sm hover:shadow-xl transition-all duration-500 rounded-[32px] bg-white overflow-hidden group">
+        <Card key={lot.id} className="border-none shadow-sm hover:shadow-xl transition-all duration-500 rounded-[32px] bg-[#f4f9ff] overflow-hidden group">
           <CardContent className="p-8">
             <div className="flex justify-between items-start mb-6">
               <div className="space-y-2">
@@ -381,18 +380,18 @@ export function AuctionHub({ onNavigate }: { onNavigate?: (id: string) => void }
                 onClick={() => handleShowDetails(lot)}
                 variant="outline" 
                 size="sm" 
-                className="h-9 border-slate-100 hover:border-blue-200 text-slate-500 hover:text-blue-600 rounded-full text-[10px] font-black uppercase px-5 gap-2 tracking-widest transition-colors"
+                className="h-9 border-[#001529]/10 bg-white hover:border-blue-200 text-[#001529]/60 hover:text-blue-600 rounded-full text-[10px] font-black uppercase px-5 gap-2 tracking-widest transition-colors"
               >
                 <Info size={12} /> Batafsil
               </Button>
-              <Button variant="outline" size="sm" className="h-9 border-slate-100 bg-emerald-50 hover:bg-emerald-100 text-emerald-600 rounded-full text-[10px] font-black uppercase px-5 gap-2 tracking-widest border-none">
+              <Button variant="outline" size="sm" className="h-9 border-none bg-emerald-100/50 hover:bg-emerald-100 text-emerald-600 rounded-full text-[10px] font-black uppercase px-5 gap-2 tracking-widest">
                 <Handshake size={12} /> Savdo
               </Button>
               <Button 
                 onClick={() => onNavigate?.('eri')}
                 variant="outline" 
                 size="sm" 
-                className="h-9 border-slate-100 bg-violet-50 hover:bg-violet-100 text-violet-600 rounded-full text-[10px] font-black uppercase px-5 gap-2 tracking-widest border-none"
+                className="h-9 border-none bg-violet-100/50 hover:bg-violet-100 text-violet-600 rounded-full text-[10px] font-black uppercase px-5 gap-2 tracking-widest"
               >
                 <FileText size={12} /> ERI
               </Button>
@@ -467,7 +466,7 @@ export function AuctionHub({ onNavigate }: { onNavigate?: (id: string) => void }
           <Button 
             onClick={handleShowReport}
             variant="outline" 
-            className="border-blue-200 text-[#2563eb] hover:bg-blue-50 rounded-xl h-11 px-6 text-[11px] font-black uppercase tracking-widest gap-2"
+            className="border-blue-200 text-[#2563eb] hover:bg-blue-50 rounded-xl h-11 px-6 text-[11px] font-black uppercase tracking-widest gap-2 bg-white"
           >
             <FileText size={16} /> Hisobot
           </Button>
@@ -475,7 +474,7 @@ export function AuctionHub({ onNavigate }: { onNavigate?: (id: string) => void }
       </div>
 
       <Tabs defaultValue="uzb" className="w-full" onValueChange={setActiveTab}>
-        <div className="border-b border-slate-100 mb-8">
+        <div className="border-b border-[#001529]/5 mb-8">
           <TabsList className="bg-transparent h-12 p-0 gap-10">
             <TabsTrigger value="central" className="data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-blue-600 rounded-none h-full px-0 text-[10px] font-black uppercase tracking-widest gap-2 text-slate-400 data-[state=active]:text-blue-600">
               <Globe size={14} /> Markaziy Osiyo
@@ -504,7 +503,7 @@ export function AuctionHub({ onNavigate }: { onNavigate?: (id: string) => void }
             <TabsContent value="central" className="m-0 space-y-6">
               <div className="grid grid-cols-1 gap-6">
                 {lots.filter(l => l.lotId.startsWith("LOT-CA")).map(lot => (
-                  <Card key={lot.id} className="border-none shadow-sm rounded-[24px] bg-white p-8 relative overflow-hidden group">
+                  <Card key={lot.id} className="border-none shadow-sm rounded-[24px] bg-[#f4f9ff] p-8 relative overflow-hidden group">
                     <div className="flex justify-between items-start mb-4">
                       <h3 className="text-[14px] font-black uppercase tracking-widest text-slate-900">{lot.lotId}</h3>
                       <Badge className="bg-red-50 text-red-500 border-none text-[10px] font-black uppercase px-2 py-0.5 flex items-center gap-1">
@@ -524,10 +523,10 @@ export function AuctionHub({ onNavigate }: { onNavigate?: (id: string) => void }
                       <Button onClick={() => handlePlaceBidClick(lot)} size="sm" className="bg-blue-600 text-white rounded-xl text-[10px] font-black uppercase h-9 px-5 gap-2 shadow-md">
                         <Zap size={12} fill="currentColor" /> Taklif
                       </Button>
-                      <Button onClick={() => handleShowDetails(lot)} variant="outline" size="sm" className="h-9 border-slate-100 text-slate-500 rounded-xl text-[10px] font-black uppercase px-5 gap-2">
+                      <Button onClick={() => handleShowDetails(lot)} variant="outline" size="sm" className="h-9 border-[#001529]/10 bg-white text-[#001529]/60 rounded-xl text-[10px] font-black uppercase px-5 gap-2">
                         <Info size={12} /> Batafsil
                       </Button>
-                      <Button onClick={() => onNavigate?.('eri')} variant="outline" size="sm" className="h-9 bg-violet-50 text-violet-600 rounded-xl text-[10px] font-black uppercase px-5 gap-2 border-none">
+                      <Button onClick={() => onNavigate?.('eri')} variant="outline" size="sm" className="h-9 border-none bg-violet-100/50 text-violet-600 rounded-xl text-[10px] font-black uppercase px-5 gap-2">
                         <FileText size={12} /> ERI
                       </Button>
                     </div>
@@ -540,10 +539,10 @@ export function AuctionHub({ onNavigate }: { onNavigate?: (id: string) => void }
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Sizning Ishtirokingiz</h2>
               </div>
-              <Card className="border-none shadow-sm rounded-[32px] bg-white p-8">
+              <Card className="border-none shadow-sm rounded-[32px] bg-[#f4f9ff] p-8">
                 <Table>
                   <TableHeader>
-                    <TableRow className="hover:bg-transparent border-slate-50">
+                    <TableRow className="hover:bg-transparent border-[#001529]/5">
                       <TableHead className="text-[9px] font-black uppercase">Lot nomi</TableHead>
                       <TableHead className="text-[9px] font-black uppercase">Sizning Taklifingiz</TableHead>
                       <TableHead className="text-[9px] font-black uppercase">Holat</TableHead>
@@ -552,14 +551,14 @@ export function AuctionHub({ onNavigate }: { onNavigate?: (id: string) => void }
                   </TableHeader>
                   <TableBody>
                     {lots.slice(0, 2).map(lot => (
-                      <TableRow key={lot.id} className="border-slate-50">
+                      <TableRow key={lot.id} className="border-[#001529]/5">
                         <TableCell className="text-[11px] font-bold">{lot.title}</TableCell>
                         <TableCell className="text-[11px] font-black text-blue-600">{formatCurrency(lot.price)} so'm</TableCell>
-                        <TableCell><Badge className="bg-green-50 text-green-600 border-none text-[8px] uppercase">Aktiv</Badge></TableCell>
+                        <TableCell><Badge className="bg-green-100/50 text-green-600 border-none text-[8px] uppercase">Aktiv</Badge></TableCell>
                         <TableCell className="text-right">
                           <Button 
                             onClick={() => handlePlaceBidClick(lot)}
-                            size="sm" variant="ghost" className="text-[9px] uppercase font-black"
+                            size="sm" variant="ghost" className="text-[9px] uppercase font-black hover:bg-white"
                           >
                             Yangilash
                           </Button>
@@ -573,9 +572,9 @@ export function AuctionHub({ onNavigate }: { onNavigate?: (id: string) => void }
 
             <TabsContent value="ai" className="m-0">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <Card className="md:col-span-2 border-none shadow-sm rounded-[32px] bg-white p-10">
+                <Card className="md:col-span-2 border-none shadow-sm rounded-[32px] bg-[#f4f9ff] p-10">
                   <div className="flex items-center gap-3 mb-8">
-                    <div className="w-10 h-10 bg-indigo-50 rounded-xl flex items-center justify-center text-indigo-600">
+                    <div className="w-10 h-10 bg-indigo-100/50 rounded-xl flex items-center justify-center text-indigo-600">
                       <TrendingUp size={20} />
                     </div>
                     <div>
@@ -586,7 +585,7 @@ export function AuctionHub({ onNavigate }: { onNavigate?: (id: string) => void }
                   <ChartContainer config={mainChartConfig} className="h-64 w-full">
                     <ResponsiveContainer width="100%" height="100%">
                       <LineChart data={chartData}>
-                        <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="#f1f5f9" />
+                        <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="#001529" strokeOpacity={0.05} />
                         <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 9, fontWeight: 700, fill: '#94a3b8' }} />
                         <YAxis hide />
                         <ShadcnChartTooltip content={<ChartTooltipContent />} />
@@ -608,12 +607,12 @@ export function AuctionHub({ onNavigate }: { onNavigate?: (id: string) => void }
 
           {activeTab !== "ai" && (
             <div className="lg:col-span-5 space-y-8">
-              <Card className="border-none shadow-sm rounded-[32px] bg-white p-8">
+              <Card className="border-none shadow-sm rounded-[32px] bg-[#f4f9ff] p-8">
                 <h2 className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] mb-8">Jonli Statistika</h2>
                 <ChartContainer config={mainChartConfig} className="h-48 w-full">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={chartData}>
-                      <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="#f1f5f9" />
+                      <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="#001529" strokeOpacity={0.05} />
                       <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 9, fontWeight: 700, fill: '#94a3b8' }} dy={10} />
                       <YAxis hide />
                       <ShadcnChartTooltip content={<ChartTooltipContent />} />
@@ -623,7 +622,7 @@ export function AuctionHub({ onNavigate }: { onNavigate?: (id: string) => void }
                 </ChartContainer>
               </Card>
 
-              <Card className="border-none shadow-sm rounded-[32px] bg-white p-8">
+              <Card className="border-none shadow-sm rounded-[32px] bg-[#f4f9ff] p-8">
                 <div className="space-y-8">
                   <div>
                     <h2 className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3">Vaqt Hisoblagich</h2>
@@ -635,9 +634,9 @@ export function AuctionHub({ onNavigate }: { onNavigate?: (id: string) => void }
 
                   <div>
                     <h2 className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] mb-5">So'nggi Takliflar</h2>
-                    <div className="rounded-2xl border border-slate-50 overflow-hidden">
+                    <div className="rounded-2xl border border-[#001529]/5 overflow-hidden">
                       <Table>
-                        <TableHeader className="bg-slate-50/50">
+                        <TableHeader className="bg-[#001529]/5">
                           <TableRow className="hover:bg-transparent border-none">
                             <TableHead className="text-[8px] font-black uppercase tracking-[0.2em] h-10 px-4">Ishtirokchi</TableHead>
                             <TableHead className="text-[8px] font-black uppercase tracking-[0.2em] text-right h-10 px-4">Summa</TableHead>
@@ -650,7 +649,7 @@ export function AuctionHub({ onNavigate }: { onNavigate?: (id: string) => void }
                             { name: "Artel Electronics", amount: 139000000, time: "2 daqiqa oldin" },
                             { name: "UzAuto Motors", amount: 135000000, time: "5 daqiqa oldin" },
                           ].map((bid, i) => (
-                            <TableRow key={i} className="border-slate-50 hover:bg-slate-50/80 transition-colors">
+                            <TableRow key={i} className="border-[#001529]/5 hover:bg-white/50 transition-colors">
                               <TableCell className="text-[11px] font-bold text-slate-700 px-4">{bid.name}</TableCell>
                               <TableCell className="text-right text-[11px] font-black text-blue-600 px-4">{formatCurrency(bid.amount)}</TableCell>
                               <TableCell className="text-center text-[9px] font-bold text-slate-400 px-4">{bid.time}</TableCell>
@@ -781,7 +780,7 @@ export function AuctionHub({ onNavigate }: { onNavigate?: (id: string) => void }
                 Real vaqt tahlili va AI tavsiyalari
               </DialogDescription>
             </div>
-            <Button variant="outline" className="h-10 rounded-xl border-slate-100 text-[10px] font-black uppercase tracking-widest gap-2">
+            <Button variant="outline" className="h-10 rounded-xl border-[#001529]/10 text-[10px] font-black uppercase tracking-widest gap-2 bg-white">
               <Download size={14} /> PDF Yuklash
             </Button>
           </DialogHeader>
@@ -805,11 +804,11 @@ export function AuctionHub({ onNavigate }: { onNavigate?: (id: string) => void }
                       <p className="text-2xl font-black text-[#2563eb] tracking-tighter">{formatCurrency(lots.reduce((a, b) => a + b.price, 0))}</p>
                     </div>
                   </ChartContainer>
-                  <Card className="bg-white border-none shadow-sm p-6 rounded-[24px]">
+                  <Card className="bg-[#f4f9ff] border-none shadow-sm p-6 rounded-[24px]">
                     <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2">Aktiv Lotlar</p>
                     <p className="text-2xl font-black text-slate-900 tracking-tighter">{lots.length} ta</p>
                   </Card>
-                  <Card className="bg-white border-none shadow-sm p-6 rounded-[24px]">
+                  <Card className="bg-[#f4f9ff] border-none shadow-sm p-6 rounded-[24px]">
                     <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2">Jami Takliflar</p>
                     <p className="text-2xl font-black text-emerald-600 tracking-tighter">{lots.reduce((a, b) => a + (b.bidsCount || 0), 0)} ta</p>
                   </Card>
@@ -817,7 +816,7 @@ export function AuctionHub({ onNavigate }: { onNavigate?: (id: string) => void }
 
                 {/* Charts Row */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                  <Card className="bg-white border-none shadow-sm p-8 rounded-[32px]">
+                  <Card className="bg-[#f4f9ff] border-none shadow-sm p-8 rounded-[32px]">
                     <h4 className="text-[10px] font-black text-slate-900 uppercase tracking-widest mb-6">Savdolar ulushi (Toifalar)</h4>
                     <div className="h-64">
                       <ChartContainer config={reportPieConfig} className="h-full w-full">
@@ -843,13 +842,13 @@ export function AuctionHub({ onNavigate }: { onNavigate?: (id: string) => void }
                     </div>
                   </Card>
 
-                  <Card className="bg-white border-none shadow-sm p-8 rounded-[32px]">
+                  <Card className="bg-[#f4f9ff] border-none shadow-sm p-8 rounded-[32px]">
                     <h4 className="text-[10px] font-black text-slate-900 uppercase tracking-widest mb-6">Faollik tahlili</h4>
                     <div className="h-64">
                       <ChartContainer config={reportBarConfig} className="h-full w-full">
                         <ResponsiveContainer width="100%" height="100%">
                           <BarChart data={chartData}>
-                            <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="#f1f5f9" />
+                            <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="#001529" strokeOpacity={0.05} />
                             <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 9, fontWeight: 700, fill: '#94a3b8' }} />
                             <ShadcnChartTooltip content={<ChartTooltipContent />} />
                             <Bar dataKey="value" fill="#8b5cf6" radius={[4, 4, 0, 0]} barSize={24} />
@@ -873,7 +872,7 @@ export function AuctionHub({ onNavigate }: { onNavigate?: (id: string) => void }
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div className="space-y-4">
                       <h4 className="text-[10px] font-black text-indigo-600 uppercase tracking-widest px-2">Bozor Kayfiyati</h4>
-                      <Card className="bg-white border-none shadow-sm p-6 rounded-[24px]">
+                      <Card className="bg-[#f4f9ff] border-none shadow-sm p-6 rounded-[24px]">
                         <p className="text-[13px] leading-relaxed text-slate-600 font-medium">{reportData.marketSentiment}</p>
                       </Card>
                     </div>
@@ -882,7 +881,7 @@ export function AuctionHub({ onNavigate }: { onNavigate?: (id: string) => void }
                       <h4 className="text-[10px] font-black text-emerald-600 uppercase tracking-widest px-2">Strategik Tavsiyalar</h4>
                       <div className="space-y-3">
                         {reportData.recommendations.map((rec, i) => (
-                          <Card key={i} className="bg-white border-none shadow-sm p-4 rounded-[20px] flex items-start gap-3">
+                          <Card key={i} className="bg-[#f4f9ff] border-none shadow-sm p-4 rounded-[20px] flex items-start gap-3">
                             <CheckCircle2 size={18} className="text-emerald-500 shrink-0 mt-0.5" />
                             <p className="text-[12px] font-bold text-slate-700">{rec}</p>
                           </Card>

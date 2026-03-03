@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from "react";
@@ -140,13 +139,13 @@ export function Marketplace({ onAddToCart }: MarketplaceProps) {
         <h1 className="text-2xl font-black text-slate-900 tracking-tight">B2B Marketplace</h1>
       </div>
 
-      <div className="bg-[#f0f4ff] border border-blue-100 rounded-xl p-4 flex items-start gap-4 shadow-sm">
-        <div className="bg-white p-2 rounded-lg shadow-sm text-blue-600">
+      <div className="bg-blue-100/50 border border-blue-200 rounded-2xl p-6 flex items-start gap-4 shadow-sm">
+        <div className="bg-white p-3 rounded-xl shadow-sm text-blue-600">
           <Sparkles size={20} />
         </div>
         <div>
           <h4 className="text-[11px] font-black text-blue-600 uppercase tracking-widest mb-1">AI Tavsiyalari</h4>
-          <p className="text-[12px] text-slate-500 font-medium">
+          <p className="text-[13px] text-[#001529]/60 font-medium">
             Siz o'tgan safar armatura xarid qildingiz, ehtimol sizga sement va beton kerak bo'lishi mumkin. Quyidagi ro'yxat siz uchun moslashtirilgan.
           </p>
         </div>
@@ -154,27 +153,27 @@ export function Marketplace({ onAddToCart }: MarketplaceProps) {
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mt-8">
         <div className="lg:col-span-3 space-y-6">
-          <Card className="border-none shadow-sm rounded-2xl bg-white p-6">
-            <div className="flex items-center gap-2 mb-6">
+          <Card className="border-none shadow-sm rounded-3xl bg-[#f4f9ff] p-8">
+            <div className="flex items-center gap-2 mb-8">
               <Filter size={16} className="text-slate-400" />
               <h3 className="text-sm font-black uppercase tracking-widest text-slate-900">Filtrlar</h3>
             </div>
 
-            <div className="space-y-6">
+            <div className="space-y-8">
               <div>
                 <h4 className="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-4">Kategoriyalar</h4>
-                <div className="space-y-3">
+                <div className="space-y-4">
                   {CATEGORIES.map((cat) => (
-                    <div key={cat.id} className="flex items-center space-x-2">
+                    <div key={cat.id} className="flex items-center space-x-3">
                       <Checkbox 
                         id={cat.id} 
                         checked={activeCategory === cat.id}
                         onCheckedChange={() => setActiveCategory(cat.id)}
-                        className="rounded border-slate-200"
+                        className="rounded-lg border-[#001529]/10 bg-white"
                       />
                       <label 
                         htmlFor={cat.id} 
-                        className="text-[12px] font-bold text-slate-600 cursor-pointer select-none"
+                        className="text-[13px] font-bold text-slate-600 cursor-pointer select-none"
                       >
                         {cat.label}
                       </label>
@@ -186,12 +185,12 @@ export function Marketplace({ onAddToCart }: MarketplaceProps) {
               <div>
                 <h4 className="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-4">Narx oralig'i (UZS)</h4>
                 <div className="flex items-center gap-2">
-                  <Input placeholder="Dan" className="h-10 text-[12px] font-bold rounded-xl border-slate-100 bg-slate-50" />
-                  <Input placeholder="Gacha" className="h-10 text-[12px] font-bold rounded-xl border-slate-100 bg-slate-50" />
+                  <Input placeholder="Dan" className="h-11 text-[12px] font-bold rounded-xl border-[#001529]/5 bg-white" />
+                  <Input placeholder="Gacha" className="h-11 text-[12px] font-bold rounded-xl border-[#001529]/5 bg-white" />
                 </div>
               </div>
 
-              <Button className="w-full bg-[#0b4db1] hover:bg-blue-700 text-white rounded-xl h-11 font-black uppercase tracking-widest text-[11px] mt-4">
+              <Button className="w-full bg-[#0b4db1] hover:bg-blue-700 text-white rounded-2xl h-14 font-black uppercase tracking-widest text-[11px] mt-4 shadow-lg shadow-blue-100">
                 Filtrni qo'llash
               </Button>
             </div>
@@ -204,16 +203,16 @@ export function Marketplace({ onAddToCart }: MarketplaceProps) {
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-blue-600 transition-colors" size={18} />
               <Input 
                 placeholder="Mahsulot nomi, brend yoki sotuvchi bo'yicha qidiruv" 
-                className="h-12 pl-12 rounded-xl border-slate-100 bg-white shadow-sm text-[13px] font-bold placeholder:text-slate-300 focus-visible:ring-2 focus-visible:ring-blue-50"
+                className="h-14 pl-12 rounded-2xl border-none bg-[#f4f9ff] shadow-sm text-[14px] font-bold placeholder:text-slate-300 focus-visible:ring-2 focus-visible:ring-blue-100"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
             <Select defaultValue="mashhur">
-              <SelectTrigger className="w-[200px] h-12 rounded-xl border-slate-100 bg-white shadow-sm text-[12px] font-black uppercase tracking-widest px-4">
+              <SelectTrigger className="w-[200px] h-14 rounded-2xl border-none bg-[#f4f9ff] shadow-sm text-[12px] font-black uppercase tracking-widest px-6">
                 <SelectValue placeholder="Mashhur" />
               </SelectTrigger>
-              <SelectContent className="rounded-xl border-slate-100">
+              <SelectContent className="rounded-2xl border-none shadow-2xl">
                 <SelectItem value="mashhur">Mashhur</SelectItem>
                 <SelectItem value="arzon">Arzonlari oldin</SelectItem>
                 <SelectItem value="qimmat">Qimmatlari oldin</SelectItem>
@@ -222,16 +221,16 @@ export function Marketplace({ onAddToCart }: MarketplaceProps) {
             </Select>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
             {filteredProducts.map((product) => (
-              <Card key={product.id} className="border-none shadow-sm hover:shadow-xl transition-all duration-500 rounded-3xl bg-white overflow-hidden group">
-                <div className="relative h-48 w-full bg-[#e9ecf2] flex items-center justify-center p-6">
-                  <span className="text-5xl font-black text-slate-400/30 uppercase tracking-tighter select-none">
+              <Card key={product.id} className="border-none shadow-sm hover:shadow-xl transition-all duration-500 rounded-[40px] bg-[#f4f9ff] overflow-hidden group">
+                <div className="relative h-56 w-full bg-white flex items-center justify-center p-8">
+                  <span className="text-6xl font-black text-[#001529]/5 uppercase tracking-tighter select-none">
                     {product.displayText}
                   </span>
                 </div>
                 
-                <CardContent className="p-6">
+                <CardContent className="p-8">
                   <div className="flex justify-between items-start mb-4">
                     <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest">{product.category}</p>
                     <div className="flex items-center gap-1 text-amber-400 font-black text-[11px]">
@@ -239,17 +238,17 @@ export function Marketplace({ onAddToCart }: MarketplaceProps) {
                     </div>
                   </div>
                   
-                  <h3 className="text-[14px] font-black text-slate-900 tracking-tight leading-tight mb-2 group-hover:text-[#0b4db1] transition-colors line-clamp-1">
+                  <h3 className="text-[16px] font-black text-slate-900 tracking-tight leading-tight mb-2 group-hover:text-[#0b4db1] transition-colors line-clamp-1">
                     {product.title}
                   </h3>
                   
-                  <p className="text-[11px] font-bold text-slate-400 mb-4 uppercase tracking-tighter">
+                  <p className="text-[11px] font-bold text-slate-400 mb-6 uppercase tracking-tighter">
                     {product.company} • {product.stock} mavjud
                   </p>
 
                   <div className="flex items-end justify-between mt-auto">
                     <div>
-                      <p className="text-xl font-black text-[#0b4db1] tracking-tighter">
+                      <p className="text-2xl font-black text-[#0b4db1] tracking-tighter">
                         {formatCurrency(product.price)} <span className="text-[11px] text-slate-400 font-bold uppercase tracking-widest ml-1">/ {product.unit}</span>
                       </p>
                     </div>
@@ -257,7 +256,7 @@ export function Marketplace({ onAddToCart }: MarketplaceProps) {
 
                   <Button 
                     onClick={() => handleAddToCart(product)}
-                    className="w-full bg-[#0b4db1] hover:bg-blue-700 text-white rounded-xl h-11 font-black uppercase tracking-widest text-[11px] gap-2 mt-6 shadow-md shadow-blue-100"
+                    className="w-full bg-[#0b4db1] hover:bg-blue-700 text-white rounded-2xl h-14 font-black uppercase tracking-widest text-[11px] gap-2 mt-8 shadow-xl shadow-blue-100"
                   >
                     <ShoppingCart size={16} /> Savatga qo'shish
                   </Button>
@@ -267,11 +266,11 @@ export function Marketplace({ onAddToCart }: MarketplaceProps) {
           </div>
 
           {filteredProducts.length === 0 && (
-            <div className="flex flex-col items-center justify-center py-20 text-center">
-              <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-6">
-                <ShoppingBag className="text-slate-200" size={40} />
+            <div className="flex flex-col items-center justify-center py-32 text-center">
+              <div className="w-24 h-24 bg-[#f4f9ff] rounded-full flex items-center justify-center mb-8">
+                <ShoppingBag className="text-slate-200" size={48} />
               </div>
-              <h3 className="text-lg font-black text-slate-300 uppercase tracking-widest">Mahsulot topilmadi</h3>
+              <h3 className="text-xl font-black text-slate-300 uppercase tracking-widest">Mahsulot topilmadi</h3>
             </div>
           )}
         </div>

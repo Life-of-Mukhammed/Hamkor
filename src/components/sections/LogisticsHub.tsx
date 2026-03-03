@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from "react";
@@ -153,7 +152,7 @@ export function LogisticsHub({ lang = 'uz' }: LogisticsHubProps) {
       </div>
 
       <Tabs defaultValue="monitoring" className="w-full" value={activeTab} onValueChange={setActiveTab}>
-        <div className="border-b border-slate-100 mb-8">
+        <div className="border-b border-[#001529]/5 mb-8">
           <TabsList className="bg-transparent h-12 p-0 gap-10">
             {["buyer", "dispatcher", "carrier", "monitoring"].map((tab) => (
               <TabsTrigger 
@@ -173,7 +172,7 @@ export function LogisticsHub({ lang = 'uz' }: LogisticsHubProps) {
         <TabsContent value="monitoring" className="m-0 animate-fade-in">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 h-[800px]">
             {/* Map Area */}
-            <div className="lg:col-span-8 relative rounded-[48px] overflow-hidden bg-[#1e293b] border border-slate-200 shadow-2xl">
+            <div className="lg:col-span-8 relative rounded-[48px] overflow-hidden bg-[#1e293b] border border-[#001529]/5 shadow-2xl">
               <Image 
                 src="https://images.unsplash.com/photo-1524661135-423995f22d0b?q=80&w=2000" 
                 alt="Map Background" 
@@ -266,17 +265,17 @@ export function LogisticsHub({ lang = 'uz' }: LogisticsHubProps) {
 
             {/* Right Sidebar - Fleet List */}
             <div className="lg:col-span-4 flex flex-col gap-6">
-              <Card className="flex-1 border-none shadow-sm rounded-[48px] bg-white p-10 flex flex-col overflow-hidden">
+              <Card className="flex-1 border-none shadow-sm rounded-[48px] bg-[#f4f9ff] p-10 flex flex-col overflow-hidden">
                 <div className="flex justify-between items-center mb-10 shrink-0">
                   <h2 className="text-sm font-black text-slate-900 uppercase tracking-[0.2em]">FAOL TRANSPORTLAR</h2>
-                  <div className="w-9 h-9 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600 text-[11px] font-black">
+                  <div className="w-9 h-9 rounded-xl bg-white flex items-center justify-center text-blue-600 text-[11px] font-black shadow-sm">
                     {ACTIVE_TRIPS.length}
                   </div>
                 </div>
 
                 <div className="flex-1 overflow-y-auto pr-2 space-y-6 no-scrollbar">
                   {ACTIVE_TRIPS.map((trip) => (
-                    <div key={trip.id} className="p-7 rounded-[32px] bg-slate-50/50 border border-transparent hover:bg-white hover:shadow-2xl hover:border-blue-100 transition-all duration-500 group cursor-pointer">
+                    <div key={trip.id} className="p-7 rounded-[32px] bg-white border border-[#001529]/5 hover:shadow-2xl hover:border-blue-100 transition-all duration-500 group cursor-pointer">
                       <div className="flex justify-between items-start mb-6">
                         <div className="space-y-1">
                           <h4 className="text-[14px] font-black text-slate-900 tracking-tight">{trip.from} <ArrowRight size={10} className="inline mx-1 opacity-20" /> {trip.to}</h4>
@@ -292,7 +291,7 @@ export function LogisticsHub({ lang = 'uz' }: LogisticsHubProps) {
                       </div>
 
                       <div className="space-y-4">
-                        <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                        <div className="w-full h-1.5 bg-[#f4f9ff] rounded-full overflow-hidden">
                           <div 
                             className="h-full bg-blue-600 transition-all duration-1000" 
                             style={{ width: trip.load }} 
@@ -330,22 +329,21 @@ export function LogisticsHub({ lang = 'uz' }: LogisticsHubProps) {
           </div>
         </TabsContent>
 
-        {/* Existing Content for other tabs... */}
         <TabsContent value="buyer" className="m-0 animate-fade-in">
           <div className="grid lg:grid-cols-12 gap-8">
-            <Card className="lg:col-span-4 border-none shadow-sm rounded-[32px] bg-white p-8">
+            <Card className="lg:col-span-4 border-none shadow-sm rounded-[32px] bg-[#f4f9ff] p-10">
               <h2 className="text-lg font-black text-slate-900 mb-8">{lang === 'uz' ? "Yangi yuk e'loni" : "Новое объявление"}</h2>
               <div className="space-y-6">
                 <div className="space-y-3">
                   <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest">Yo'nalish</label>
                   <div className="grid grid-cols-2 gap-3">
-                    <Input placeholder="Qayerdan" className="h-12 rounded-xl text-[12px] font-bold border-slate-100 bg-slate-50/50" value={from} onChange={(e) => setFrom(e.target.value)} />
-                    <Input placeholder="Qayerga" className="h-12 rounded-xl text-[12px] font-bold border-slate-100 bg-slate-50/50" value={to} onChange={(e) => setTo(e.target.value)} />
+                    <Input placeholder="Qayerdan" className="h-12 rounded-xl text-[12px] font-bold border-none bg-white shadow-sm" value={from} onChange={(e) => setFrom(e.target.value)} />
+                    <Input placeholder="Qayerga" className="h-12 rounded-xl text-[12px] font-bold border-none bg-white shadow-sm" value={to} onChange={(e) => setTo(e.target.value)} />
                   </div>
                 </div>
                 <div className="space-y-3">
                   <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest">Yuk haqida</label>
-                  <Input placeholder="Turi, og'irligi, hajmi" className="h-12 rounded-xl text-[12px] font-bold border-slate-100 bg-slate-50/50" value={details} onChange={(e) => setDetails(e.target.value)} />
+                  <Input placeholder="Turi, og'irligi, hajmi" className="h-12 rounded-xl text-[12px] font-bold border-none bg-white shadow-sm" value={details} onChange={(e) => setDetails(e.target.value)} />
                 </div>
                 <Button onClick={handlePublishAnnouncement} className="w-full h-14 bg-[#0b4db1] hover:bg-blue-700 text-white rounded-2xl font-black uppercase tracking-widest text-[11px] shadow-xl shadow-blue-100 mt-4 gap-2 transition-all active:scale-[0.98]">
                   <Send size={16} /> {lang === 'uz' ? "E'lonni ochiq qilish" : "Опубликовать объявление"}
@@ -353,11 +351,11 @@ export function LogisticsHub({ lang = 'uz' }: LogisticsHubProps) {
               </div>
             </Card>
             <div className="lg:col-span-8">
-              <Card className="border-none shadow-sm rounded-[32px] bg-white p-8">
+              <Card className="border-none shadow-sm rounded-[32px] bg-[#f4f9ff] p-10">
                 <h2 className="text-lg font-black text-slate-900 mb-8">{lang === 'uz' ? "Kelgan takliflar" : "Полученные предложения"}</h2>
                 <div className="space-y-6">
                   {offers.map((offer) => (
-                    <div key={offer.id} className={cn("p-8 rounded-[24px] border transition-all duration-300", offer.status === 'accepted' ? "bg-emerald-50/50 border-emerald-100" : "bg-slate-50/30 border-slate-50 hover:border-blue-100")}>
+                    <div key={offer.id} className={cn("p-8 rounded-[24px] bg-white border border-[#001529]/5 transition-all duration-300", offer.status === 'accepted' ? "bg-emerald-50/50 border-emerald-100" : "hover:border-blue-100")}>
                       <div className="flex justify-between items-start mb-6">
                         <div className="flex items-center gap-3">
                           <h3 className="text-[16px] font-black text-slate-900 uppercase">{offer.company}</h3>
@@ -368,7 +366,7 @@ export function LogisticsHub({ lang = 'uz' }: LogisticsHubProps) {
                         <p className="text-2xl font-black text-slate-900">{offer.price} UZS</p>
                       </div>
                       {offer.status !== 'accepted' && (
-                        <Button onClick={() => handleAcceptOffer(offer.id)} className="w-full bg-[#0b4db1] hover:bg-blue-700 text-white rounded-xl h-12 text-[11px] font-black uppercase tracking-widest">
+                        <Button onClick={() => handleAcceptOffer(offer.id)} className="w-full bg-[#0b4db1] hover:bg-blue-700 text-white rounded-xl h-12 text-[11px] font-black uppercase tracking-widest shadow-md">
                           {lang === 'uz' ? "Qabul qilish" : "Принять"}
                         </Button>
                       )}
@@ -382,27 +380,27 @@ export function LogisticsHub({ lang = 'uz' }: LogisticsHubProps) {
 
         <TabsContent value="dispatcher" className="m-0 space-y-8 animate-fade-in">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <Card className="border-none shadow-sm rounded-[24px] bg-white p-10 flex flex-col items-center justify-center text-center">
+            <Card className="border-none shadow-sm rounded-[24px] bg-[#f4f9ff] p-10 flex flex-col items-center justify-center text-center">
               <h3 className="text-4xl font-black text-[#0b4db1] mb-2">140+</h3>
-              <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">{lang === 'uz' ? "Shu oy tashkil qilingan yuklar" : "Грузы в этом месяце"}</p>
+              <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">{lang === 'uz' ? "Shu oy tashkil qilingan yuklar" : "Грузы в этом месяce"}</p>
             </Card>
-            <Card className="border-none shadow-sm rounded-[24px] bg-white p-10 flex flex-col items-center justify-center text-center">
+            <Card className="border-none shadow-sm rounded-[24px] bg-[#f4f9ff] p-10 flex flex-col items-center justify-center text-center">
               <h3 className="text-4xl font-black text-[#10b981] mb-2">4.9 <span className="text-lg text-emerald-300">★</span></h3>
               <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">{lang === 'uz' ? "Mijozlar tomonidan o'rtacha baho" : "Средняя оценка клиентов"}</p>
             </Card>
-            <Card className="border-none shadow-sm rounded-[24px] bg-white p-10 flex flex-col items-center justify-center text-center">
+            <Card className="border-none shadow-sm rounded-[24px] bg-[#f4f9ff] p-10 flex flex-col items-center justify-center text-center">
               <h3 className="text-4xl font-black text-amber-500 mb-2">12 ta</h3>
               <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">{lang === 'uz' ? "Tasdiqlangan hamkor tashuvchilar" : "Партнеры-перевозчики"}</p>
             </Card>
           </div>
           {announcements.map((ann) => (
-            <Card key={ann.id} className="border-none shadow-sm rounded-[32px] bg-white p-10">
+            <Card key={ann.id} className="border-none shadow-sm rounded-[32px] bg-[#f4f9ff] p-10">
               <div className="flex justify-between items-center mb-8">
                 <div className="flex items-center gap-10">
                   <span className="text-xl font-black text-slate-900">{ann.from}</span>
                   <div className="flex flex-col items-center min-w-[120px]">
-                    <div className="h-px bg-slate-200 w-full relative">
-                      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white px-3 text-[10px] font-black text-slate-400 uppercase">
+                    <div className="h-px bg-[#001529]/10 w-full relative">
+                      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#f4f9ff] px-3 text-[10px] font-black text-slate-400 uppercase">
                         {ann.distance}
                       </div>
                     </div>
@@ -436,13 +434,13 @@ export function LogisticsHub({ lang = 'uz' }: LogisticsHubProps) {
               </p>
             </div>
           </div>
-          <Card className="border-none shadow-sm rounded-[32px] bg-white p-10">
+          <Card className="border-none shadow-sm rounded-[32px] bg-[#f4f9ff] p-10">
             <div className="flex justify-between items-start mb-10">
               <div className="space-y-4">
                 <h3 className="text-2xl font-black text-slate-900 uppercase">Xorazmga qurilish materiallari</h3>
                 <div className="flex gap-4">
-                  <Badge variant="outline" className="rounded-lg h-7 px-3 border-slate-100 font-bold">~5 tonna</Badge>
-                  <Badge variant="outline" className="rounded-lg h-7 px-3 border-slate-100 font-bold text-[#10b981] bg-[#ecfdf5]">Toshkent Logistika MChJ (4.9 ★)</Badge>
+                  <Badge variant="outline" className="rounded-lg h-7 px-3 border-[#001529]/10 bg-white font-bold">~5 tonna</Badge>
+                  <Badge variant="outline" className="rounded-lg h-7 px-3 border-[#001529]/10 bg-emerald-50 text-[#10b981] font-bold">Toshkent Logistika MChJ (4.9 ★)</Badge>
                 </div>
               </div>
               <div className="text-right">
@@ -454,7 +452,7 @@ export function LogisticsHub({ lang = 'uz' }: LogisticsHubProps) {
               <Button className="h-14 bg-[#10b981] hover:bg-[#059669] text-white rounded-2xl font-black uppercase tracking-widest text-[11px] shadow-xl shadow-emerald-100">
                 {lang === 'uz' ? "Roziman" : "Согласен"}
               </Button>
-              <Button variant="outline" className="h-14 border-slate-200 text-slate-500 rounded-2xl font-black uppercase tracking-widest text-[11px]">
+              <Button variant="outline" className="h-14 border-[#001529]/10 bg-white text-slate-500 rounded-2xl font-black uppercase tracking-widest text-[11px] shadow-sm">
                 {lang === 'uz' ? "Rad etish" : "Отказать"}
               </Button>
             </div>
