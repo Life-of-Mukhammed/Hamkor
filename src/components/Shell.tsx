@@ -1,4 +1,3 @@
-
 "use client";
 
 import * as React from "react";
@@ -92,16 +91,16 @@ export function Shell({
       <SidebarProvider className="flex-1 overflow-hidden">
         <Sidebar collapsible="icon" className="border-r border-[#001529]/5 bg-white shrink-0 h-full">
           <SidebarHeader className="p-4 group-data-[state=expanded]:p-6 group-data-[state=expanded]:pt-10 transition-all">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-[#0b5dbb] rounded-xl flex items-center justify-center shadow-lg shadow-blue-900/10 shrink-0">
-                <div className="w-5 h-5 rounded-[4px] border-2 border-white" />
+            <div className="flex items-center gap-3 justify-center group-data-[state=expanded]:justify-start">
+              <div className="w-12 h-12 bg-[#0b5dbb] rounded-2xl flex items-center justify-center shadow-xl shadow-blue-900/10 shrink-0 transition-all">
+                <div className="w-6 h-6 rounded-[5px] border-2 border-white" />
               </div>
-              <h1 className="text-xl font-black tracking-tight text-[#001529] group-data-[state=collapsed]:hidden transition-all">{t.appName}</h1>
+              <h1 className="text-xl font-black tracking-tight text-[#001529] group-data-[state=collapsed]:hidden transition-all uppercase">{t.appName}</h1>
             </div>
           </SidebarHeader>
           
-          <SidebarContent className="px-2 group-data-[state=expanded]:px-4 mt-6">
-            <SidebarMenu className="gap-2">
+          <SidebarContent className="px-2 group-data-[state=expanded]:px-4 mt-8">
+            <SidebarMenu className="gap-3 group-data-[state=collapsed]:items-center">
               {menuItems.map((item) => (
                 <SidebarMenuItem key={item.id}>
                   <SidebarMenuButton
@@ -113,9 +112,10 @@ export function Shell({
                         ? "bg-[#0b5dbb] text-white shadow-xl shadow-blue-600/40" 
                         : "text-[#001529]/60 hover:bg-[#0b5dbb]/5 hover:text-[#0b5dbb]"
                     )}
+                    tooltip={item.label}
                   >
-                    <div className="flex items-center gap-3">
-                      <item.icon className={cn("w-5 h-5 transition-colors shrink-0", activeSection === item.id ? "text-white" : "text-[#001529]/40 group-hover:text-[#0b5dbb]")} />
+                    <div className="flex items-center gap-4 w-full justify-center group-data-[state=expanded]:justify-start">
+                      <item.icon className={cn("shrink-0 transition-colors")} />
                       <span className="font-black text-[12px] tracking-wide uppercase group-data-[state=collapsed]:hidden whitespace-nowrap">{item.label}</span>
                     </div>
                   </SidebarMenuButton>
@@ -124,7 +124,7 @@ export function Shell({
             </SidebarMenu>
           </SidebarContent>
 
-          <SidebarFooter className="p-2 group-data-[state=expanded]:p-6 mb-4">
+          <SidebarFooter className="p-2 group-data-[state=expanded]:p-6 mb-6">
             <div className="bg-[#001529]/5 rounded-[32px] p-4 group-data-[state=expanded]:p-6 text-center border border-[#001529]/5 group-data-[state=collapsed]:hidden">
               <p className="text-[10px] font-bold text-[#001529]/40 uppercase tracking-widest mb-4 leading-relaxed px-2">
                 {t.labels.premiumServices}
@@ -136,9 +136,9 @@ export function Shell({
               </Button>
             </div>
             
-            <div className="mt-6 flex items-center gap-3 px-2">
-              <Avatar className="h-10 w-10 border-2 border-[#001529]/5 shrink-0">
-                <AvatarFallback className="bg-[#001529]/5 text-[#001529] font-black text-xs">SZ</AvatarFallback>
+            <div className="mt-8 flex items-center gap-3 px-2 justify-center group-data-[state=expanded]:justify-start">
+              <Avatar className="h-12 w-12 border-2 border-[#001529]/5 shrink-0 shadow-sm">
+                <AvatarFallback className="bg-[#001529]/5 text-[#001529] font-black text-xs uppercase">SZ</AvatarFallback>
               </Avatar>
               <div className="flex-1 min-w-0 group-data-[state=collapsed]:hidden">
                 <p className="text-[12px] font-black text-[#001529] truncate">sheyx2772</p>
@@ -314,4 +314,3 @@ export function Shell({
     </div>
   );
 }
-
